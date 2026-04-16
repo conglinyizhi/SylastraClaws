@@ -11,10 +11,15 @@ import (
 	"strconv"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/channels/pico"
 	"github.com/sipeed/picoclaw/pkg/config"
 	ppid "github.com/sipeed/picoclaw/pkg/pid"
 )
+
+func newPicoProxyRequest(method, path string) *http.Request {
+	req := httptest.NewRequest(method, "http://launcher.local:18800"+path, nil)
+	req.Header.Set("Origin", "http://launcher.local:18800")
+	return req
+}
 
 func TestEnsurePicoChannel_FreshConfig(t *testing.T) {
 	configPath := filepath.Join(t.TempDir(), "config.json")
@@ -365,8 +370,8 @@ func TestHandlePicoSetup_Response(t *testing.T) {
 		t.Fatalf("failed to decode response: %v", err)
 	}
 
-	if resp["token"] == nil || resp["token"] == "" {
-		t.Error("response should contain a non-empty token")
+	if _, ok := resp["token"]; ok {
+		t.Error("response must not expose the raw pico token")
 	}
 	if resp["ws_url"] == nil || resp["ws_url"] == "" {
 		t.Error("response should contain ws_url")
@@ -376,6 +381,45 @@ func TestHandlePicoSetup_Response(t *testing.T) {
 	}
 	if resp["changed"] != true {
 		t.Error("response should have changed=true on first setup")
+	}
+	if resp["configured"] != true {
+		t.Error("response should have configured=true")
+	}
+}
+
+func TestHandleGetPicoInfo_OmitsToken(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "config.json")
+	h := NewHandler(configPath)
+
+	if _, err := h.EnsurePicoChannel(""); err != nil {
+		t.Fatalf("EnsurePicoChannel() error = %v", err)
+	}
+
+	req := httptest.NewRequest(http.MethodGet, "http://launcher.local/api/pico/info", nil)
+	rec := httptest.NewRecorder()
+
+	h.handleGetPicoInfo(rec, req)
+
+	if rec.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
+	}
+
+	var resp map[string]any
+	if err := json.NewDecoder(rec.Body).Decode(&resp); err != nil {
+		t.Fatalf("failed to decode response: %v", err)
+	}
+
+	if _, ok := resp["token"]; ok {
+		t.Fatal("info response must not expose the raw pico token")
+	}
+	if resp["enabled"] != true {
+		t.Fatalf("enabled = %#v, want true", resp["enabled"])
+	}
+	if resp["configured"] != true {
+		t.Fatalf("configured = %#v, want true", resp["configured"])
+	}
+	if resp["ws_url"] == nil || resp["ws_url"] == "" {
+		t.Fatal("response should contain ws_url")
 	}
 }
 
@@ -438,18 +482,8 @@ func TestHandleWebSocketProxyReloadsGatewayTargetFromConfig(t *testing.T) {
 
 	gateway.pidData = &ppid.PidFileData{}
 	gateway.picoToken = "pico"
-	req1 := httptest.NewRequest(http.MethodGet, "/pico/ws", nil)
-	req1.Header.Set(protocolKey, tokenPrefix+"wrong_token")
+	req1 := newPicoProxyRequest(http.MethodGet, "/pico/ws")
 	rec1 := httptest.NewRecorder()
-	handler(rec1, req1)
-
-	if rec1.Code != http.StatusForbidden {
-		t.Fatalf("first status = %d, want %d", rec1.Code, http.StatusForbidden)
-	}
-
-	req1 = httptest.NewRequest(http.MethodGet, "/pico/ws", nil)
-	req1.Header.Set(protocolKey, tokenPrefix+"pico")
-	rec1 = httptest.NewRecorder()
 	handler(rec1, req1)
 
 	if rec1.Code != http.StatusOK {
@@ -464,8 +498,7 @@ func TestHandleWebSocketProxyReloadsGatewayTargetFromConfig(t *testing.T) {
 		t.Fatalf("SaveConfig() error = %v", err)
 	}
 
-	req2 := httptest.NewRequest(http.MethodGet, "/pico/ws", nil)
-	req2.Header.Set(protocolKey, tokenPrefix+"pico")
+	req2 := newPicoProxyRequest(http.MethodGet, "/pico/ws")
 	rec2 := httptest.NewRecorder()
 	handler(rec2, req2)
 
@@ -539,8 +572,7 @@ func TestHandleWebSocketProxyLoadsCachedPicoTokenWhenMissing(t *testing.T) {
 	gateway.pidData = &ppid.PidFileData{}
 	gateway.picoToken = ""
 
-	req := httptest.NewRequest(http.MethodGet, "/pico/ws?session_id=test-session", nil)
-	req.Header.Set(protocolKey, tokenPrefix+"cached-token")
+	req := newPicoProxyRequest(http.MethodGet, "/pico/ws?session_id=test-session")
 	rec := httptest.NewRecorder()
 	handler(rec, req)
 
@@ -625,8 +657,7 @@ func TestHandleWebSocketProxyLoadsPidDataOnDemand(t *testing.T) {
 	setGatewayRuntimeStatusLocked("stopped")
 	gateway.mu.Unlock()
 
-	req := httptest.NewRequest(http.MethodGet, "/pico/ws?session_id=test-session", nil)
-	req.Header.Set(protocolKey, tokenPrefix+"ui-token")
+	req := newPicoProxyRequest(http.MethodGet, "/pico/ws?session_id=test-session")
 	rec := httptest.NewRecorder()
 	handler(rec, req)
 
@@ -634,7 +665,7 @@ func TestHandleWebSocketProxyLoadsPidDataOnDemand(t *testing.T) {
 		t.Fatalf("status = %d, want %d", rec.Code, http.StatusOK)
 	}
 
-	expected := tokenPrefix + pico.PicoTokenPrefix + pidData.Token + "ui-token"
+	expected := tokenPrefix + "ui-token"
 	if got := rec.Body.String(); got != expected {
 		t.Fatalf("forwarded protocol = %q, want %q", got, expected)
 	}
@@ -696,8 +727,7 @@ func TestHandleWebSocketProxyRejectsStalePidDataAfterProcessExit(t *testing.T) {
 	setGatewayRuntimeStatusLocked("running")
 	gateway.mu.Unlock()
 
-	req := httptest.NewRequest(http.MethodGet, "/pico/ws?session_id=test-session", nil)
-	req.Header.Set(protocolKey, tokenPrefix+"ui-token")
+	req := newPicoProxyRequest(http.MethodGet, "/pico/ws?session_id=test-session")
 	rec := httptest.NewRecorder()
 	handler(rec, req)
 
@@ -708,6 +738,21 @@ func TestHandleWebSocketProxyRejectsStalePidDataAfterProcessExit(t *testing.T) {
 	defer gateway.mu.Unlock()
 	if gateway.pidData != nil {
 		t.Fatal("gateway.pidData should be cleared after stale process exit is detected")
+	}
+}
+
+func TestHandleWebSocketProxyRejectsInvalidOrigin(t *testing.T) {
+	configPath := filepath.Join(t.TempDir(), "config.json")
+	h := NewHandler(configPath)
+	handler := h.handleWebSocketProxy()
+
+	req := httptest.NewRequest(http.MethodGet, "http://launcher.local/pico/ws", nil)
+	req.Header.Set("Origin", "http://evil.example")
+	rec := httptest.NewRecorder()
+	handler(rec, req)
+
+	if rec.Code != http.StatusForbidden {
+		t.Fatalf("status = %d, want %d", rec.Code, http.StatusForbidden)
 	}
 }
 

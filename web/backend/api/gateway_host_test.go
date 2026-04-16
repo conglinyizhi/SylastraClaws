@@ -50,7 +50,7 @@ func TestBuildWsURLUsesRequestHostWhenLauncherPublicSaved(t *testing.T) {
 	cfg.Gateway.Host = "127.0.0.1"
 	cfg.Gateway.Port = 18790
 
-	req := httptest.NewRequest("GET", "http://launcher.local/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "http://launcher.local/api/pico/info", nil)
 	req.Host = "192.168.1.9:18800"
 
 	if got := h.buildWsURL(req); got != "ws://192.168.1.9:18800/pico/ws" {
@@ -181,7 +181,7 @@ func TestBuildWsURLUsesWSSWhenForwardedProtoIsHTTPS(t *testing.T) {
 	cfg.Gateway.Host = "0.0.0.0"
 	cfg.Gateway.Port = 18790
 
-	req := httptest.NewRequest("GET", "http://launcher.local/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "http://launcher.local/api/pico/info", nil)
 	req.Host = "chat.example.com"
 	req.Header.Set("X-Forwarded-Proto", "https")
 
@@ -198,7 +198,7 @@ func TestBuildWsURLUsesWSSWhenRequestIsTLS(t *testing.T) {
 	cfg.Gateway.Host = "0.0.0.0"
 	cfg.Gateway.Port = 18790
 
-	req := httptest.NewRequest("GET", "https://launcher.local/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "https://launcher.local/api/pico/info", nil)
 	req.Host = "secure.example.com"
 	req.TLS = &tls.ConnectionState{}
 
@@ -224,7 +224,7 @@ func TestBuildPicoURLsPreferXForwardedHost(t *testing.T) {
 	cfg.Gateway.Host = "0.0.0.0"
 	cfg.Gateway.Port = 18790
 
-	req := httptest.NewRequest("GET", "http://127.0.0.1:18800/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "http://127.0.0.1:18800/api/pico/info", nil)
 	req.Host = "127.0.0.1:18800"
 	req.Header.Set("X-Forwarded-Host", "vscode-tunnel.example.com")
 	req.Header.Set("X-Forwarded-Proto", "https")
@@ -249,7 +249,7 @@ func TestBuildWsURLPrefersForwardedHTTPOverTLS(t *testing.T) {
 	cfg.Gateway.Host = "0.0.0.0"
 	cfg.Gateway.Port = 18790
 
-	req := httptest.NewRequest("GET", "https://launcher.local/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "https://launcher.local/api/pico/info", nil)
 	req.Host = "chat.example.com"
 	req.TLS = &tls.ConnectionState{}
 	req.Header.Set("X-Forwarded-Proto", "http")
@@ -264,7 +264,7 @@ func TestBuildWsURLUsesRequestHostNotGatewayBindLoopback(t *testing.T) {
 	h := NewHandler(configPath)
 	h.SetServerOptions(18800, false, false, nil)
 
-	req := httptest.NewRequest("GET", "http://localhost:18800/api/pico/token", nil)
+	req := httptest.NewRequest("GET", "http://localhost:18800/api/pico/info", nil)
 	req.Host = "localhost:18800"
 
 	if got := h.buildWsURL(req); got != "ws://localhost:18800/pico/ws" {
