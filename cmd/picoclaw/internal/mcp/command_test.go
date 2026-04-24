@@ -139,6 +139,46 @@ func TestMCPAddSupportsExplicitStdioCommandAfterSeparator(t *testing.T) {
 	assert.Equal(t, map[string]string{"AIRTABLE_API_KEY": "YOUR_KEY"}, server.Env)
 }
 
+func TestMCPAddSupportsEnvFileForStdio(t *testing.T) {
+	configPath := setupMCPConfigEnv(t)
+
+	cmd := NewMCPCommand()
+	_, err := executeCommand(cmd, []string{
+		"add",
+		"--env-file",
+		".env.mcp",
+		"filesystem",
+		"npx",
+		"-y",
+		"@modelcontextprotocol/server-filesystem",
+	}, "")
+	require.NoError(t, err)
+
+	cfg := readMCPConfig(t, configPath)
+	server := cfg.Tools.MCP.Servers["filesystem"]
+	assert.Equal(t, "stdio", server.Type)
+	assert.Equal(t, "npx", server.Command)
+	assert.Equal(t, []string{"-y", "@modelcontextprotocol/server-filesystem"}, server.Args)
+	assert.Equal(t, ".env.mcp", server.EnvFile)
+}
+
+func TestMCPAddRejectsEnvFileForHTTP(t *testing.T) {
+	setupMCPConfigEnv(t)
+
+	cmd := NewMCPCommand()
+	_, err := executeCommand(cmd, []string{
+		"add",
+		"--transport",
+		"http",
+		"--env-file",
+		".env.mcp",
+		"context7",
+		"https://mcp.context7.com/mcp",
+	}, "")
+	require.Error(t, err)
+	assert.Contains(t, err.Error(), "--env-file can only be used with stdio transport")
+}
+
 func TestMCPAddRejectsNonExecutableLocalCommand(t *testing.T) {
 	setupMCPConfigEnv(t)
 

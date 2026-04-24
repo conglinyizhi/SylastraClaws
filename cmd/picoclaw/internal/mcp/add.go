@@ -12,6 +12,7 @@ import (
 
 type addOptions struct {
 	Env       []string
+	EnvFile   string
 	Headers   []string
 	Transport string
 	Force     bool
@@ -70,7 +71,8 @@ func newAddCommand() *cobra.Command {
 	}
 
 	flags := cmd.Flags()
-	flags.StringArrayP("env", "e", nil, "Environment variable in KEY=value format (repeatable)")
+	flags.StringArrayP("env", "e", nil, "Environment variable in KEY=value format (repeatable, saved to config)")
+	flags.String("env-file", "", "Path to an env file for stdio servers (recommended for secrets)")
 	flags.StringArrayP("header", "H", nil, "HTTP header in 'Name: Value' or 'Name=Value' format (repeatable)")
 	flags.StringP("transport", "t", "stdio", "Transport type: stdio, http, or sse")
 	flags.BoolP("force", "f", false, "Overwrite an existing server without prompting")
@@ -119,8 +121,16 @@ func parseAddArgs(args []string) (addOptions, string, string, []string, bool, er
 			}
 			i++
 			opts.Env = append(opts.Env, args[i])
+		case arg == "--env-file":
+			if i+1 >= len(args) {
+				return addOptions{}, "", "", nil, false, fmt.Errorf("missing value for %s", arg)
+			}
+			i++
+			opts.EnvFile = args[i]
 		case strings.HasPrefix(arg, "--env="):
 			opts.Env = append(opts.Env, strings.TrimPrefix(arg, "--env="))
+		case strings.HasPrefix(arg, "--env-file="):
+			opts.EnvFile = strings.TrimPrefix(arg, "--env-file=")
 		case arg == "--header" || arg == "-H":
 			if i+1 >= len(args) {
 				return addOptions{}, "", "", nil, false, fmt.Errorf("missing value for %s", arg)
@@ -193,6 +203,9 @@ func buildServerConfig(target string, args []string, opts addOptions) (config.MC
 		if len(env) > 0 {
 			return config.MCPServerConfig{}, fmt.Errorf("--env can only be used with stdio transport")
 		}
+		if strings.TrimSpace(opts.EnvFile) != "" {
+			return config.MCPServerConfig{}, fmt.Errorf("--env-file can only be used with stdio transport")
+		}
 		if len(args) > 0 {
 			return config.MCPServerConfig{}, fmt.Errorf("%s transport does not accept command arguments", transport)
 		}
@@ -230,6 +243,7 @@ func buildServerConfig(target string, args []string, opts addOptions) (config.MC
 	server.Command = command
 	server.Args = commandArgs
 	server.Env = env
+	server.EnvFile = strings.TrimSpace(opts.EnvFile)
 
 	return server, nil
 }

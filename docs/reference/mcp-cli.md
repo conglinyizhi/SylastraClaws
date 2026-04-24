@@ -36,10 +36,16 @@ Add a stdio server via `npx`:
 picoclaw mcp add filesystem -- npx -y @modelcontextprotocol/server-filesystem /tmp
 ```
 
-Add a stdio server with environment variables:
+Add a stdio server with environment variables saved in config:
 
 ```bash
 picoclaw mcp add github --env GITHUB_PERSONAL_ACCESS_TOKEN=ghp_xxx -- npx -y @modelcontextprotocol/server-github
+```
+
+Add a stdio server using an env file for secrets:
+
+```bash
+picoclaw mcp add github --env-file .env.github -- npx -y @modelcontextprotocol/server-github
 ```
 
 Add a remote HTTP server:
@@ -108,7 +114,8 @@ Supported flags:
 
 | Flag | Meaning |
 |------|---------|
-| `--env`, `-e` | Add a stdio environment variable in `KEY=value` format. Repeatable. |
+| `--env`, `-e` | Add a stdio environment variable in `KEY=value` format. Repeatable. Values are saved to config. |
+| `--env-file` | Attach an env file path to a stdio server. Recommended for secrets you do not want stored inline in `config.json`. |
 | `--header`, `-H` | Add an HTTP header in `Name: Value` or `Name=Value` format. Repeatable. |
 | `--transport`, `-t` | Transport type: `stdio` (default), `http`, or `sse`. |
 | `--force`, `-f` | Overwrite an existing server entry without confirmation. |
@@ -130,6 +137,11 @@ Parsing behavior:
 - for `stdio`, the most robust form is `-- <command> [args...]`
 - use the `--` separator when the stdio command itself has arguments that may look like PicoClaw CLI flags
 - without `--`, PicoClaw treats the first two non-flag tokens as `<name>` and `<command-or-url>`
+
+Secret handling:
+
+- `--env KEY=value` stores the resolved value directly in `config.json`
+- use `--env-file` instead when the value is sensitive and should stay outside the main config file
 
 Example:
 
@@ -182,6 +194,7 @@ For `stdio`:
 - `<command-or-url>` is treated as the command
 - `[args...]` are stored in `args`
 - `--env` is supported
+- `--env-file` is supported and stored in `env_file`
 - `--header` is rejected
 - `-- <command> [args...]` is supported and recommended for unambiguous parsing
 
@@ -190,6 +203,7 @@ For `http` / `sse`:
 - `<command-or-url>` must be a valid URL
 - extra command args are rejected
 - `--env` is rejected
+- `--env-file` is rejected
 - `--header` is supported and stored in `headers`
 
 Overwrite behavior:
@@ -322,9 +336,7 @@ picoclaw mcp edit
 
 This opens the config file in the editor pointed to by `$EDITOR`.
 
-Use it when you need to configure MCP fields that are not exposed directly by `picoclaw mcp add`, such as:
-
-- `env_file`
+Use it when you need to configure MCP fields that are not exposed directly by `picoclaw mcp add`.
 
 If `$EDITOR` is not set, the command fails with an explicit error.
 
@@ -337,10 +349,10 @@ For common cases:
 3. Check all servers at a glance with `picoclaw mcp list --status`.
 4. Start PicoClaw normally so the configured MCP server is loaded by the host.
 
-For advanced cases (e.g. `env_file`):
+For advanced cases:
 
 1. Add the base entry with `picoclaw mcp add`.
-2. Run `picoclaw mcp edit` to fill in `env_file` or other fields not exposed as CLI flags.
+2. Run `picoclaw mcp edit` to fill in fields that are not exposed as CLI flags.
 3. Run `picoclaw mcp show <name>` to confirm the final configuration and tool list.
 
 ## Related Docs

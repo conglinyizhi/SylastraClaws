@@ -564,7 +564,8 @@ picoclaw mcp test filesystem
 
 `picoclaw mcp` agisce come configuration manager: aggiorna `config.json` sotto `tools.mcp.servers`, ma non mantiene in esecuzione il processo del server.
 
-Usa `picoclaw mcp edit` quando ti servono campi avanzati come `headers`, `env_file` o `deferred`.
+Usa `picoclaw mcp edit` quando ti servono campi avanzati che non sono coperti da `picoclaw mcp add`.
+Per esempio, `picoclaw mcp add` supporta `--deferred` e `--env-file`, mentre `picoclaw mcp edit` resta utile per modifiche JSON dirette e opzioni MCP meno comuni.
 
 Per la configurazione MCP completa (trasporti stdio, SSE, HTTP, Tool Discovery), vedi [Configurazione degli Strumenti - MCP](../reference/tools_configuration.md#mcp-tool). Per la reference della CLI, vedi [MCP Server CLI](../reference/mcp-cli.md).
 
