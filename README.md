@@ -10,13 +10,7 @@
 
 [中文](docs/project/README.zh.md) | **English**
 
-</div>
-
----
-
 > ⚠️ **SylastraClaws** is a hard fork of [PicoClaw](https://github.com/sipeed/picoclaw) at tag **v0.2.8**, forked for deep customization and architectural divergence. This is not an official PicoClaw derivative or distribution.
-
----
 
 **What is this?**
 
