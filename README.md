@@ -1,5 +1,4 @@
 <div align="center">
-<img src="assets/logo.webp" alt="SylastraClaws" width="512">
 
 <h1>SylastraClaws: PicoClaw Reforged</h1>
 
