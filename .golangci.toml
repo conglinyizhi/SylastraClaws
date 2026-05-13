@@ -1,0 +1,174 @@
+version = "2"
+
+[linters]
+default = "all"
+disable = [
+  "containedctx",
+  "cyclop",
+  "depguard",
+  "dupword",
+  "err113",
+  "exhaustruct",
+  "funcorder",
+  "gochecknoglobals",
+  "gosmopolitan",
+  "godot",
+  "intrange",
+  "ireturn",
+  "nlreturn",
+  "noctx",
+  "noinlineerr",
+  "nonamedreturns",
+  "tagliatelle",
+  "testpackage",
+  "varnamelen",
+  "wrapcheck",
+  "wsl",
+  "wsl_v5",
+  "contextcheck",
+  "embeddedstructfieldcheck",
+  "errcheck",
+  "errchkjson",
+  "errorlint",
+  "exhaustive",
+  "forbidigo",
+  "forcetypeassert",
+  "funlen",
+  "gochecknoinits",
+  "gocognit",
+  "goconst",
+  "gocritic",
+  "gocyclo",
+  "godox",
+  "gosec",
+  "ineffassign",
+  "lll",
+  "maintidx",
+  "mnd",
+  "modernize",
+  "nestif",
+  "nilnil",
+  "paralleltest",
+  "perfsprint",
+  "revive",
+  "staticcheck",
+  "tagalign",
+  "testifylint",
+  "thelper",
+  "unparam",
+  "usestdlibvars",
+  "usetesting",
+]
+
+[linters.settings.gomoddirectives]
+replace-allow-list = ["github.com/bwmarrin/discordgo"]
+
+[linters.settings.errcheck]
+check-type-assertions = true
+check-blank = true
+
+[linters.settings.exhaustive]
+default-signifies-exhaustive = true
+
+[linters.settings.funlen]
+lines = 120
+statements = 40
+
+[linters.settings.gocognit]
+min-complexity = 25
+
+[linters.settings.gocyclo]
+min-complexity = 20
+
+[linters.settings.govet]
+enable-all = true
+disable = ["fieldalignment"]
+
+[linters.settings.lll]
+line-length = 120
+tab-width = 4
+
+[linters.settings.misspell]
+locale = "US"
+
+[linters.settings.mnd]
+checks = ["argument", "assign", "case", "condition", "operation", "return"]
+
+[linters.settings.nakedret]
+max-func-lines = 3
+
+[linters.settings.revive]
+enable-all-rules = true
+
+[linters.settings.revive.rules]
+  [linters.settings.revive.rules.add-constant]
+  disabled = true
+  [linters.settings.revive.rules.argument-limit]
+  arguments = [7]
+  severity = "warning"
+  [linters.settings.revive.rules.banned-characters]
+  disabled = true
+  [linters.settings.revive.rules.cognitive-complexity]
+  disabled = true
+  [linters.settings.revive.rules.comment-spacings]
+  arguments = ["nolint"]
+  severity = "warning"
+  [linters.settings.revive.rules.cyclomatic]
+  disabled = true
+  [linters.settings.revive.rules.file-header]
+  disabled = true
+  [linters.settings.revive.rules.function-result-limit]
+  arguments = [3]
+  severity = "warning"
+  [linters.settings.revive.rules.function-length]
+  disabled = true
+  [linters.settings.revive.rules.line-length-limit]
+  disabled = true
+  [linters.settings.revive.rules.max-public-structs]
+  disabled = true
+  [linters.settings.revive.rules.modifies-value-receiver]
+  disabled = true
+  [linters.settings.revive.rules.package-comments]
+  disabled = true
+  [linters.settings.revive.rules.unused-receiver]
+  disabled = true
+
+[linters.exclusions]
+generated = "lax"
+
+[[linters.exclusions.rules]]
+linters = ["lll"]
+source = '^//go:generate '
+
+[[linters.exclusions.rules]]
+linters = ["funlen", "maintidx", "gocognit", "gocyclo"]
+path = '_test\.go$'
+
+[[linters.exclusions.rules]]
+linters = ["nolintlint"]
+path = 'pkg/tools/(i2c\.go|spi\.go)$'
+
+[issues]
+max-issues-per-linter = 0
+max-same-issues = 0
+
+[formatters]
+enable = ["gci", "gofmt", "gofumpt", "goimports", "golines"]
+
+[formatters.settings.gci]
+sections = ["standard", "default", "localmodule"]
+custom-order = true
+
+[formatters.settings.gofmt]
+simplify = true
+
+[[formatters.settings.gofmt.rewrite-rules]]
+pattern = "interface{}"
+replacement = "any"
+
+[[formatters.settings.gofmt.rewrite-rules]]
+pattern = "a[b:len(a)]"
+replacement = "a[b:]"
+
+[formatters.settings.golines]
+max-len = 120

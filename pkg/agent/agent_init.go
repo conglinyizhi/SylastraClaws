@@ -191,22 +191,22 @@ func registerSharedTools(
 		}
 
 		// betools-based file operations
-		if cfg.Tools.IsToolEnabled("better_read") {
+		if cfg.Tools.IsToolEnabled("read") {
 			agent.Tools.Register(tools.NewBetterReadTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
-		if cfg.Tools.IsToolEnabled("better_replace") {
+		if cfg.Tools.IsToolEnabled("replace") {
 			agent.Tools.Register(tools.NewBetterReplaceTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
-		if cfg.Tools.IsToolEnabled("better_insert") {
+		if cfg.Tools.IsToolEnabled("insert") {
 			agent.Tools.Register(tools.NewBetterInsertTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
-		if cfg.Tools.IsToolEnabled("better_delete") {
+		if cfg.Tools.IsToolEnabled("delete") {
 			agent.Tools.Register(tools.NewBetterDeleteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
-		if cfg.Tools.IsToolEnabled("better_batch") {
+		if cfg.Tools.IsToolEnabled("batch") {
 			agent.Tools.Register(tools.NewBetterBatchTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
-		if cfg.Tools.IsToolEnabled("better_write") {
+		if cfg.Tools.IsToolEnabled("write") {
 			agent.Tools.Register(tools.NewBetterWriteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
 

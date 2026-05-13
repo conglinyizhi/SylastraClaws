@@ -12,6 +12,7 @@ import (
 	"sync/atomic"
 	"time"
 
+	"github.com/BurntSushi/toml"
 	"github.com/caarlos0/env/v11"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg"
@@ -830,8 +831,14 @@ type ToolsConfig struct {
 	SpawnStatus     ToolConfig         `json:"spawn_status"      yaml:"-"                                                       envPrefix:"PICOCLAW_TOOLS_SPAWN_STATUS_"`
 	SPI             ToolConfig         `json:"spi"               yaml:"-"                                                       envPrefix:"PICOCLAW_TOOLS_SPI_"`
 	Subagent        ToolConfig         `json:"subagent"          yaml:"-"                                                       envPrefix:"PICOCLAW_TOOLS_SUBAGENT_"`
-	WebFetch        ToolConfig         `json:"web_fetch"         yaml:"-"                                                       envPrefix:"PICOCLAW_TOOLS_WEB_FETCH_"`
-	WriteFile       ToolConfig         `json:"write_file"        yaml:"-"                                                       envPrefix:"PICOCLAW_TOOLS_WRITE_FILE_"`
+	WebFetch        ToolConfig         `json:"web_fetch"         yaml:"-"   envPrefix:"PICOCLAW_TOOLS_WEB_FETCH_"`
+	WriteFile       ToolConfig         `json:"write_file"        yaml:"-"   envPrefix:"PICOCLAW_TOOLS_WRITE_FILE_"`
+	Read            ToolConfig         `json:"read"              yaml:"-"`
+	Replace         ToolConfig         `json:"replace"           yaml:"-"`
+	Insert          ToolConfig         `json:"insert"            yaml:"-"`
+	Delete          ToolConfig         `json:"delete"            yaml:"-"`
+	Batch           ToolConfig         `json:"batch"             yaml:"-"`
+	Write           ToolConfig         `json:"write"             yaml:"-"`
 }
 
 // IsFilterSensitiveDataEnabled returns true if sensitive data filtering is enabled
@@ -992,7 +999,12 @@ func LoadConfig(path string) (*Config, error) {
 		return nil, err
 	}
 
-	// First, try to detect config version by reading the version field
+	// Detect format by extension: .toml → direct parse (v3 only), .json → legacy path
+	if strings.HasSuffix(path, ".toml") {
+		return loadConfigFromTOML(data)
+	}
+
+	// Legacy JSON path (including version migration)
 	var versionInfo struct {
 		Version int `json:"version"`
 	}
@@ -1567,9 +1579,40 @@ func (t *ToolsConfig) IsToolEnabled(name string) bool {
 		return t.SendTTS.Enabled
 	case "write_file":
 		return t.WriteFile.Enabled
+	case "read":
+		return t.Read.Enabled
+	case "replace":
+		return t.Replace.Enabled
+	case "insert":
+		return t.Insert.Enabled
+	case "delete":
+		return t.Delete.Enabled
+	case "batch":
+		return t.Batch.Enabled
+	case "write":
+		return t.Write.Enabled
 	case "mcp":
 		return t.MCP.Enabled
 	default:
 		return true
 	}
+}
+
+// loadConfigFromTOML parses a TOML config file (v3 only, no version migration).
+// It unmarshals to map[string]any, round-trips through JSON, then delegates
+// to loadConfig() for the final struct-level unmarshal.
+func loadConfigFromTOML(data []byte) (*Config, error) {
+	var raw map[string]any
+	if err := toml.Unmarshal(data, &raw); err != nil {
+		return nil, fmt.Errorf("TOML parse error: %w", err)
+	}
+	// Inject current version — TOML configs are always v3
+	raw["version"] = CurrentVersion
+
+	// Round-trip through JSON to reuse the existing struct-level unmarshal
+	jsonData, err := json.Marshal(raw)
+	if err != nil {
+		return nil, fmt.Errorf("TOML→JSON marshal error: %w", err)
+	}
+	return loadConfig(jsonData)
 }

@@ -29,7 +29,7 @@ func NewBetterReadTool(workspace string, restrict bool, allowPaths ...[]*regexp.
 }
 
 func (t *BetterReadTool) Name() string {
-	return "better_read"
+	return "read"
 }
 
 func (t *BetterReadTool) Description() string {
@@ -111,7 +111,7 @@ func NewBetterReplaceTool(workspace string, restrict bool, allowPaths ...[]*rege
 }
 
 func (t *BetterReplaceTool) Name() string {
-	return "better_replace"
+	return "replace"
 }
 
 func (t *BetterReplaceTool) Description() string {
@@ -233,7 +233,7 @@ func NewBetterInsertTool(workspace string, restrict bool, allowPaths ...[]*regex
 }
 
 func (t *BetterInsertTool) Name() string {
-	return "better_insert"
+	return "insert"
 }
 
 func (t *BetterInsertTool) Description() string {
@@ -328,7 +328,7 @@ func NewBetterDeleteTool(workspace string, restrict bool, allowPaths ...[]*regex
 }
 
 func (t *BetterDeleteTool) Name() string {
-	return "better_delete"
+	return "delete"
 }
 
 func (t *BetterDeleteTool) Description() string {
@@ -433,7 +433,7 @@ func NewBetterBatchTool(workspace string, restrict bool, allowPaths ...[]*regexp
 }
 
 func (t *BetterBatchTool) Name() string {
-	return "better_batch"
+	return "batch"
 }
 
 func (t *BetterBatchTool) Description() string {
@@ -571,7 +571,7 @@ func NewBetterWriteTool(workspace string, restrict bool, allowPaths ...[]*regexp
 }
 
 func (t *BetterWriteTool) Name() string {
-	return "better_write"
+	return "write"
 }
 
 func (t *BetterWriteTool) Description() string {
