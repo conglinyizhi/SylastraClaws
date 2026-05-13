@@ -77,7 +77,7 @@ func (t *BetterReadTool) Execute(ctx context.Context, args map[string]any) *Tool
 		end = 0
 	}
 
-	result, sessionID, err := betools.Show(resolvedPath, start, end)
+	result, sessionID, err := betools.Read(resolvedPath, start, end)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_read failed: %v", err))
 	}
