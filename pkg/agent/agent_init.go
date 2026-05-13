@@ -190,6 +190,26 @@ func registerSharedTools(
 			agent.Tools.Register(sendFileTool)
 		}
 
+		// betools-based file operations
+		if cfg.Tools.IsToolEnabled("better_show") {
+			agent.Tools.Register(tools.NewBetterShowTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("better_replace") {
+			agent.Tools.Register(tools.NewBetterReplaceTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("better_insert") {
+			agent.Tools.Register(tools.NewBetterInsertTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("better_delete") {
+			agent.Tools.Register(tools.NewBetterDeleteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("better_batch") {
+			agent.Tools.Register(tools.NewBetterBatchTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("better_write") {
+			agent.Tools.Register(tools.NewBetterWriteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+
 		if ttsProvider != nil {
 			agent.Tools.Register(tools.NewSendTTSTool(ttsProvider, nil))
 		}
