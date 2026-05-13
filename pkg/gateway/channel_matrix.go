@@ -1,4 +1,13 @@
-//go:build !mipsle && !netbsd && !(freebsd && arm) && !android
+//go:build matrix
+
+// This file gates Matrix support on a `matrix` build tag.
+// By default (no -tags matrix), Matrix is excluded to avoid
+// the CGO dependency on libolm via mautrix/crypto/libolm.
+//
+// Existing exclusions for mipsle/netbsd/freebsd-arm/android are
+// subsumed — `matrix` tag is the single gate now.
+//
+//lint:file-ignore U1000 tagged package
 
 package gateway
 
