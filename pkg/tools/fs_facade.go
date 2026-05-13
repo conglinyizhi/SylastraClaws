@@ -16,7 +16,7 @@ type (
 	AppendFileTool    = fstools.AppendFileTool
 	LoadImageTool     = fstools.LoadImageTool
 	SendFileTool      = fstools.SendFileTool
-	BetterShowTool    = fstools.BetterShowTool
+	BetterReadTool    = fstools.BetterReadTool
 	BetterReplaceTool = fstools.BetterReplaceTool
 	BetterInsertTool  = fstools.BetterInsertTool
 	BetterDeleteTool  = fstools.BetterDeleteTool
@@ -105,8 +105,8 @@ func NewSendFileTool(
 	return fstools.NewSendFileTool(workspace, restrict, maxFileSize, store, allowPaths...)
 }
 
-func NewBetterShowTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterShowTool {
-	return fstools.NewBetterShowTool(workspace, restrict, allowPaths...)
+func NewBetterReadTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterReadTool {
+	return fstools.NewBetterReadTool(workspace, restrict, allowPaths...)
 }
 
 func NewBetterReplaceTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterReplaceTool {

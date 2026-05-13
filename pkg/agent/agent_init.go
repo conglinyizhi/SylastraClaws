@@ -191,8 +191,8 @@ func registerSharedTools(
 		}
 
 		// betools-based file operations
-		if cfg.Tools.IsToolEnabled("better_show") {
-			agent.Tools.Register(tools.NewBetterShowTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		if cfg.Tools.IsToolEnabled("better_read") {
+			agent.Tools.Register(tools.NewBetterReadTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
 		if cfg.Tools.IsToolEnabled("better_replace") {
 			agent.Tools.Register(tools.NewBetterReplaceTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))

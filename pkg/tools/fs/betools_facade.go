@@ -5,39 +5,38 @@ import (
 	"encoding/json"
 	"fmt"
 	"regexp"
-	"strconv"
 
 	betools "github.com/conglinyizhi/better-edit-tools-mcp/pkg/betools"
 )
 
-// BetterShowTool implements the Tool interface for betools Show operation.
-type BetterShowTool struct {
+// BetterReadTool implements the Tool interface for betools Show operation.
+type BetterReadTool struct {
 	workspace  string
 	restrict   bool
 	allowPaths []*regexp.Regexp
 }
 
-func NewBetterShowTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterShowTool {
+func NewBetterReadTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterReadTool {
 	var patterns []*regexp.Regexp
 	if len(allowPaths) > 0 {
 		patterns = allowPaths[0]
 	}
-	return &BetterShowTool{
+	return &BetterReadTool{
 		workspace:  workspace,
 		restrict:   restrict,
 		allowPaths: patterns,
 	}
 }
 
-func (t *BetterShowTool) Name() string {
-	return "better_show"
+func (t *BetterReadTool) Name() string {
+	return "better_read"
 }
 
-func (t *BetterShowTool) Description() string {
-	return "Display file content with line numbers using better-edit-tools. Supports range display (start/end) and auto-mode for detecting function scope."
+func (t *BetterReadTool) Description() string {
+	return "Read file content with line numbers using better-edit-tools. Supports range display (start/end) and auto-mode for detecting function scope."
 }
 
-func (t *BetterShowTool) Parameters() map[string]any {
+func (t *BetterReadTool) Parameters() map[string]any {
 	return map[string]any{
 		"type": "object",
 		"properties": map[string]any{
@@ -48,61 +47,47 @@ func (t *BetterShowTool) Parameters() map[string]any {
 			"start": map[string]any{
 				"type":        "integer",
 				"description": "Starting line number (1-indexed). Default: 1.",
-				"default":     1,
 			},
 			"end": map[string]any{
-				"anyOf": []any{
-					map[string]any{"type": "integer", "description": "Ending line number (inclusive)."},
-					map[string]any{"type": "string", "enum": []string{"auto"}, "description": "Auto-detect range around cursor line."},
-				},
-				"description": "Ending line number or 'auto' for function-scope detection.",
+				"type":        "integer",
+				"description": "Ending line number. Use 0 (default) for auto-mode that detects function scope or shows context around start.",
 			},
 		},
 		"required": []string{"file"},
 	}
 }
 
-func (t *BetterShowTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
-	path, ok := args["file"].(string)
-	if !ok || path == "" {
-		// also check "path"
-		path, ok = args["path"].(string)
-		if !ok || path == "" {
-			return ErrorResult("file is required")
-		}
+func (t *BetterReadTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
+	path, _ := args["file"].(string)
+	if path == "" {
+		return ErrorResult("file is required")
 	}
 
-	resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+	resolvedPath, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("invalid path: %v", err))
 	}
 
-	start := 1
-	if v, ok := args["start"]; ok {
-		start = toInt(v, 1)
+	start, _ := toInt(args["start"])
+	if start < 1 {
+		start = 1
+	}
+	end, _ := toInt(args["end"])
+	if end < 0 {
+		end = 0
 	}
 
-	endLine := 0 // default: auto
-	if v, ok := args["end"]; ok {
-		switch val := v.(type) {
-		case float64:
-			endLine = int(val)
-		case string:
-			if val != "auto" {
-				endLine, _ = strconv.Atoi(val)
-			}
-		}
-	}
-
-	result, sessionID, err := betools.Show(resolved, start, endLine)
+	result, sessionID, err := betools.Show(resolvedPath, start, end)
 	if err != nil {
-		return ErrorResult(err.Error())
+		return ErrorResult(fmt.Sprintf("better_read failed: %v", err))
 	}
 
-	output := fmt.Sprintf("File: %s (lines %d-%d / %d)\n\n%s", result.File, result.Start, result.End, result.Total, result.Content)
+	output := fmt.Sprintf("File: %s (lines %d-%d of %d)\n", result.File, result.Start, result.End, result.Total)
 	if sessionID != "" {
-		output = fmt.Sprintf("Session: %s\n\n%s", sessionID, output)
+		output += fmt.Sprintf("Session: %s\n", sessionID)
 	}
+	output += "\n" + result.Content
+
 	return NewToolResult(output)
 }
 
@@ -130,7 +115,7 @@ func (t *BetterReplaceTool) Name() string {
 }
 
 func (t *BetterReplaceTool) Description() string {
-	return "Replace a precise line range in a file with new content. Supports preview mode and format selection."
+	return "Replace a range of lines in a file. Requires start/end line numbers. Supports optional old content validation to prevent drift. Returns a diff of the change."
 }
 
 func (t *BetterReplaceTool) Parameters() map[string]any {
@@ -143,24 +128,24 @@ func (t *BetterReplaceTool) Parameters() map[string]any {
 			},
 			"start": map[string]any{
 				"type":        "integer",
-				"description": "Starting line number (1-indexed) of the range to replace.",
+				"description": "Starting line number (1-indexed, inclusive) of the range to replace.",
 			},
 			"end": map[string]any{
 				"type":        "integer",
-				"description": "Ending line number (inclusive) of the range to replace.",
-			},
-			"content": map[string]any{
-				"type":        "string",
-				"description": "The new content to insert. Supports JSON escaping (\\n for newline).",
+				"description": "Ending line number (1-indexed, inclusive) of the range to replace.",
 			},
 			"old": map[string]any{
 				"type":        "string",
-				"description": "Optional: exact old content to validate against. If provided, the tool verifies the current content matches before replacing.",
+				"description": "Optional. The exact content of the range being replaced, used to verify the file hasn't drifted before editing.",
+			},
+			"content": map[string]any{
+				"type":        "string",
+				"description": "The new content to replace with. Standard JSON escaping: \\n for newline.",
 			},
 			"format": map[string]any{
 				"type":        "string",
-				"description": "Diff format: 'full' (default) or 'compact'.",
-				"default":     "full",
+				"description": "Diff output format: 'unified' (default) or 'json'.",
+				"default":     "unified",
 			},
 			"preview": map[string]any{
 				"type":        "boolean",
@@ -173,52 +158,58 @@ func (t *BetterReplaceTool) Parameters() map[string]any {
 }
 
 func (t *BetterReplaceTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
-	path, ok := args["file"].(string)
-	if !ok || path == "" {
+	path, _ := args["file"].(string)
+	if path == "" {
 		return ErrorResult("file is required")
 	}
 
-	resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+	resolvedPath, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("invalid path: %v", err))
 	}
 
-	start := toInt(args["start"], 0)
-	if start < 1 {
+	start, ok := toInt(args["start"])
+	if !ok || start < 1 {
 		return ErrorResult("start is required and must be >= 1")
 	}
-
-	end := toInt(args["end"], 0)
-	if end < start {
-		return ErrorResult("end must be >= start")
+	end, ok := toInt(args["end"])
+	if !ok || end < start {
+		return ErrorResult("end is required and must be >= start")
 	}
-
 	content, _ := args["content"].(string)
-	raw := false
-	if v, _ := args["raw"].(bool); v {
-		raw = true
-	}
-	format, _ := args["format"].(string)
-	preview, _ := args["preview"].(bool)
 
 	var old *string
-	if v, ok := args["old"].(string); ok && v != "" {
-		old = &v
+	if oldRaw, exists := args["old"]; exists && oldRaw != nil {
+		if oldStr, ok := oldRaw.(string); ok && oldStr != "" {
+			old = &oldStr
+		}
 	}
+	format, _ := args["format"].(string)
+	if format == "" {
+		format = "unified"
+	}
+	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Replace(resolved, start, end, old, content, raw, format, preview, "")
+	result, err := betools.Replace(resolvedPath, start, end, old, content, false, format, preview, "")
 	if err != nil {
-		return ErrorResult(err.Error())
+		return ErrorResult(fmt.Sprintf("better_replace failed: %v", err))
 	}
 
-	output := fmt.Sprintf("File: %s\nStatus: %s\nAffected: %s\nDiff:\n%s",
-		result.File, result.Status, result.Affected, result.Diff)
+	output := fmt.Sprintf("File: %s | Status: %s\n", result.File, result.Status)
+	output += fmt.Sprintf("Removed: %d lines, Added: %d lines, Total: %d lines\n", result.Removed, result.Added, result.Total)
+	if result.Diff != "" {
+		output += "\nDiff:\n" + result.Diff
+	}
+	if result.Balance != "" {
+		output += "\nBracket Balance: " + result.Balance
+	}
 	if result.Warning != "" {
 		output += "\nWarning: " + result.Warning
 	}
 	if preview {
-		return NewToolResult("[PREVIEW - no changes applied]\n\n" + output)
+		output += "\n(Preview only - changes were NOT applied)"
 	}
+
 	return NewToolResult(output)
 }
 
@@ -246,7 +237,7 @@ func (t *BetterInsertTool) Name() string {
 }
 
 func (t *BetterInsertTool) Description() string {
-	return "Insert content after a specific line in a file. Line 0 means insert at the beginning."
+	return "Insert new content after a specific line number. Use after=0 to insert at the beginning of the file, or after=<last_line> to effectively append."
 }
 
 func (t *BetterInsertTool) Parameters() map[string]any {
@@ -255,20 +246,16 @@ func (t *BetterInsertTool) Parameters() map[string]any {
 		"properties": map[string]any{
 			"file": map[string]any{
 				"type":        "string",
-				"description": "The file path to insert into.",
+				"description": "The file path to edit.",
 			},
-			"line": map[string]any{
+			"after": map[string]any{
 				"type":        "integer",
-				"description": "Insert content after this line number. 0 = insert at beginning.",
+				"description": "Insert new content after this line number. Use 0 to insert at the beginning.",
+				"default":     0,
 			},
 			"content": map[string]any{
 				"type":        "string",
-				"description": "The content to insert. Supports JSON escaping (\\n for newline).",
-			},
-			"format": map[string]any{
-				"type":        "string",
-				"description": "Diff format: 'full' (default) or 'compact'.",
-				"default":     "full",
+				"description": "The content to insert. Standard JSON escaping: \\n for newline.",
 			},
 			"preview": map[string]any{
 				"type":        "boolean",
@@ -276,37 +263,48 @@ func (t *BetterInsertTool) Parameters() map[string]any {
 				"default":     false,
 			},
 		},
-		"required": []string{"file", "line", "content"},
+		"required": []string{"file", "content"},
 	}
 }
 
 func (t *BetterInsertTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
-	path, ok := args["file"].(string)
-	if !ok || path == "" {
+	path, _ := args["file"].(string)
+	if path == "" {
 		return ErrorResult("file is required")
 	}
 
-	resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+	resolvedPath, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("invalid path: %v", err))
 	}
 
-	after := toInt(args["line"], 0)
+	after, _ := toInt(args["after"])
+	if after < 0 {
+		after = 0
+	}
 	content, _ := args["content"].(string)
-	raw, _ := args["raw"].(bool)
-	format, _ := args["format"].(string)
+	if content == "" {
+		return ErrorResult("content is required")
+	}
 	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Insert(resolved, after, content, raw, format, preview)
+	result, err := betools.Insert(resolvedPath, after, content, false, "unified", preview)
 	if err != nil {
-		return ErrorResult(err.Error())
+		return ErrorResult(fmt.Sprintf("better_insert failed: %v", err))
 	}
 
-	output := fmt.Sprintf("File: %s\nStatus: %s\nAfter line: %d\nAffected: %s\nDiff:\n%s",
-		result.File, result.Status, result.After, result.Affected, result.Diff)
-	if preview {
-		return NewToolResult("[PREVIEW - no changes applied]\n\n" + output)
+	output := fmt.Sprintf("File: %s | Status: %s\n", result.File, result.Status)
+	output += fmt.Sprintf("Inserted after line %d: %d lines added, Total: %d lines\n", result.After, result.Added, result.Total)
+	if result.Diff != "" {
+		output += "\nDiff:\n" + result.Diff
 	}
+	if result.Balance != "" {
+		output += "\nBracket Balance: " + result.Balance
+	}
+	if preview {
+		output += "\n(Preview only - changes were NOT applied)"
+	}
+
 	return NewToolResult(output)
 }
 
@@ -334,7 +332,7 @@ func (t *BetterDeleteTool) Name() string {
 }
 
 func (t *BetterDeleteTool) Description() string {
-	return "Delete one line, a line range, or a batch of specific line numbers from a file."
+	return "Delete a range of lines or specific line numbers from a file. Specify start/end for a range, or use lines as a JSON array for non-contiguous deletions."
 }
 
 func (t *BetterDeleteTool) Parameters() map[string]any {
@@ -343,28 +341,19 @@ func (t *BetterDeleteTool) Parameters() map[string]any {
 		"properties": map[string]any{
 			"file": map[string]any{
 				"type":        "string",
-				"description": "The file path to delete lines from.",
+				"description": "The file path to edit.",
 			},
 			"start": map[string]any{
 				"type":        "integer",
-				"description": "Starting line number of the range to delete (1-indexed).",
+				"description": "Starting line number (1-indexed, inclusive) of the range to delete.",
 			},
 			"end": map[string]any{
 				"type":        "integer",
-				"description": "Ending line number (inclusive) of the range to delete.",
-			},
-			"line": map[string]any{
-				"type":        "integer",
-				"description": "Single line number to delete (alternative to start/end range).",
+				"description": "Ending line number (1-indexed, inclusive). Default: same as start for single-line delete.",
 			},
 			"lines": map[string]any{
 				"type":        "string",
-				"description": "JSON array of specific line numbers to delete, e.g. '[3, 7, 12]'.",
-			},
-			"format": map[string]any{
-				"type":        "string",
-				"description": "Diff format: 'full' (default) or 'compact'.",
-				"default":     "full",
+				"description": "JSON array of line numbers for non-contiguous deletions, e.g. [3,5,7]. Overrides start/end if provided.",
 			},
 			"preview": map[string]any{
 				"type":        "boolean",
@@ -377,37 +366,50 @@ func (t *BetterDeleteTool) Parameters() map[string]any {
 }
 
 func (t *BetterDeleteTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
-	path, ok := args["file"].(string)
-	if !ok || path == "" {
+	path, _ := args["file"].(string)
+	if path == "" {
 		return ErrorResult("file is required")
 	}
 
-	resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+	resolvedPath, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("invalid path: %v", err))
 	}
 
-	start := toInt(args["start"], 0)
-	end := toInt(args["end"], 0)
-	line := toInt(args["line"], 0)
-	format, _ := args["format"].(string)
-	preview, _ := args["preview"].(bool)
+	start, _ := toInt(args["start"])
+	if start < 1 {
+		start = 0
+	}
+	end, _ := toInt(args["end"])
+	if end < 0 {
+		end = 0
+	}
 
 	var linesJSON *string
-	if v, ok := args["lines"].(string); ok && v != "" {
-		linesJSON = &v
+	if linesRaw, exists := args["lines"]; exists && linesRaw != nil {
+		if linesStr, ok := linesRaw.(string); ok && linesStr != "" {
+			linesJSON = &linesStr
+		}
 	}
+	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Delete(resolved, start, end, line, linesJSON, format, preview)
+	result, err := betools.Delete(resolvedPath, start, end, 0, linesJSON, "unified", preview)
 	if err != nil {
-		return ErrorResult(err.Error())
+		return ErrorResult(fmt.Sprintf("better_delete failed: %v", err))
 	}
 
-	output := fmt.Sprintf("File: %s\nStatus: %s\nAffected: %s\nDiff:\n%s",
-		result.File, result.Status, result.Affected, result.Diff)
-	if preview {
-		return NewToolResult("[PREVIEW - no changes applied]\n\n" + output)
+	output := fmt.Sprintf("File: %s | Status: %s\n", result.File, result.Status)
+	output += fmt.Sprintf("Total: %d lines\n", result.Total)
+	if result.Diff != "" {
+		output += "\nDiff:\n" + result.Diff
 	}
+	if result.Balance != "" {
+		output += "\nBracket Balance: " + result.Balance
+	}
+	if preview {
+		output += "\n(Preview only - changes were NOT applied)"
+	}
+
 	return NewToolResult(output)
 }
 
@@ -435,7 +437,7 @@ func (t *BetterBatchTool) Name() string {
 }
 
 func (t *BetterBatchTool) Description() string {
-	return "Apply multiple edits in one call, including multi-file edits. Edits are sorted bottom-to-top automatically to preserve line numbers."
+	return "Apply multiple edits across multiple files in a single atomic operation. The spec parameter accepts a JSON array or object describing edits per file."
 }
 
 func (t *BetterBatchTool) Parameters() map[string]any {
@@ -444,11 +446,11 @@ func (t *BetterBatchTool) Parameters() map[string]any {
 		"properties": map[string]any{
 			"spec": map[string]any{
 				"type":        "string",
-				"description": "JSON specification. Can be a single file object or array of file objects. Each file object has: 'file' (string), 'edits' (array of {action, start, end, line, content}). Actions: replace-lines, insert-after, delete-lines.",
+				"description": "JSON spec describing edits. Supports single file or multi-file format. Each file entry has a 'file' path and 'edits' array with actions (replace-lines, insert-after, delete-lines).",
 			},
 			"preview": map[string]any{
 				"type":        "boolean",
-				"description": "If true, only show what would be changed without applying.",
+				"description": "If true, only validate without applying.",
 				"default":     false,
 			},
 		},
@@ -457,81 +459,95 @@ func (t *BetterBatchTool) Parameters() map[string]any {
 }
 
 func (t *BetterBatchTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
-	specRaw, ok := args["spec"].(string)
-	if !ok || specRaw == "" {
+	rawSpec, _ := args["spec"].(string)
+	if rawSpec == "" {
 		return ErrorResult("spec is required")
+	}
+
+	// Extract and validate file paths from the spec
+	resolvedSpec, err := t.resolveBatchSpec(rawSpec)
+	if err != nil {
+		return ErrorResult(fmt.Sprintf("invalid spec: %v", err))
 	}
 
 	preview, _ := args["preview"].(bool)
 
-	// Resolve file paths in the spec to workspace-relative paths
-	// We need to parse the spec, resolve paths, then pass to betools
-	var rawVal any
-	if err := json.Unmarshal([]byte(specRaw), &rawVal); err != nil {
-		return ErrorResult(fmt.Sprintf("invalid JSON spec: %v", err))
-	}
-
-	// Walk the spec and resolve file paths through workspace validation
-	resolvedSpec, err := t.resolveSpecPaths(rawVal)
+	result, err := betools.Batch(resolvedSpec, preview)
 	if err != nil {
-		return ErrorResult(err.Error())
+		return ErrorResult(fmt.Sprintf("better_batch failed: %v", err))
 	}
 
-	resolvedJSON, err := json.Marshal(resolvedSpec)
-	if err != nil {
-		return ErrorResult(fmt.Sprintf("failed to marshal resolved spec: %v", err))
-	}
-
-	result, err := betools.Batch(string(resolvedJSON), preview)
-	if err != nil {
-		return ErrorResult(err.Error())
-	}
-
-	output := fmt.Sprintf("Status: %s\nFiles affected: %d\n", result.Status, result.Files)
-	for _, r := range result.Results {
-		output += fmt.Sprintf("  - %s: %d edits, %d total lines\n", r.File, r.Edits, r.Total)
+	var output string
+	if len(result.Results) == 1 {
+		r := result.Results[0]
+		output = fmt.Sprintf("File: %s | Edits: %d | Total: %d lines\n", r.File, r.Edits, r.Total)
+	} else {
+		output = fmt.Sprintf("Files: %d\n", result.Files)
+		for _, r := range result.Results {
+			output += fmt.Sprintf("  - %s: %d edits, %d lines\n", r.File, r.Edits, r.Total)
+		}
 	}
 	if preview {
-		return NewToolResult("[PREVIEW - no changes applied]\n\n" + output)
+		output += "(Preview only - changes were NOT applied)"
 	}
+
 	return NewToolResult(output)
 }
 
-func (t *BetterBatchTool) resolveSpecPaths(raw any) (any, error) {
-	switch v := raw.(type) {
-	case []any:
-		out := make([]any, 0, len(v))
-		for _, item := range v {
-			resolved, err := t.resolveSpecPaths(item)
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, resolved)
-		}
-		return out, nil
+// resolveBatchSpec walks the spec JSON to extract and validate file paths
+func (t *BetterBatchTool) resolveBatchSpec(spec string) (string, error) {
+	var raw any
+	if err := json.Unmarshal([]byte(spec), &raw); err != nil {
+		return "", fmt.Errorf("invalid JSON: %w", err)
+	}
+
+	// Walk the JSON to find all "file" fields and validate them
+	resolved, err := walkAndValidatePaths(raw, t.workspace, t.restrict, t.allowPaths)
+	if err != nil {
+		return "", err
+	}
+
+	b, err := json.Marshal(resolved)
+	if err != nil {
+		return "", fmt.Errorf("failed to re-serialize spec: %w", err)
+	}
+	return string(b), nil
+}
+
+func walkAndValidatePaths(v any, workspace string, restrict bool, allowPaths []*regexp.Regexp) (any, error) {
+	switch val := v.(type) {
 	case map[string]any:
-		out := make(map[string]any, len(v))
-		for k, val := range v {
+		resolved := make(map[string]any, len(val))
+		for k, child := range val {
 			if k == "file" {
-				path, ok := val.(string)
-				if ok && path != "" {
-					resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+				if path, ok := child.(string); ok {
+					resolvedPath, err := validatePathWithAllowPaths(path, workspace, restrict, allowPaths)
 					if err != nil {
-						return nil, fmt.Errorf("invalid path %q: %v", path, err)
+						return nil, fmt.Errorf("path %q: %w", path, err)
 					}
-					out[k] = resolved
+					resolved[k] = resolvedPath
 					continue
 				}
 			}
-			resolved, err := t.resolveSpecPaths(val)
+			r, err := walkAndValidatePaths(child, workspace, restrict, allowPaths)
 			if err != nil {
 				return nil, err
 			}
-			out[k] = resolved
+			resolved[k] = r
 		}
-		return out, nil
+		return resolved, nil
+	case []any:
+		resolved := make([]any, len(val))
+		for i, child := range val {
+			r, err := walkAndValidatePaths(child, workspace, restrict, allowPaths)
+			if err != nil {
+				return nil, err
+			}
+			resolved[i] = r
+		}
+		return resolved, nil
 	default:
-		return raw, nil
+		return v, nil
 	}
 }
 
@@ -559,185 +575,199 @@ func (t *BetterWriteTool) Name() string {
 }
 
 func (t *BetterWriteTool) Description() string {
-	return "Write raw content to one or more files. Supports multi-file writes with atomic operations and degraded parsing for malformed JSON payloads."
+	return "Create or overwrite files. Accepts a JSON spec with one or more file entries. Uses degraded JSON parser for malformed input. Writes are atomic (temp file + rename)."
 }
 
 func (t *BetterWriteTool) Parameters() map[string]any {
 	return map[string]any{
 		"type": "object",
 		"properties": map[string]any{
-			"file": map[string]any{
+			"spec": map[string]any{
 				"type":        "string",
-				"description": "The file path to write to (single file mode).",
-			},
-			"content": map[string]any{
-				"type":        "string",
-				"description": "The content to write (single file mode).",
-			},
-			"files": map[string]any{
-				"type":        "array",
-				"description": "Array of {file, content} objects for multi-file writes.",
-				"items": map[string]any{
-					"type": "object",
-					"properties": map[string]any{
-						"file": map[string]any{
-							"type":        "string",
-							"description": "File path.",
-						},
-						"content": map[string]any{
-							"type":        "string",
-							"description": "File content.",
-						},
-					},
-					"required": []string{"file", "content"},
-				},
+				"description": "JSON spec: {file: path, content: text} or {files: [{file: path, content: text}, ...]}. Supports extract: true to extract content from code blocks.",
 			},
 			"preview": map[string]any{
 				"type":        "boolean",
-				"description": "If true, show what would be written without writing.",
+				"description": "If true, only validate paths without writing.",
 				"default":     false,
 			},
 			"raw": map[string]any{
 				"type":        "boolean",
-				"description": "If true, treat \\n as literal newlines without JSON escaping.",
+				"description": "If true, skip JSON escape processing for content.",
 				"default":     false,
 			},
 		},
-		"oneOf": []any{
-			map[string]any{
-				"title": 	   "single",
-				"required":    []string{"file", "content"},
-			},
-			map[string]any{
-				"title":       "multi",
-				"required":    []string{"files"},
-			},
-		},
+		"required": []string{"spec"},
 	}
 }
 
 func (t *BetterWriteTool) Execute(ctx context.Context, args map[string]any) *ToolResult {
+	rawSpec, _ := args["spec"].(string)
+	if rawSpec == "" {
+		return ErrorResult("spec is required")
+	}
+
+	// Extract and validate file paths from the spec
+	resolvedSpec, err := t.resolveWriteSpec(rawSpec)
+	if err != nil {
+		return ErrorResult(fmt.Sprintf("invalid spec: %v", err))
+	}
+
 	preview, _ := args["preview"].(bool)
 	raw, _ := args["raw"].(bool)
 
-	// Build write spec
-	spec := buildWriteSpec(args)
-	if spec == "" {
-		return ErrorResult("write requires either 'file'/'content' or 'files' array")
+	result, err := betools.Write(resolvedSpec, preview, raw)
+	if err != nil {
+		return ErrorResult(fmt.Sprintf("better_write failed: %v", err))
 	}
 
-	// Resolve file paths in the spec
-	var rawVal any
-	if err := json.Unmarshal([]byte(spec), &rawVal); err != nil {
-		return ErrorResult(fmt.Sprintf("invalid spec: %v", err))
-	}
-	// Use resolveSpecPaths from BetterBatchTool logic
-	resolvedSpec, err := t.resolveWritePaths(rawVal)
-	if err != nil {
-		return ErrorResult(err.Error())
-	}
-	resolvedJSON, err := json.Marshal(resolvedSpec)
-	if err != nil {
-		return ErrorResult(fmt.Sprintf("failed to marshal resolved spec: %v", err))
-	}
-
-	result, err := betools.Write(string(resolvedJSON), preview, raw)
-	if err != nil {
-		return ErrorResult(err.Error())
-	}
-
-	output := fmt.Sprintf("Status: %s\nFiles written: %d\n", result.Status, result.Files)
-	for _, r := range result.Results {
-		output += fmt.Sprintf("  - %s: %d lines, %d bytes\n", r.File, r.Lines, r.Bytes)
+	var output string
+	if len(result.Results) == 1 {
+		r := result.Results[0]
+		output = fmt.Sprintf("File: %s | %d lines, %d bytes\n", r.File, r.Lines, r.Bytes)
+	} else {
+		output = fmt.Sprintf("Files written: %d\n", result.Files)
+		for _, r := range result.Results {
+			output += fmt.Sprintf("  - %s: %d lines, %d bytes\n", r.File, r.Lines, r.Bytes)
+		}
 	}
 	if result.Degraded {
-		output += "\n⚠ Degraded parsing: " + result.Warning
+		output += "\nWarning: " + result.Warning
 	}
 	if preview {
-		return NewToolResult("[PREVIEW - no changes applied]\n\n" + output)
+		output += "(Preview only - changes were NOT applied)"
 	}
+
 	return NewToolResult(output)
 }
 
-func (t *BetterWriteTool) resolveWritePaths(raw any) (any, error) {
-	switch v := raw.(type) {
-	case []any:
-		out := make([]any, 0, len(v))
-		for _, item := range v {
-			resolved, err := t.resolveWritePaths(item)
-			if err != nil {
-				return nil, err
-			}
-			out = append(out, resolved)
+// resolveWriteSpec parses the spec JSON, extracts file paths, validates them, and re-serializes.
+func (t *BetterWriteTool) resolveWriteSpec(spec string) (string, error) {
+	var raw any
+	// Try standard JSON first
+	if err := json.Unmarshal([]byte(spec), &raw); err != nil {
+		// If standard JSON fails, try to extract file paths from raw text
+		// This is a best-effort approach for degraded mode
+		resolved, err := t.resolveDegradedPaths(spec)
+		if err != nil {
+			return "", fmt.Errorf("invalid spec and degraded parse failed: %w", err)
 		}
-		return out, nil
-	case map[string]any:
-		out := make(map[string]any, len(v))
-		for k, val := range v {
-			if k == "file" {
-				path, ok := val.(string)
-				if ok && path != "" {
-					resolved, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
-					if err != nil {
-						return nil, fmt.Errorf("invalid path %q: %v", path, err)
-					}
-					out[k] = resolved
-					continue
-				}
-			}
-			resolved, err := t.resolveWritePaths(val)
-			if err != nil {
-				return nil, err
-			}
-			out[k] = resolved
-		}
-		return out, nil
-	default:
-		return raw, nil
+		return resolved, nil
 	}
+
+	resolved, err := walkAndValidatePaths(raw, t.workspace, t.restrict, t.allowPaths)
+	if err != nil {
+		return "", err
+	}
+
+	b, err := json.Marshal(resolved)
+	if err != nil {
+		return "", fmt.Errorf("failed to re-serialize spec: %w", err)
+	}
+	return string(b), nil
 }
 
-func buildWriteSpec(args map[string]any) string {
-	// Check for files array first
-	if files, ok := args["files"].([]any); ok && len(files) > 0 {
-		spec := map[string]any{"files": files}
-		data, _ := json.Marshal(spec)
-		return string(data)
-	}
+// resolveDegradedPaths attempts to extract file paths from a malformed JSON spec string.
+// This is a fallback for the degraded JSON parser in betools.Write.
+func (t *BetterWriteTool) resolveDegradedPaths(spec string) (string, error) {
+	// Try to extract "file" field values from the raw string
+	// Pattern: "file":"<path>" or "file": "<path>"
+	results := make(map[string]bool)
 
-	// Single file mode
-	file, _ := args["file"].(string)
-	content, _ := args["content"].(string)
-	if file != "" {
-		spec := map[string]any{"file": file, "content": content}
-
-		// Also add extract if present
-		if extract, ok := args["extract"]; ok {
-			spec["extract"] = extract
+	idx := 0
+	for {
+		keyIdx := indexAfter(spec, `"file"`, idx)
+		if keyIdx < 0 {
+			break
 		}
-
-		data, _ := json.Marshal(spec)
-		return string(data)
+		// Find the colon after file key
+		colonIdx := indexAfter(spec, ":", keyIdx+6)
+		if colonIdx < 0 {
+			break
+		}
+		// Find the opening quote
+		quoteIdx := indexAfterChar(spec, '"', colonIdx+1)
+		if quoteIdx < 0 {
+			break
+		}
+		// Find the closing quote
+		endIdx := -1
+		for i := quoteIdx + 1; i < len(spec); i++ {
+			if spec[i] == '"' && (i == 0 || spec[i-1] != '\\') {
+				endIdx = i
+				break
+			}
+		}
+		if endIdx < 0 {
+			break
+		}
+		path := spec[quoteIdx+1 : endIdx]
+		resolvedPath, err := validatePathWithAllowPaths(path, t.workspace, t.restrict, t.allowPaths)
+		if err != nil {
+			return "", fmt.Errorf("path %q: %w", path, err)
+		}
+		results[path] = true
+		// Replace the path with resolved path in the original spec
+		spec = spec[:quoteIdx+1] + resolvedPath + spec[endIdx:]
+		idx = quoteIdx + 1 + len(resolvedPath)
+		_ = results
 	}
 
-	return ""
+	return spec, nil
 }
 
-// Helper: convert any value to int
-func toInt(v any, defaultVal int) int {
+func indexAfter(s, substr string, start int) int {
+	idx := indexAt(s, substr, start)
+	if idx < 0 {
+		return -1
+	}
+	return idx + len(substr)
+}
+
+func indexAt(s, substr string, start int) int {
+	if start >= len(s) {
+		return -1
+	}
+	for i := start; i <= len(s)-len(substr); i++ {
+		match := true
+		for j := 0; j < len(substr); j++ {
+			if s[i+j] != substr[j] {
+				match = false
+				break
+			}
+		}
+		if match {
+			return i
+		}
+	}
+	return -1
+}
+
+func indexAfterChar(s string, b byte, start int) int {
+	for i := start; i < len(s); i++ {
+		if s[i] == b {
+			return i
+		}
+	}
+	return -1
+}
+
+// toInt converts a JSON-decoded number (float64) to int
+func toInt(v any) (int, bool) {
 	switch n := v.(type) {
 	case float64:
-		return int(n)
+		return int(n), true
 	case int:
-		return n
+		return n, true
 	case int64:
-		return int(n)
-	case float32:
-		return int(n)
+		return int(n), true
 	case json.Number:
-		if i, err := n.Int64(); err == nil {
-			return int(i)
+		i, err := n.Int64()
+		if err != nil {
+			return 0, false
 		}
+		return int(i), true
+	default:
+		return 0, false
 	}
-	return defaultVal
 }
