@@ -13,8 +13,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/web/backend/utils"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/web/backend/utils"
 )
 
 type systemVersionResponse struct {

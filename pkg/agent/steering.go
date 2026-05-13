@@ -7,11 +7,11 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/session"
-	"github.com/sipeed/picoclaw/pkg/tools"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
 )
 
 // SteeringMode controls how queued steering messages are dequeued.

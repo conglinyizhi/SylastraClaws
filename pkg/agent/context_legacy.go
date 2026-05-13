@@ -7,8 +7,8 @@ import (
 	"sync"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 )
 
 // legacyContextManager wraps the existing summarization/compression logic

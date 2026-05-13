@@ -22,13 +22,13 @@ import (
 	larkim "github.com/larksuite/oapi-sdk-go/v3/service/im/v1"
 	larkws "github.com/larksuite/oapi-sdk-go/v3/ws"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/channels"
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/identity"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/media"
-	"github.com/sipeed/picoclaw/pkg/utils"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/identity"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
+	"github.com/conglinyizhi/SylastraClaws/pkg/utils"
 )
 
 // errCodeTenantTokenInvalid is the Feishu API error code for an expired/revoked

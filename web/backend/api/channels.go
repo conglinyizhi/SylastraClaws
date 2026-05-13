@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"net/http"
 
-	"github.com/sipeed/picoclaw/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 )
 
 type channelCatalogItem struct {

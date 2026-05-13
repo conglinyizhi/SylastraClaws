@@ -6,7 +6,7 @@ import (
 	"os/exec"
 	"strings"
 
-	"github.com/sipeed/picoclaw/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 )
 
 var execCommand = exec.Command

@@ -11,8 +11,8 @@ import (
 
 	"github.com/h2non/filetype"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/media"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
 )
 
 // SendFileTool allows the LLM to send a local file (image, document, etc.)

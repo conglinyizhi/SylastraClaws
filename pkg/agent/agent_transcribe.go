@@ -6,9 +6,9 @@ import (
 	"context"
 	"strings"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/utils"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/utils"
 )
 
 func (al *AgentLoop) transcribeAudioInMessage(ctx context.Context, msg bus.InboundMessage) (bus.InboundMessage, bool) {

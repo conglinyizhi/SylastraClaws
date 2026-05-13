@@ -3,11 +3,11 @@
 package agent
 
 import (
-	"github.com/sipeed/picoclaw/pkg/audio/asr"
-	"github.com/sipeed/picoclaw/pkg/channels"
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/media"
-	"github.com/sipeed/picoclaw/pkg/tools"
+	"github.com/conglinyizhi/SylastraClaws/pkg/audio/asr"
+	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
 )
 
 func (al *AgentLoop) RegisterTool(tool tools.Tool) {

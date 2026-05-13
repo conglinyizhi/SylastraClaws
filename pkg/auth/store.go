@@ -7,8 +7,8 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/fileutil"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/fileutil"
 )
 
 type AuthCredential struct {

@@ -17,9 +17,9 @@ import (
 
 	"github.com/google/jsonschema-go/jsonschema"
 
-	"github.com/sipeed/picoclaw/cmd/picoclaw/internal"
-	"github.com/sipeed/picoclaw/pkg/config"
-	picomcp "github.com/sipeed/picoclaw/pkg/mcp"
+	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	picomcp "github.com/conglinyizhi/SylastraClaws/pkg/mcp"
 )
 
 type probeResult struct {

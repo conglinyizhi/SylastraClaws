@@ -3,7 +3,7 @@ package devices
 import (
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/devices/events"
+	"github.com/conglinyizhi/SylastraClaws/pkg/devices/events"
 )
 
 // TestEventSourceTypeAlias verifies that EventSource aliases events.EventSource

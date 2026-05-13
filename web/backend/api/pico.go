@@ -9,9 +9,9 @@ import (
 	"net/http/httputil"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	ppid "github.com/sipeed/picoclaw/pkg/pid"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	ppid "github.com/conglinyizhi/SylastraClaws/pkg/pid"
 )
 
 // registerPicoRoutes binds Pico Channel management endpoints to the ServeMux.

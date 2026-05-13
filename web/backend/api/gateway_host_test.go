@@ -10,9 +10,9 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/netbind"
-	"github.com/sipeed/picoclaw/web/backend/launcherconfig"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/netbind"
+	"github.com/conglinyizhi/SylastraClaws/web/backend/launcherconfig"
 )
 
 func TestGatewayHostOverrideUsesExplicitRuntimePublic(t *testing.T) {

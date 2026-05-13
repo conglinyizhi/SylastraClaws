@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
 )
 
 func assertGatewayLogLevelApplied(t *testing.T, method, body string, want logger.LogLevel) {

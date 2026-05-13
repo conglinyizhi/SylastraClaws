@@ -14,9 +14,9 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/providers/common"
-	"github.com/sipeed/picoclaw/pkg/providers/messageutil"
-	"github.com/sipeed/picoclaw/pkg/providers/protocoltypes"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/common"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/messageutil"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/protocoltypes"
 )
 
 type (

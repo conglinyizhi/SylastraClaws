@@ -8,7 +8,7 @@ package utils
 import (
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 )
 
 func TestCalculateDefaultMaxContextRunes(t *testing.T) {

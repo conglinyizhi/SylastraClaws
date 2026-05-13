@@ -9,8 +9,8 @@ import (
 	"strings"
 	"testing"
 
-	basechannels "github.com/sipeed/picoclaw/pkg/channels"
-	"github.com/sipeed/picoclaw/pkg/media"
+	basechannels "github.com/conglinyizhi/SylastraClaws/pkg/channels"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
 )
 
 func TestStoreRemoteMedia_DetectsJPEGContentTypeFromBody(t *testing.T) {

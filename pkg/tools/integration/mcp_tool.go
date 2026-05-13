@@ -13,9 +13,9 @@ import (
 
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/media"
-	toolshared "github.com/sipeed/picoclaw/pkg/tools/shared"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
+	toolshared "github.com/conglinyizhi/SylastraClaws/pkg/tools/shared"
 )
 
 // MCPManager defines the interface for MCP manager operations

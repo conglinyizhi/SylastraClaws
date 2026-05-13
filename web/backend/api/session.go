@@ -12,12 +12,12 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/memory"
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/providers/messageutil"
-	"github.com/sipeed/picoclaw/pkg/session"
-	"github.com/sipeed/picoclaw/pkg/utils"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/memory"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/messageutil"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/utils"
 )
 
 // registerSessionRoutes binds session list and detail endpoints to the ServeMux.

@@ -10,8 +10,8 @@ import (
 	"testing"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/auth"
-	"github.com/sipeed/picoclaw/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/auth"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 )
 
 func resetModelProbeHooks(t *testing.T) {

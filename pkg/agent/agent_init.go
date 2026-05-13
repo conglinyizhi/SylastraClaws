@@ -7,17 +7,17 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/agent/interfaces"
-	"github.com/sipeed/picoclaw/pkg/audio/tts"
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/channels"
-	"github.com/sipeed/picoclaw/pkg/commands"
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/skills"
-	"github.com/sipeed/picoclaw/pkg/state"
-	"github.com/sipeed/picoclaw/pkg/tools"
+	"github.com/conglinyizhi/SylastraClaws/pkg/agent/interfaces"
+	"github.com/conglinyizhi/SylastraClaws/pkg/audio/tts"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
+	"github.com/conglinyizhi/SylastraClaws/pkg/commands"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/skills"
+	"github.com/conglinyizhi/SylastraClaws/pkg/state"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
 )
 
 func NewAgentLoop(

@@ -8,15 +8,15 @@ import (
 	"regexp"
 	"strings"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/isolation"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/media"
-	"github.com/sipeed/picoclaw/pkg/memory"
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/routing"
-	"github.com/sipeed/picoclaw/pkg/session"
-	"github.com/sipeed/picoclaw/pkg/tools"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/isolation"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
+	"github.com/conglinyizhi/SylastraClaws/pkg/memory"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/routing"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
 )
 
 // AgentInstance represents a fully configured agent with its own workspace,

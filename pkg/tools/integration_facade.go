@@ -3,11 +3,11 @@ package tools
 import (
 	"github.com/modelcontextprotocol/go-sdk/mcp"
 
-	"github.com/sipeed/picoclaw/pkg/audio/tts"
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/media"
-	"github.com/sipeed/picoclaw/pkg/skills"
-	integrationtools "github.com/sipeed/picoclaw/pkg/tools/integration"
+	"github.com/conglinyizhi/SylastraClaws/pkg/audio/tts"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
+	"github.com/conglinyizhi/SylastraClaws/pkg/skills"
+	integrationtools "github.com/conglinyizhi/SylastraClaws/pkg/tools/integration"
 )
 
 type (

@@ -6,8 +6,8 @@
 package agent
 
 import (
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/tokenizer"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tokenizer"
 )
 
 // parseTurnBoundaries returns the starting index of each Turn in the history.

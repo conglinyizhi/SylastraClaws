@@ -3,7 +3,7 @@ package messageutil
 import (
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/providers/protocoltypes"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/protocoltypes"
 )
 
 // Helper to create messages compactly.

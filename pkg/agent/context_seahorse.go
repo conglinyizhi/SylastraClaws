@@ -7,12 +7,12 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/providers"
-	"github.com/sipeed/picoclaw/pkg/providers/protocoltypes"
-	"github.com/sipeed/picoclaw/pkg/seahorse"
-	"github.com/sipeed/picoclaw/pkg/session"
-	"github.com/sipeed/picoclaw/pkg/tokenizer"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers/protocoltypes"
+	"github.com/conglinyizhi/SylastraClaws/pkg/seahorse"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tokenizer"
 )
 
 // seahorseContextManager adapts seahorse.Engine to agent.ContextManager.

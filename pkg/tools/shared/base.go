@@ -3,7 +3,7 @@ package toolshared
 import (
 	"context"
 
-	"github.com/sipeed/picoclaw/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
 )
 
 // Tool is the interface that all tools must implement.

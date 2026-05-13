@@ -10,11 +10,11 @@ import (
 	"strings"
 	"time"
 
-	"github.com/sipeed/picoclaw/cmd/picoclaw/internal"
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/fileutil"
-	"github.com/sipeed/picoclaw/pkg/skills"
-	"github.com/sipeed/picoclaw/pkg/utils"
+	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/fileutil"
+	"github.com/conglinyizhi/SylastraClaws/pkg/skills"
+	"github.com/conglinyizhi/SylastraClaws/pkg/utils"
 )
 
 const skillsSearchMaxResults = 20

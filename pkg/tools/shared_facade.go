@@ -3,8 +3,8 @@ package tools
 import (
 	"context"
 
-	"github.com/sipeed/picoclaw/pkg/session"
-	toolshared "github.com/sipeed/picoclaw/pkg/tools/shared"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
+	toolshared "github.com/conglinyizhi/SylastraClaws/pkg/tools/shared"
 )
 
 type (

@@ -18,9 +18,9 @@ import (
 
 	"github.com/creack/pty"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/constants"
-	"github.com/sipeed/picoclaw/pkg/isolation"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/constants"
+	"github.com/conglinyizhi/SylastraClaws/pkg/isolation"
 )
 
 var (

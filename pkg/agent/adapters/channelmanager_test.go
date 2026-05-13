@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/channels"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
 )
 
 // NewChannelManager and NewMessageBus accept concrete *channels.Manager and

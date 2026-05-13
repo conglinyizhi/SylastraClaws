@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/session"
+	"github.com/conglinyizhi/SylastraClaws/pkg/session"
 )
 
 func TestPromptMetadataDefaults(t *testing.T) {

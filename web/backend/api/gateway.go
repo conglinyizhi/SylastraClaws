@@ -20,12 +20,12 @@ import (
 	"syscall"
 	"time"
 
-	"github.com/sipeed/picoclaw/pkg/config"
-	"github.com/sipeed/picoclaw/pkg/health"
-	"github.com/sipeed/picoclaw/pkg/logger"
-	"github.com/sipeed/picoclaw/pkg/netbind"
-	ppid "github.com/sipeed/picoclaw/pkg/pid"
-	"github.com/sipeed/picoclaw/web/backend/utils"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/health"
+	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/netbind"
+	ppid "github.com/conglinyizhi/SylastraClaws/pkg/pid"
+	"github.com/conglinyizhi/SylastraClaws/web/backend/utils"
 )
 
 // gateway holds the state for the managed gateway process.

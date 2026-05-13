@@ -5,8 +5,8 @@ package agent
 import (
 	"context"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/providers"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 )
 
 // Finalize handles turn finalization, either:

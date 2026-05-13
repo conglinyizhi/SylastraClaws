@@ -4,7 +4,7 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
 )
 
 // NewMessageBus takes *bus.MessageBus. bus.NewMessageBus() has no external

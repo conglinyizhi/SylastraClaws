@@ -4,8 +4,8 @@ import (
 	"context"
 	"testing"
 
-	"github.com/sipeed/picoclaw/pkg/bus"
-	"github.com/sipeed/picoclaw/pkg/config"
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 )
 
 func TestBaseChannelIsAllowed(t *testing.T) {
