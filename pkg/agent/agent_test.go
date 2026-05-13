@@ -2463,7 +2463,7 @@ func testInboundMessage(msg bus.InboundMessage) bus.InboundMessage {
 	return bus.NormalizeInboundMessage(msg)
 }
 
-const responseTimeout = 3 * time.Second
+const responseTimeout = 200 * time.Millisecond
 
 func TestProcessMessage_UsesRouteSessionKey(t *testing.T) {
 	tmpDir, err := os.MkdirTemp("", "agent-test-*")
