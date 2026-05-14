@@ -29,7 +29,6 @@ func NewSkillsCommand() *cobra.Command {
 
 			d.workspace = cfg.WorkspacePath()
 
-			// get global config directory and builtin skills directory
 			globalDir := filepath.Dir(internal.GetConfigPath())
 			globalSkillsDir := filepath.Join(globalDir, "skills")
 			builtinSkillsDir := filepath.Join(globalDir, "picoclaw", "skills")
@@ -67,4 +66,97 @@ func NewSkillsCommand() *cobra.Command {
 	)
 
 	return cmd
+}
+
+func newListCommand(loaderFn func() (*skills.SkillsLoader, error)) *cobra.Command {
+	return &cobra.Command{
+		Use:     "list",
+		Short:   "List installed skills",
+		Example: "picoclaw skills list",
+		RunE: func(_ *cobra.Command, _ []string) error {
+			loader, err := loaderFn()
+			if err != nil {
+				return err
+			}
+			skillsListCmd(loader)
+			return nil
+		},
+	}
+}
+
+func newRemoveCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:     "remove",
+		Aliases: []string{"rm", "uninstall"},
+		Short:   "Remove installed skill",
+		Args:    cobra.ExactArgs(1),
+		Example: "picoclaw skills remove weather",
+		RunE: func(_ *cobra.Command, args []string) error {
+			cfg, err := internal.LoadConfig()
+			if err != nil {
+				return err
+			}
+			return skillsRemoveFromWorkspace(cfg.WorkspacePath(), cfg.Tools.Skills, args[0])
+		},
+	}
+}
+
+func newSearchCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:   "search [query]",
+		Short: "Search available skills",
+		Args:  cobra.MaximumNArgs(1),
+		RunE: func(_ *cobra.Command, args []string) error {
+			query := ""
+			if len(args) == 1 {
+				query = args[0]
+			}
+			skillsSearchCmd(query)
+			return nil
+		},
+	}
+}
+
+func newShowCommand(loaderFn func() (*skills.SkillsLoader, error)) *cobra.Command {
+	return &cobra.Command{
+		Use:     "show",
+		Short:   "Show skill details",
+		Args:    cobra.ExactArgs(1),
+		Example: "picoclaw skills show weather",
+		RunE: func(_ *cobra.Command, args []string) error {
+			loader, err := loaderFn()
+			if err != nil {
+				return err
+			}
+			skillsShowCmd(loader, args[0])
+			return nil
+		},
+	}
+}
+
+func newInstallBuiltinCommand(workspaceFn func() (string, error)) *cobra.Command {
+	return &cobra.Command{
+		Use:     "install-builtin",
+		Short:   "Install all builtin skills to workspace",
+		Example: "picoclaw skills install-builtin",
+		RunE: func(_ *cobra.Command, _ []string) error {
+			workspace, err := workspaceFn()
+			if err != nil {
+				return err
+			}
+			skillsInstallBuiltinCmd(workspace)
+			return nil
+		},
+	}
+}
+
+func newListBuiltinCommand() *cobra.Command {
+	return &cobra.Command{
+		Use:     "list-builtin",
+		Short:   "List available builtin skills",
+		Example: "picoclaw skills list-builtin",
+		Run: func(_ *cobra.Command, _ []string) {
+			skillsListBuiltinCmd()
+		},
+	}
 }
