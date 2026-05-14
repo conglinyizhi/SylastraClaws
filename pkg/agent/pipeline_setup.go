@@ -6,7 +6,10 @@ import (
 	"context"
 	"strings"
 
+	"github.com/conglinyizhi/SylastraClaws/pkg/agent/interfaces"
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
+	"github.com/conglinyizhi/SylastraClaws/pkg/media"
 	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 )
 
@@ -98,4 +101,36 @@ func (p *Pipeline) SetupTurn(ctx context.Context, ts *turnState) (*turnExecution
 	exec.usedLight = usedLight
 
 	return exec, nil
+}
+
+// === Pipeline struct and constructor (from pipeline.go) ===
+
+// Pipeline holds the runtime dependencies used by Pipeline methods.
+// It is constructed by runTurn via NewPipeline and passed to sub-methods
+// so that the coordinator can delegate phase execution.
+type Pipeline struct {
+	Bus            interfaces.MessageBus
+	Cfg            *config.Config
+	ContextManager ContextManager
+	Hooks          *HookManager
+	Fallback       *providers.FallbackChain
+	ChannelManager interfaces.ChannelManager
+	MediaStore     media.MediaStore
+	Steering       any // TODO: *Steering
+	al             *AgentLoop
+}
+
+// NewPipeline creates a Pipeline from an AgentLoop instance.
+func NewPipeline(al *AgentLoop) *Pipeline {
+	return &Pipeline{
+		Bus:            al.bus,
+		Cfg:            al.GetConfig(),
+		ContextManager: al.contextManager,
+		Hooks:          al.hooks,
+		Fallback:       al.fallback,
+		ChannelManager: al.channelManager,
+		MediaStore:     al.mediaStore,
+		Steering:       al.steering,
+		al:             al,
+	}
 }

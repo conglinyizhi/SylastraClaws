@@ -521,3 +521,89 @@ func (p *Pipeline) CallLLM(
 
 	return ControlToolLoop, nil
 }
+
+// === ThinkingLevel types and parsing (from thinking.go) ===
+
+// ThinkingLevel controls how the provider sends thinking parameters.
+//
+//   - "adaptive": sends {thinking: {type: "adaptive"}} + output_config.effort (Claude 4.6+)
+//   - "low"/"medium"/"high"/"xhigh": sends {thinking: {type: "enabled", budget_tokens: N}} (all models)
+//   - "off": disables thinking
+type ThinkingLevel string
+
+const (
+	ThinkingOff      ThinkingLevel = "off"
+	ThinkingLow      ThinkingLevel = "low"
+	ThinkingMedium   ThinkingLevel = "medium"
+	ThinkingHigh     ThinkingLevel = "high"
+	ThinkingXHigh    ThinkingLevel = "xhigh"
+	ThinkingAdaptive ThinkingLevel = "adaptive"
+)
+
+// parseThinkingLevel normalizes a config string to a ThinkingLevel.
+// Case-insensitive and whitespace-tolerant for user-facing config values.
+// Returns ThinkingOff for unknown or empty values.
+func parseThinkingLevel(level string) ThinkingLevel {
+	switch strings.ToLower(strings.TrimSpace(level)) {
+	case "adaptive":
+		return ThinkingAdaptive
+	case "low":
+		return ThinkingLow
+	case "medium":
+		return ThinkingMedium
+	case "high":
+		return ThinkingHigh
+	case "xhigh":
+		return ThinkingXHigh
+	default:
+		return ThinkingOff
+	}
+}
+
+// === Media helpers for LLM fallback (from llm_media.go) ===
+
+func messagesContainMedia(messages []providers.Message) bool {
+	for _, msg := range messages {
+		for _, ref := range msg.Media {
+			if strings.TrimSpace(ref) != "" {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func stripMessageMedia(messages []providers.Message) []providers.Message {
+	if !messagesContainMedia(messages) {
+		return messages
+	}
+	stripped := make([]providers.Message, len(messages))
+	for i, msg := range messages {
+		stripped[i] = msg
+		stripped[i].Media = nil
+	}
+	return stripped
+}
+
+func isVisionUnsupportedError(err error) bool {
+	if err == nil {
+		return false
+	}
+	msg := strings.ToLower(err.Error())
+	if strings.Contains(msg, "no endpoints found that support image input") {
+		return true
+	}
+	if strings.Contains(msg, "does not support image input") ||
+		strings.Contains(msg, "does not support image inputs") ||
+		strings.Contains(msg, "does not support images") ||
+		strings.Contains(msg, "image input is not supported") ||
+		strings.Contains(msg, "images are not supported") ||
+		strings.Contains(msg, "does not support vision") ||
+		strings.Contains(msg, "unsupported content type: image_url") {
+		return true
+	}
+	if strings.Contains(msg, "image_url") && strings.Contains(msg, "invalid") {
+		return true
+	}
+	return false
+}

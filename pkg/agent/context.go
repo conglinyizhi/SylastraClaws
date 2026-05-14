@@ -14,6 +14,7 @@ import (
 	"time"
 	"unicode/utf8"
 
+	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
 	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
 	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
@@ -1114,5 +1115,67 @@ func (cb *ContextBuilder) GetSkillsInfo() map[string]any {
 		"total":     len(allSkills),
 		"available": len(allSkills),
 		"names":     skillNames,
+	}
+}
+
+// === Context usage (from context_usage.go) ===
+
+// computeContextUsage estimates current context window consumption for the
+// given agent and session.
+func computeContextUsage(agent *AgentInstance, sessionKey string) *bus.ContextUsage {
+	if agent == nil || agent.Sessions == nil {
+		return nil
+	}
+	contextWindow := agent.ContextWindow
+	if contextWindow <= 0 {
+		return nil
+	}
+
+	// History tokens
+	history := agent.Sessions.GetHistory(sessionKey)
+	historyTokens := 0
+	for _, m := range history {
+		historyTokens += EstimateMessageTokens(m)
+	}
+
+	// System message tokens
+	systemTokens := 0
+	if agent.ContextBuilder != nil {
+		summary := agent.Sessions.GetSummary(sessionKey)
+		systemTokens = agent.ContextBuilder.EstimateSystemTokens(summary, nil)
+	}
+
+	// Tool definition tokens
+	toolTokens := 0
+	if agent.Tools != nil {
+		toolTokens = EstimateToolDefsTokens(agent.Tools.ToProviderDefs())
+	}
+
+	// Used = history + system (includes summary) + tools
+	usedTokens := historyTokens + systemTokens + toolTokens
+
+	// Effective budget = contextWindow minus output reserve (maxTokens)
+	effectiveWindow := contextWindow - agent.MaxTokens
+	if effectiveWindow < 0 {
+		effectiveWindow = contextWindow
+	}
+
+	// compressAt = effectiveWindow: aligns with isOverContextBudget's
+	// proactive trigger (msgTokens + toolTokens + maxTokens > contextWindow).
+	compressAt := effectiveWindow
+
+	usedPercent := 0
+	if compressAt > 0 {
+		usedPercent = usedTokens * 100 / compressAt
+	}
+	if usedPercent > 100 {
+		usedPercent = 100
+	}
+
+	return &bus.ContextUsage{
+		UsedTokens:       usedTokens,
+		TotalTokens:      contextWindow,
+		CompressAtTokens: compressAt,
+		UsedPercent:      usedPercent,
 	}
 }
