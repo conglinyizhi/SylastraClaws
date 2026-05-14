@@ -94,7 +94,7 @@ func (t *BetterReadTool) Execute(ctx context.Context, args map[string]any) *Tool
 		end = 0
 	}
 
-	result, sessionID, err := betools.Read(resolvedPath, start, end)
+	result, sessionID, err := betools.Read(resolvedPath, start, end, false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_read failed: %v", err))
 	}
@@ -207,7 +207,7 @@ func (t *BetterReplaceTool) Execute(ctx context.Context, args map[string]any) *T
 	}
 	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Replace(resolvedPath, start, end, old, content, false, format, preview, "")
+	result, err := betools.Replace(resolvedPath, start, end, old, content, false, format, preview, "", false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_replace failed: %v", err))
 	}
@@ -305,7 +305,7 @@ func (t *BetterInsertTool) Execute(ctx context.Context, args map[string]any) *To
 	}
 	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Insert(resolvedPath, after, content, false, "unified", preview)
+	result, err := betools.Insert(resolvedPath, after, content, false, "unified", preview, false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_insert failed: %v", err))
 	}
@@ -410,7 +410,7 @@ func (t *BetterDeleteTool) Execute(ctx context.Context, args map[string]any) *To
 	}
 	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Delete(resolvedPath, start, end, 0, linesJSON, "unified", preview)
+	result, err := betools.Delete(resolvedPath, start, end, 0, linesJSON, "unified", preview, false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_delete failed: %v", err))
 	}
@@ -489,7 +489,7 @@ func (t *BetterBatchTool) Execute(ctx context.Context, args map[string]any) *Too
 
 	preview, _ := args["preview"].(bool)
 
-	result, err := betools.Batch(resolvedSpec, preview)
+	result, err := betools.Batch(resolvedSpec, preview, false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_batch failed: %v", err))
 	}
@@ -633,7 +633,7 @@ func (t *BetterWriteTool) Execute(ctx context.Context, args map[string]any) *Too
 	preview, _ := args["preview"].(bool)
 	raw, _ := args["raw"].(bool)
 
-	result, err := betools.Write(resolvedSpec, preview, raw)
+	result, err := betools.Write(resolvedSpec, preview, raw, false)
 	if err != nil {
 		return ErrorResult(fmt.Sprintf("better_write failed: %v", err))
 	}

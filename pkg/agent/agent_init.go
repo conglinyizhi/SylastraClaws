@@ -220,6 +220,11 @@ func registerSharedTools(
 			agent.Tools.Register(tools.NewBetterWriteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
 		}
 
+		// be-trx-rollback: always registered when betools is enabled (requires no path validation)
+		if cfg.Tools.IsToolEnabled("trx-rollback") {
+			agent.Tools.Register(tools.NewBetterRollbackTool())
+		}
+
 		if ttsProvider != nil {
 			agent.Tools.Register(tools.NewSendTTSTool(ttsProvider, nil))
 		}

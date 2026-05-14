@@ -21,7 +21,8 @@ type (
 	BetterInsertTool  = fstools.BetterInsertTool
 	BetterDeleteTool  = fstools.BetterDeleteTool
 	BetterBatchTool   = fstools.BetterBatchTool
-	BetterWriteTool   = fstools.BetterWriteTool
+	BetterWriteTool    = fstools.BetterWriteTool
+	BetterRollbackTool = fstools.BetterRollbackTool
 )
 
 const MaxReadFileSize = fstools.MaxReadFileSize
@@ -127,4 +128,8 @@ func NewBetterBatchTool(workspace string, restrict bool, allowPaths ...[]*regexp
 
 func NewBetterWriteTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterWriteTool {
 	return fstools.NewBetterWriteTool(workspace, restrict, allowPaths...)
+}
+
+func NewBetterRollbackTool() *BetterRollbackTool {
+	return fstools.NewBetterRollbackTool()
 }
