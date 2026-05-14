@@ -50,6 +50,8 @@ type AgentLoop struct {
 	transcriber    asr.Transcriber
 	cmdRegistry    *commands.Registry
 	mcp            mcpRuntime
+	// contributorManager centralises prompt contributor registration.
+	contributorManager *ContributorManager
 	hookRuntime    hookRuntime
 	steering       *steeringQueue
 	pendingSkills  sync.Map

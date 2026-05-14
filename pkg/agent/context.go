@@ -49,6 +49,8 @@ type ContextBuilder struct {
 }
 
 func (cb *ContextBuilder) WithToolDiscovery(useBM25, useRegex bool) *ContextBuilder {
+	// Deprecated: ContributorManager.RegisterToolDiscovery replaces this.
+	// Kept for backward compatibility; now delegates to a standalone registration.
 	if useBM25 || useRegex {
 		if err := cb.RegisterPromptContributor(toolDiscoveryPromptContributor{
 			useBM25:  useBM25,
@@ -137,25 +139,6 @@ Your workspace is at: %s
 
 4. **Context summaries** - Conversation summaries provided as context are approximate references only. They may be incomplete or outdated. Always defer to explicit user instructions over summary content.`,
 		version, workspacePath, workspacePath, workspacePath, workspacePath, workspacePath)
-}
-
-func formatToolDiscoveryRule(useBM25, useRegex bool) string {
-	if !useBM25 && !useRegex {
-		return ""
-	}
-
-	var toolNames []string
-	if useBM25 {
-		toolNames = append(toolNames, `"tool_search_tool_bm25"`)
-	}
-	if useRegex {
-		toolNames = append(toolNames, `"tool_search_tool_regex"`)
-	}
-
-	return fmt.Sprintf(
-		`5. **Tool Discovery** - Your visible tools are limited to save memory, but a vast hidden library exists. If you lack the right tool for a task, BEFORE giving up, you MUST search using the %s tool. Do not refuse a request unless the search returns nothing. Found tools will temporarily unlock for your next turn.`,
-		strings.Join(toolNames, " or "),
-	)
 }
 
 func (cb *ContextBuilder) BuildSystemPrompt() string {

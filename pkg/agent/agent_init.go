@@ -71,8 +71,18 @@ func NewAgentLoop(
 	configureHookManagerFromConfig(al.hooks, cfg)
 	al.contextManager = al.resolveContextManager()
 
+	// Set up contributor manager for unified prompt contributor registration.
+	al.contributorManager = newContributorManagerFromAgents(registry)
+
 	// Register shared tools to all agents (now that al is created)
 	registerSharedTools(al, cfg, msgBus, registry, provider)
+
+	// Register prompt contributors (tool discovery, MCP, etc.)
+	mcpDiscoveryActive := cfg.Tools.MCP.Enabled && cfg.Tools.MCP.Discovery.Enabled
+	al.contributorManager.RegisterToolDiscovery(
+		mcpDiscoveryActive && cfg.Tools.MCP.Discovery.UseBM25,
+		mcpDiscoveryActive && cfg.Tools.MCP.Discovery.UseRegex,
+	)
 
 	return al
 }
