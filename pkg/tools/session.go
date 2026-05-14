@@ -3,8 +3,11 @@ package tools
 import (
 	"bytes"
 	"errors"
+	"fmt"
 	"io"
 	"os"
+	"strconv"
+	"strings"
 	"sync"
 	"time"
 
@@ -237,6 +240,77 @@ func (sm *SessionManager) List() []SessionInfo {
 	}
 
 	return result
+}
+
+// SessionTreeNode represents a process and its children for tree display.
+type SessionTreeNode struct {
+	PID     int                `json:"pid"`
+	Command string             `json:"command"`
+	Status  string             `json:"status,omitempty"`
+	IsAgent bool               `json:"isAgent,omitempty"`
+	AgentID string             `json:"agentId,omitempty"`
+	Children []SessionTreeNode `json:"children,omitempty"`
+}
+
+// ListWithTree returns the raw session list and a process subtree rooted at each session's PID.
+// For each session, it walks /proc to find direct and transitive children.
+func (sm *SessionManager) ListWithTree() ([]SessionInfo, []SessionTreeNode) {
+	sessions := sm.List()
+	trees := make([]SessionTreeNode, 0, len(sessions))
+	for _, s := range sessions {
+		tree := buildProcessTree(s.PID)
+		tree.IsAgent = true
+		tree.AgentID = s.ID
+		trees = append(trees, tree)
+	}
+	return sessions, trees
+}
+
+// buildProcessTree walks /proc starting from pid to construct a process tree.
+func buildProcessTree(pid int) SessionTreeNode {
+	node := SessionTreeNode{PID: pid}
+	if cmdline, err := os.ReadFile(fmt.Sprintf("/proc/%d/cmdline", pid)); err == nil {
+		node.Command = strings.ReplaceAll(string(bytes.ReplaceAll(cmdline, []byte{0}, []byte{' '})), "\n", " ")
+	}
+	children := findChildProcesses(pid)
+	for _, c := range children {
+		node.Children = append(node.Children, buildProcessTree(c))
+	}
+	return node
+}
+
+// findChildProcesses reads /proc to find processes whose PPID matches pid.
+func findChildProcesses(ppid int) []int {
+	entries, err := os.ReadDir("/proc")
+	if err != nil {
+		return nil
+	}
+	var children []int
+	for _, e := range entries {
+		if !e.IsDir() {
+			continue
+		}
+		pid, err := strconv.Atoi(e.Name())
+		if err != nil {
+			continue
+		}
+		statBytes, err := os.ReadFile(fmt.Sprintf("/proc/%d/stat", pid))
+		if err != nil {
+			continue
+		}
+		fields := bytes.Fields(statBytes)
+		if len(fields) < 4 {
+			continue
+		}
+		parentPid, err := strconv.Atoi(string(fields[3]))
+		if err != nil {
+			continue
+		}
+		if parentPid == ppid {
+			children = append(children, pid)
+		}
+	}
+	return children
 }
 
 func generateSessionID() string {

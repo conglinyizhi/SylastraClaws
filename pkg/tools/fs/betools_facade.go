@@ -4,10 +4,27 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"path/filepath"
 	"regexp"
+	"strings"
 
 	betools "github.com/conglinyizhi/better-edit-tools-mcp/pkg/betools"
 )
+
+// resolveProtocolPath maps memory://, skill://, config:// URIs to actual filesystem paths.
+// Returns the original path unchanged if no protocol prefix is detected.
+func resolveProtocolPath(path, workspace string) string {
+	switch {
+	case strings.HasPrefix(path, "memory://"):
+		return filepath.Join(workspace, "memory", strings.TrimPrefix(path, "memory://"))
+	case strings.HasPrefix(path, "skill://"):
+		return filepath.Join(workspace, "skills", strings.TrimPrefix(path, "skill://"))
+	case strings.HasPrefix(path, "config://"):
+		return filepath.Join(workspace, "config", strings.TrimPrefix(path, "config://"))
+	default:
+		return path
+	}
+}
 
 // BetterReadTool implements the Tool interface for betools Show operation.
 type BetterReadTool struct {

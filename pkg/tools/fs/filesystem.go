@@ -45,6 +45,9 @@ func validatePathWithAllowPaths(
 		return path, fmt.Errorf("workspace is not defined")
 	}
 
+	// Resolve protocol URIs before path validation.
+	path = resolveProtocolPath(path, workspace)
+
 	absWorkspace, err := filepath.Abs(workspace)
 	if err != nil {
 		return "", fmt.Errorf("failed to resolve workspace path: %w", err)

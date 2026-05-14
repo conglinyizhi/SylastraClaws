@@ -246,6 +246,8 @@ func (t *ExecTool) Execute(ctx context.Context, args map[string]any) *ToolResult
 		return t.executeRun(ctx, args)
 	case "list":
 		return t.executeList()
+	case "list-tree":
+		return t.executeListTree()
 	case "poll":
 		return t.executePoll(args)
 	case "read":
@@ -661,6 +663,20 @@ func (t *ExecTool) executeList() *ToolResult {
 	return &ToolResult{
 		ForLLM:  string(data),
 		ForUser: fmt.Sprintf("%d active sessions", len(sessions)),
+		IsError: false,
+	}
+}
+
+func (t *ExecTool) executeListTree() *ToolResult {
+	sessions, trees := t.sessionManager.ListWithTree()
+	resp := ExecResponse{
+		Sessions: sessions,
+	}
+	respData, _ := json.Marshal(resp)
+	treeData, _ := json.Marshal(trees)
+	return &ToolResult{
+		ForLLM:  fmt.Sprintf("%s\n\nProcess tree:\n%s", string(respData), string(treeData)),
+		ForUser: fmt.Sprintf("%d active sessions with process trees", len(sessions)),
 		IsError: false,
 	}
 }
