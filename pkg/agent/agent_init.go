@@ -347,5 +347,17 @@ func registerSharedTools(
 		} else if (spawnEnabled || spawnStatusEnabled) && !cfg.Tools.IsToolEnabled("subagent") {
 			logger.WarnCF("agent", "spawn/spawn_status tools require subagent to be enabled", nil)
 		}
+
+		// Mission task management tools (SylastraClaws)
+		if cfg.Tools.IsToolEnabled("mission") {
+			missionTools, err := tools.NewMissionTools()
+			if err != nil {
+				logger.ErrorCF("agent", "Failed to create mission tools", map[string]any{"error": err.Error()})
+			} else {
+				for _, mt := range missionTools {
+					agent.Tools.Register(mt)
+				}
+			}
+		}
 	}
 }
