@@ -55,7 +55,7 @@ The scope of changes — deep tool replacement, architectural restructuring, and
 | Area | PicoClaw | SylastraClaws |
 |---|---|---|
 | **File System Tools** | Custom in-tree implementations | betools v0.5.0 (better-read/write suite) |
-| **Go Version** | 1.25+ | 1.22+ (widened, same features) |
+| **Go Version** | 1.25+ | 1.26+ |
 | **Tool Architecture** | Flat tool set | Namespaced `better_*` convention |
 | **Binary Detection** | None in read path | Built into betools Read() |
 | **Injectable FS** | Static path validation | betools FileSystem interface ready |
