@@ -158,9 +158,9 @@ func (t *ToolsConfig) IsToolEnabled(name string) bool {
 	case "media_cleanup":
 		return t.MediaCleanup.Enabled
 	case "append_file":
-		return t.AppendFile.Enabled
+		return !t.Betools && t.AppendFile.Enabled
 	case "edit_file":
-		return t.EditFile.Enabled
+		return !t.Betools && t.EditFile.Enabled
 	case "find_skills":
 		return t.FindSkills.Enabled
 	case "i2c":
@@ -168,11 +168,11 @@ func (t *ToolsConfig) IsToolEnabled(name string) bool {
 	case "install_skill":
 		return t.InstallSkill.Enabled
 	case "list_dir":
-		return t.ListDir.Enabled
+		return !t.Betools && t.ListDir.Enabled
 	case "message":
 		return t.Message.Enabled
 	case "read_file":
-		return t.ReadFile.Enabled
+		return !t.Betools && t.ReadFile.Enabled
 	case "serial":
 		return t.Serial.Enabled
 	case "spawn":
@@ -190,19 +190,19 @@ func (t *ToolsConfig) IsToolEnabled(name string) bool {
 	case "send_tts":
 		return t.SendTTS.Enabled
 	case "write_file":
-		return t.WriteFile.Enabled
+		return !t.Betools && t.WriteFile.Enabled
 	case "read":
-		return t.Read.Enabled
+		return t.Betools && t.Read.Enabled
 	case "replace":
-		return t.Replace.Enabled
+		return t.Betools && t.Replace.Enabled
 	case "insert":
-		return t.Insert.Enabled
+		return t.Betools && t.Insert.Enabled
 	case "delete":
-		return t.Delete.Enabled
+		return t.Betools && t.Delete.Enabled
 	case "batch":
-		return t.Batch.Enabled
+		return t.Betools && t.Batch.Enabled
 	case "write":
-		return t.Write.Enabled
+		return t.Betools && t.Write.Enabled
 	case "mcp":
 		return t.MCP.Enabled
 	default:

@@ -805,6 +805,7 @@ type ToolsConfig struct {
 	MediaCleanup    MediaCleanupConfig `json:"media_cleanup"    `
 	MCP             MCPConfig          `json:"mcp"              `
 	AppendFile      ToolConfig         `json:"append_file"                                                             envPrefix:"PICOCLAW_TOOLS_APPEND_FILE_"`
+	Betools         bool              `json:"betools"           `
 	EditFile        ToolConfig         `json:"edit_file"                                                               envPrefix:"PICOCLAW_TOOLS_EDIT_FILE_"`
 	FindSkills      ToolConfig         `json:"find_skills"                                                             envPrefix:"PICOCLAW_TOOLS_FIND_SKILLS_"`
 	I2C             ToolConfig         `json:"i2c"                                                                     envPrefix:"PICOCLAW_TOOLS_I2C_"`

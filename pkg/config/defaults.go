@@ -456,6 +456,7 @@ func DefaultConfig() *Config {
 			WriteFile: ToolConfig{
 				Enabled: true,
 			},
+			Betools: true,
 		},
 		Heartbeat: HeartbeatConfig{
 			Enabled:  true,
