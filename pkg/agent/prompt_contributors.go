@@ -48,14 +48,19 @@ type mcpServerPromptContributor struct {
 	serverName string
 	toolCount  int
 	deferred   bool
+	unstable   bool
 }
 
 func (c mcpServerPromptContributor) PromptSource() PromptSourceDescriptor {
+	slot := PromptSlotMCP
+	if c.unstable {
+		slot = PromptSlotMCPDynamic
+	}
 	return PromptSourceDescriptor{
 		ID:              mcpPromptSourceID(c.serverName),
 		Owner:           "mcp",
 		Description:     fmt.Sprintf("MCP server %q capability prompt", c.serverName),
-		Allowed:         []PromptPlacement{{Layer: PromptLayerCapability, Slot: PromptSlotMCP}},
+		Allowed:         []PromptPlacement{{Layer: PromptLayerCapability, Slot: slot}},
 		StableByDefault: true,
 	}
 }
@@ -74,11 +79,16 @@ func (c mcpServerPromptContributor) ContributePrompt(
 		availability = "hidden behind tool discovery until unlocked"
 	}
 
+	slot := PromptSlotMCP
+	if c.unstable {
+		slot = PromptSlotMCPDynamic
+	}
+
 	return []PromptPart{
 		{
 			ID:     "capability.mcp." + promptSourceComponent(serverName),
 			Layer:  PromptLayerCapability,
-			Slot:   PromptSlotMCP,
+			Slot:   slot,
 			Source: PromptSource{ID: mcpPromptSourceID(serverName), Name: "mcp:" + serverName},
 			Title:  "MCP server capability",
 			Content: fmt.Sprintf(

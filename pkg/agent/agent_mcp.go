@@ -144,6 +144,7 @@ func (al *AgentLoop) ensureMCPInitialized(ctx context.Context) error {
 					serverName: serverName,
 					toolCount:  len(conn.Tools),
 					deferred:   registerAsHidden,
+					unstable:   serverCfg.Unstable,
 				}); err != nil {
 					logger.WarnCF("agent", "Failed to register MCP prompt contributor",
 						map[string]any{

@@ -949,6 +949,11 @@ type MCPServerConfig struct {
 	// When nil, the global Discovery.Enabled setting applies.
 	// When explicitly set to true or false, it overrides the global setting for this server only.
 	Deferred *bool `json:"deferred,omitempty"`
+	// Unstable marks this server's MCP tools as unstable (frequently changing API).
+	// When true, the tool prompt is injected into the user prompt tail rather than
+	// the system prompt, avoiding DeepSeek KV cache invalidation by frequent MCP
+	// description changes.
+	Unstable bool `json:"unstable,omitempty"`
 	// Command is the executable to run (e.g., "npx", "python", "/path/to/server")
 	Command string `json:"command"`
 	// Args are the arguments to pass to the command

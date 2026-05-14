@@ -29,6 +29,7 @@ const (
 	PromptSlotWorkspace    PromptSlot = "workspace"
 	PromptSlotTooling      PromptSlot = "tooling"
 	PromptSlotMCP          PromptSlot = "mcp"
+	PromptSlotMCPDynamic   PromptSlot = "mcp_dynamic"
 	PromptSlotSkillCatalog PromptSlot = "skill_catalog"
 	PromptSlotActiveSkill  PromptSlot = "active_skill"
 	PromptSlotMemory       PromptSlot = "memory"
@@ -470,6 +471,8 @@ func slotPriority(slot PromptSlot) int {
 		return 800
 	case PromptSlotMCP:
 		return 790
+	case PromptSlotMCPDynamic:
+		return 789
 	case PromptSlotSkillCatalog:
 		return 780
 	case PromptSlotActiveSkill:

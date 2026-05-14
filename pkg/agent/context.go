@@ -711,6 +711,7 @@ func (cb *ContextBuilder) BuildMessagesFromPrompt(req PromptBuildRequest) []prov
 		promptParts = append(promptParts, contributedParts...)
 	}
 
+	var dynamicParts []PromptPart
 	if len(promptParts) > 0 {
 		for _, overlay := range sortPromptParts(promptParts) {
 			if strings.TrimSpace(overlay.Content) == "" {
@@ -724,6 +725,13 @@ func (cb *ContextBuilder) BuildMessagesFromPrompt(req PromptBuildRequest) []prov
 					"source": overlay.Source.ID,
 					"error":  err.Error(),
 				})
+				continue
+			}
+			// Unstable MCP parts go to user message tail, not system prompt.
+			// This keeps the system prompt stable for DeepSeek KV cache prefix matching
+			// while allowing frequently-changing MCP descriptions to vary per turn.
+			if overlay.Slot == PromptSlotMCPDynamic {
+				dynamicParts = append(dynamicParts, overlay)
 				continue
 			}
 			stringParts = append(stringParts, overlay.Content)
@@ -806,7 +814,22 @@ func (cb *ContextBuilder) BuildMessagesFromPrompt(req PromptBuildRequest) []prov
 	// multimodal providers receive the uploaded image even when the user sends
 	// no accompanying text.
 	if strings.TrimSpace(req.CurrentMessage) != "" || len(req.Media) > 0 {
-		messages = append(messages, userPromptMessage(req.CurrentMessage, req.Media))
+		userMsg := userPromptMessage(req.CurrentMessage, req.Media)
+
+		// Append unstable MCP (mcp_dynamic) parts to the user message tail.
+		// These are placed after the user's actual message so they don't interfere
+		// with the user's intent, and the system prompt's prefix cache stays intact.
+		if len(dynamicParts) > 0 {
+			var sb strings.Builder
+			sb.WriteString(userMsg.Content)
+			for _, dp := range dynamicParts {
+				sb.WriteString("\n\n---\n\n")
+				sb.WriteString(dp.Content)
+			}
+			userMsg.Content = sb.String()
+		}
+
+		messages = append(messages, userMsg)
 	}
 
 	return messages
