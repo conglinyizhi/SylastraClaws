@@ -295,7 +295,7 @@ func connectServer(
 
 	// Create client
 	client := mcp.NewClient(&mcp.Implementation{
-		Name:    "picoclaw",
+		Name: "sylastraclaws",
 		Version: "1.0.0",
 	}, nil)
 

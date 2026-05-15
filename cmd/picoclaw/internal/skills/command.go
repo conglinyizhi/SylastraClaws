@@ -72,7 +72,7 @@ func newListCommand(loaderFn func() (*skills.SkillsLoader, error)) *cobra.Comman
 	return &cobra.Command{
 		Use:     "list",
 		Short:   "List installed skills",
-		Example: "picoclaw skills list",
+		Example: "sylastraclaws skills list",
 		RunE: func(_ *cobra.Command, _ []string) error {
 			loader, err := loaderFn()
 			if err != nil {
@@ -90,7 +90,7 @@ func newRemoveCommand() *cobra.Command {
 		Aliases: []string{"rm", "uninstall"},
 		Short:   "Remove installed skill",
 		Args:    cobra.ExactArgs(1),
-		Example: "picoclaw skills remove weather",
+		Example: "sylastraclaws skills remove weather",
 		RunE: func(_ *cobra.Command, args []string) error {
 			cfg, err := internal.LoadConfig()
 			if err != nil {
@@ -122,7 +122,7 @@ func newShowCommand(loaderFn func() (*skills.SkillsLoader, error)) *cobra.Comman
 		Use:     "show",
 		Short:   "Show skill details",
 		Args:    cobra.ExactArgs(1),
-		Example: "picoclaw skills show weather",
+		Example: "sylastraclaws skills show weather",
 		RunE: func(_ *cobra.Command, args []string) error {
 			loader, err := loaderFn()
 			if err != nil {
@@ -138,7 +138,7 @@ func newInstallBuiltinCommand(workspaceFn func() (string, error)) *cobra.Command
 	return &cobra.Command{
 		Use:     "install-builtin",
 		Short:   "Install all builtin skills to workspace",
-		Example: "picoclaw skills install-builtin",
+		Example: "sylastraclaws skills install-builtin",
 		RunE: func(_ *cobra.Command, _ []string) error {
 			workspace, err := workspaceFn()
 			if err != nil {
@@ -154,7 +154,7 @@ func newListBuiltinCommand() *cobra.Command {
 	return &cobra.Command{
 		Use:     "list-builtin",
 		Short:   "List available builtin skills",
-		Example: "picoclaw skills list-builtin",
+		Example: "sylastraclaws skills list-builtin",
 		Run: func(_ *cobra.Command, _ []string) {
 			skillsListBuiltinCmd()
 		},

@@ -1,9 +1,9 @@
 // Package firstrun implements the --first-run flag for interactive setup.
 // Users pass comma-separated values in any order:
 //
-//	picoclaw --first-run "sk-ant-xxx,claude-sonnet-4-20250514,https://api.anthropic.com"
-//	picoclaw --first-run "sk-xxx,gpt-4o"
-//	picoclaw --first-run "https://my-proxy.com/v1,sk-xxx,deepseek-chat"
+//	sylastraclaws --first-run "sk-ant-xxx,claude-sonnet-4-20250514,https://api.anthropic.com"
+//	sylastraclaws --first-run "sk-xxx,gpt-4o"
+//	sylastraclaws --first-run "https://my-proxy.com/v1,sk-xxx,deepseek-chat"
 package firstrun
 
 import (
@@ -32,7 +32,7 @@ func Run(rawValue string) error {
 
 	fields := splitAndClean(rawValue)
 	if len(fields) < 2 {
-		fmt.Println("Usage: picoclaw --first-run \"<api_key>,<model_name>[,<base_url>]\"")
+		fmt.Println("Usage: sylastraclaws --first-run \"<api_key>,<model_name>[,<base_url>]\"")
 		fmt.Println("  Fields can be in any order. At least api_key and model_name are required.")
 		return nil
 	}
@@ -83,7 +83,7 @@ func Run(rawValue string) error {
 		fmt.Printf("Error creating provider: %v\n", err)
 		fmt.Println()
 		fmt.Println("If you're using a custom endpoint, try:")
-		fmt.Printf("  picoclaw --first-run \"<api_key>,<model_name>,<base_url>\"\n")
+		fmt.Printf("  sylastraclaws --first-run \"<api_key>,<model_name>,<base_url>\"\n")
 		return nil
 	}
 
@@ -150,11 +150,11 @@ func Run(rawValue string) error {
 	fmt.Printf("  Config written to: %s\n", configPath)
 	fmt.Println()
 	fmt.Println("Next step:")
-	fmt.Println("  Start picoclaw without --first-run to begin chatting:")
-	fmt.Println("    picoclaw agent")
+	fmt.Println("  Start sylastraclaws without --first-run to begin chatting:")
+	fmt.Println("    sylastraclaws agent")
 	fmt.Println()
 	fmt.Println("  Or if you use the TUI:")
-	fmt.Println("    picoclaw")
+	fmt.Println("    sylastraclaws")
 
 	return nil
 }

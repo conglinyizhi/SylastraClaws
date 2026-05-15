@@ -216,18 +216,21 @@ func DisableFileLogging() {
 		logger = logger.Output(io.MultiWriter(writers...))
 	}
 }
-
 func ConfigureFromEnv() {
-	if logFile := os.Getenv("PICOCLAW_LOG_FILE"); logFile != "" {
+	logFile := os.Getenv("SYLASTRACLAWS_LOG_FILE")
+	if logFile == "" {
+		logFile = os.Getenv("PICOCLAW_LOG_FILE")
+	}
+	if logFile != "" {
 		if strings.HasPrefix(logFile, "~/") {
 			if home := os.Getenv("HOME"); home != "" {
 				logFile = filepath.Join(home, logFile[2:])
 			}
 		}
 
-		if err := EnableFileLogging(logFile); err != nil {
-			fmt.Fprintf(os.Stderr, "failed to enable file logging: %v\n", err)
-		} else {
+	if err := EnableFileLogging(logFile); err != nil {
+		fmt.Fprintf(os.Stderr, "failed to enable file logging: %v\n", err)
+	} else {
 			DisableConsole()
 		}
 	}

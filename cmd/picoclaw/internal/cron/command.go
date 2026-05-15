@@ -60,7 +60,7 @@ func newRemoveCommand(storePath func() string) *cobra.Command {
 		Use:     "remove",
 		Short:   "Remove a job by ID",
 		Args:    cobra.ExactArgs(1),
-		Example: "picoclaw cron remove 1",
+		Example: "sylastraclaws cron remove 1",
 		RunE: func(_ *cobra.Command, args []string) error {
 			cronRemoveCmd(storePath(), args[0])
 			return nil
@@ -73,7 +73,7 @@ func newEnableCommand(storePath func() string) *cobra.Command {
 		Use:     "enable",
 		Short:   "Enable a job",
 		Args:    cobra.ExactArgs(1),
-		Example: "picoclaw cron enable 1",
+		Example: "sylastraclaws cron enable 1",
 		RunE: func(_ *cobra.Command, args []string) error {
 			cronSetJobEnabled(storePath(), args[0], true)
 			return nil
@@ -86,7 +86,7 @@ func newDisableCommand(storePath func() string) *cobra.Command {
 		Use:     "disable",
 		Short:   "Disable a job",
 		Args:    cobra.ExactArgs(1),
-		Example: "picoclaw cron disable 1",
+		Example: "sylastraclaws cron disable 1",
 		RunE: func(_ *cobra.Command, args []string) error {
 			cronSetJobEnabled(storePath(), args[0], false)
 			return nil

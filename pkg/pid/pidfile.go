@@ -15,7 +15,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
 )
 
-const pidFileName = ".picoclaw.pid"
+const pidFileName = ".sylastraclaws.pid"
 
 var errInvalidPidFile = errors.New("invalid pid file")
 
