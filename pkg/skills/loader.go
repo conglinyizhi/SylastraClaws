@@ -26,15 +26,17 @@ const (
 )
 
 type SkillMetadata struct {
-	Name        string `json:"name"`
-	Description string `json:"description"`
+	Name        string   `json:"name"`
+	Description string   `json:"description"`
+	Trigger     []string `json:"trigger,omitempty"`
 }
 
 type SkillInfo struct {
-	Name        string `json:"name"`
-	Path        string `json:"path"`
-	Source      string `json:"source"`
-	Description string `json:"description"`
+	Name            string   `json:"name"`
+	Path            string   `json:"path"`
+	Source          string   `json:"source"`
+	Description     string   `json:"description"`
+	TriggerPatterns []string `json:"trigger_patterns,omitempty"`
 }
 
 func (info SkillInfo) validate() error {
@@ -117,25 +119,27 @@ func (sl *SkillsLoader) ListSkills() []SkillInfo {
 			if _, err := os.Stat(skillFile); err != nil {
 				continue
 			}
-			info := SkillInfo{
-				Name:   d.Name(),
-				Path:   skillFile,
-				Source: source,
-			}
-			metadata := sl.getSkillMetadata(skillFile)
-			if metadata != nil {
-				info.Description = metadata.Description
-				info.Name = metadata.Name
-			}
-			if err := info.validate(); err != nil {
-				slog.Warn("invalid skill from "+source, "name", info.Name, "error", err)
-				continue
-			}
-			if seen[info.Name] {
-				continue
-			}
-			seen[info.Name] = true
-			skills = append(skills, info)
+		triggerPatterns := sl.getSkillTriggers(skillFile)
+		info := SkillInfo{
+			Name:            d.Name(),
+			Path:            skillFile,
+			Source:          source,
+			TriggerPatterns: triggerPatterns,
+		}
+		metadata := sl.getSkillMetadata(skillFile)
+		if metadata != nil {
+			info.Description = metadata.Description
+			info.Name = metadata.Name
+		}
+		if err := info.validate(); err != nil {
+			slog.Warn("invalid skill from "+source, "name", info.Name, "error", err)
+			continue
+		}
+		if seen[info.Name] {
+			continue
+		}
+		seen[info.Name] = true
+		skills = append(skills, info)
 		}
 	}
 
@@ -214,6 +218,36 @@ func (sl *SkillsLoader) BuildSkillsSummary() string {
 	lines = append(lines, "</skills>")
 
 	return strings.Join(lines, "\n")
+}
+
+func (sl *SkillsLoader) getSkillTriggers(skillPath string) []string {
+	content, err := os.ReadFile(skillPath)
+	if err != nil {
+		return nil
+	}
+
+	frontmatter, _ := splitFrontmatter(string(content))
+	if frontmatter == "" {
+		return nil
+	}
+
+	// Try JSON first (for backward compatibility)
+	var jsonMeta struct {
+		Trigger []string `json:"trigger"`
+	}
+	if err := json.Unmarshal([]byte(frontmatter), &jsonMeta); err == nil {
+		return jsonMeta.Trigger
+	}
+
+	// Fall back to YAML parsing
+	var yamlMeta struct {
+		Trigger []string `yaml:"trigger"`
+	}
+	if err := yaml.Unmarshal([]byte(frontmatter), &yamlMeta); err == nil {
+		return yamlMeta.Trigger
+	}
+
+	return nil
 }
 
 func (sl *SkillsLoader) getSkillMetadata(skillPath string) *SkillMetadata {
@@ -383,4 +417,42 @@ func escapeXML(s string) string {
 	s = strings.ReplaceAll(s, "<", "&lt;")
 	s = strings.ReplaceAll(s, ">", "&gt;")
 	return s
+}
+
+// MatchTriggers checks userMessage against all skills' trigger patterns.
+// Returns names of skills whose triggers match, with no duplicates.
+func (sl *SkillsLoader) MatchTriggers(userMessage string) []string {
+	if userMessage == "" {
+		return nil
+	}
+
+	allSkills := sl.ListSkills()
+	if len(allSkills) == 0 {
+		return nil
+	}
+
+	var matched []string
+	seen := make(map[string]bool)
+
+	for _, skill := range allSkills {
+		if len(skill.TriggerPatterns) == 0 {
+			continue
+		}
+		for _, pattern := range skill.TriggerPatterns {
+			re, err := regexp.Compile(pattern)
+			if err != nil {
+				slog.Warn("invalid trigger regex in skill", "skill", skill.Name, "pattern", pattern, "error", err)
+				continue
+			}
+			if re.MatchString(userMessage) {
+				if !seen[skill.Name] {
+					seen[skill.Name] = true
+					matched = append(matched, skill.Name)
+				}
+				break // one match per skill is enough
+			}
+		}
+	}
+
+	return matched
 }

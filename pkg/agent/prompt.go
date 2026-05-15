@@ -40,6 +40,7 @@ const (
 	PromptSlotSubTurn      PromptSlot = "subturn"
 	PromptSlotInterrupt    PromptSlot = "interrupt"
 	PromptSlotOutput       PromptSlot = "output"
+	PromptSlotTriggered    PromptSlot = "triggered_skill"
 )
 
 type PromptSourceID string
@@ -61,6 +62,7 @@ const (
 	PromptSourceSteering       PromptSourceID = "turn:steering"
 	PromptSourceSubTurnResult  PromptSourceID = "turn:subturn_result"
 	PromptSourceInterrupt      PromptSourceID = "turn:interrupt"
+	PromptSourceTriggeredSkill PromptSourceID = "skill:triggered"
 )
 
 type PromptCachePolicy string
@@ -257,6 +259,13 @@ func builtinPromptSources() []PromptSourceDescriptor {
 			Owner:           "turn",
 			Description:     "Graceful interrupt hint injected into the terminal LLM call",
 			Allowed:         []PromptPlacement{{Layer: PromptLayerTurn, Slot: PromptSlotInterrupt}},
+			StableByDefault: false,
+		},
+		{
+			ID:              PromptSourceTriggeredSkill,
+			Owner:           "skills",
+			Description:     "Skills highlighted by trigger pattern match on current user message",
+			Allowed:         []PromptPlacement{{Layer: PromptLayerTurn, Slot: PromptSlotTriggered}},
 			StableByDefault: false,
 		},
 	}

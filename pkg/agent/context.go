@@ -813,6 +813,11 @@ func (cb *ContextBuilder) BuildMessagesFromPrompt(req PromptBuildRequest) []prov
 			userMsg.Content = sb.String()
 		}
 
+		// Append triggered skills highlight to user message tail (ephemeral — not persisted).
+		if annotation := cb.buildTriggeredSkillsAnnotation(req.CurrentMessage); annotation != "" {
+			userMsg.Content += "\n\n---\n\n" + annotation
+		}
+
 		messages = append(messages, userMsg)
 	}
 
@@ -1057,6 +1062,22 @@ func (cb *ContextBuilder) buildActiveSkillsPromptParts(skillNames []string) []Pr
 			Cache:   PromptCacheNone,
 		},
 	}
+}
+
+// buildTriggeredSkillsAnnotation checks the current user message against skill
+// trigger patterns and returns a short annotation string, or empty string if none match.
+// Not persisted to history — recomputed every turn.
+func (cb *ContextBuilder) buildTriggeredSkillsAnnotation(userMessage string) string {
+	if cb.skillsLoader == nil || userMessage == "" {
+		return ""
+	}
+
+	matched := cb.skillsLoader.MatchTriggers(userMessage)
+	if len(matched) == 0 {
+		return ""
+	}
+
+	return "🔥 HIGHLIGHTED SKILLS — matched by built-in trigger rules: " + strings.Join(matched, ", ")
 }
 
 func (cb *ContextBuilder) ListSkillNames() []string {
