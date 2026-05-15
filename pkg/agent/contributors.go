@@ -3,6 +3,7 @@ package agent
 import (
 	"context"
 	"fmt"
+	"sort"
 	"strings"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
@@ -45,6 +46,79 @@ func (m *ContributorManager) RegisterToolDiscovery(useBM25, useRegex bool) {
 				map[string]any{"error": err.Error()})
 		}
 	}
+	}
+// RegisterSubagentDirectory registers a contributor that injects the list of
+// available sub-agents (agents that can be spawned) into the system prompt.
+// The getter is called per-turn so the list reflects the latest config.
+func (m *ContributorManager) RegisterSubagentDirectory(getter func() map[string]string) {
+	if getter == nil {
+		return
+	}
+	for _, cb := range m.builders {
+		if err := cb.RegisterPromptContributor(subagentDirectoryContributor{
+			getter: getter,
+		}); err != nil {
+			logger.WarnCF("agent", "Failed to register sub-agent directory contributor",
+				map[string]any{"error": err.Error()})
+		}
+	}
+}
+
+// subagentDirectoryContributor injects the list of available sub-agents
+// into the capability layer of the system prompt.
+type subagentDirectoryContributor struct {
+	getter func() map[string]string
+}
+
+func (c subagentDirectoryContributor) PromptSource() PromptSourceDescriptor {
+	return PromptSourceDescriptor{
+		ID:              PromptSourceID("sylastraclaws:subagent_directory"),
+		Owner:           "sylastraclaws",
+		Description:     "Available sub-agent directory for task delegation",
+		Allowed:         []PromptPlacement{{Layer: PromptLayerCapability, Slot: PromptSlotTooling}},
+		StableByDefault: true,
+	}
+}
+
+func (c subagentDirectoryContributor) ContributePrompt(
+	_ context.Context, _ PromptBuildRequest,
+) ([]PromptPart, error) {
+	if c.getter == nil {
+		return nil, nil
+	}
+	agents := c.getter()
+	if len(agents) == 0 {
+		return nil, nil
+	}
+
+	var sb strings.Builder
+	sb.WriteString("Available sub-agents for task delegation.\n")
+	sb.WriteString("When a task requires a specialist skill, use the `spawn` or `subagent` tool ")
+	sb.WriteString("to delegate the task to the appropriate sub-agent.\n")
+	sb.WriteString("If no sub-agent is suitable, complete the task yourself.\n\n")
+	sb.WriteString("Sub-agents:\n")
+	// Sort for deterministic order
+	ids := make([]string, 0, len(agents))
+	for id := range agents {
+		ids = append(ids, id)
+	}
+	sort.Strings(ids)
+	for _, id := range ids {
+		sb.WriteString("- **" + id + "**: " + agents[id] + "\n")
+	}
+
+	return []PromptPart{
+		{
+			ID:      "capability.subagent_directory",
+			Layer:   PromptLayerCapability,
+			Slot:    PromptSlotTooling,
+			Source:  PromptSource{ID: PromptSourceID("sylastraclaws:subagent_directory"), Name: "sylastraclaws:subagent_directory"},
+			Title:   "Sub-agent delegation",
+			Content: strings.TrimSpace(sb.String()),
+			Stable:  true,
+			Cache:   PromptCacheEphemeral,
+		},
+	}, nil
 }
 
 // RegisterMCP registers the mcpServerPromptContributor for a single server.

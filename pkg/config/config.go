@@ -177,6 +177,9 @@ type AgentConfig struct {
 	ID        string            `json:"id"`
 	Default   bool              `json:"default,omitempty"`
 	Name      string            `json:"name,omitempty"`
+	// Description provides a human-readable summary of this agent's capability.
+	// Injected into other agents' system prompts so they can decide delegation targets.
+	Description string           `json:"description,omitempty"`
 	Workspace string            `json:"workspace,omitempty"`
 	Model     *AgentModelConfig `json:"model,omitempty"`
 	Skills    []string          `json:"skills,omitempty"`
@@ -184,8 +187,22 @@ type AgentConfig struct {
 }
 
 type SubagentsConfig struct {
+	// AllowAgents lists agent IDs that this agent is allowed to spawn.
+	// "*" means all.
 	AllowAgents []string          `json:"allow_agents,omitempty"`
+	// Model specifies an optional model override for spawned sub-agents.
 	Model       *AgentModelConfig `json:"model,omitempty"`
+	// Description provides a human-readable summary of what this sub-agent
+	// configuration is meant for. Injected into the parent agent's system
+	// prompt so it can decide which sub-agent to delegate to.
+	Description string `json:"description,omitempty"`
+	// Templates is an optional path to a TOML file containing prompt templates
+	// (system prompt, user prompt, etc.) loaded for spawned sub-agents.
+	// Relative paths are resolved against the agent's workspace.
+	Templates string `json:"templates,omitempty"`
+	// Tools is an optional allowlist of tool names available to spawned
+	// sub-agents. If empty, all parent tools are inherited.
+	Tools []string `json:"tools,omitempty"`
 }
 
 type DispatchConfig struct {

@@ -5,6 +5,7 @@ package agent
 import (
 	"context"
 	"fmt"
+	"path/filepath"
 	"time"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg/agent/interfaces"
@@ -17,6 +18,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 	"github.com/conglinyizhi/SylastraClaws/pkg/skills"
 	"github.com/conglinyizhi/SylastraClaws/pkg/state"
+	"github.com/conglinyizhi/SylastraClaws/pkg/template"
 	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
 )
 
@@ -88,6 +90,14 @@ func NewAgentLoop(
 		mcpDiscoveryActive && cfg.Tools.MCP.Discovery.UseBM25,
 		mcpDiscoveryActive && cfg.Tools.MCP.Discovery.UseRegex,
 	)
+
+	// Register sub-agent directory contributor so the default agent can see
+	// which sub-agents are available and what they specialise in.
+	if defaultAgent := registry.GetDefaultAgent(); defaultAgent != nil {
+		al.contributorManager.RegisterSubagentDirectory(func() map[string]string {
+			return registry.ListSpawnableAgents(defaultAgent.ID)
+		})
+	}
 
 	return al
 }
@@ -313,11 +323,27 @@ func registerSharedTools(
 					}
 				}
 
-				// 3. System Prompt
+			// 3. System Prompt — load from target agent's TOML templates if configured
 				systemPrompt := "You are a subagent. Complete the given task independently and report the result.\n" +
 					"You have access to tools - use them as needed to complete your task.\n" +
 					"After completing the task, provide a clear summary of what was done.\n\n" +
 					"Task: " + task
+				if targetAgentID != "" {
+					if targetAgent, ok := al.GetRegistry().GetAgent(targetAgentID); ok && targetAgent.Subagents != nil {
+						tplPath := targetAgent.Subagents.Templates
+						if tplPath != "" {
+							// Resolve relative to target agent's workspace
+							if !filepath.IsAbs(tplPath) {
+								tplPath = filepath.Join(targetAgent.Workspace, tplPath)
+							}
+							if store, err := template.LoadFile(tplPath); err == nil {
+								if tpl := store.GetString("system_prompt"); tpl != "" {
+									systemPrompt = tpl + "\n\nTask: " + task
+								}
+							}
+						}
+					}
+				}
 
 				// 4. Resolve Model
 				modelToUse := agent.Model

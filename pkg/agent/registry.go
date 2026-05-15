@@ -1,6 +1,7 @@
 package agent
 
 import (
+	"strings"
 	"sync"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
@@ -100,6 +101,46 @@ func (r *AgentRegistry) CanSpawnSubagent(parentAgentID, targetAgentID string) bo
 		}
 	}
 	return false
+}
+
+// ListSpawnableAgents returns descriptions of all agents that can be spawned
+// by the default agent, keyed by agent ID. Used to build the sub-agent
+// directory for system prompt injection.
+func (r *AgentRegistry) ListSpawnableAgents(parentAgentID string) map[string]string {
+	r.mu.RLock()
+	defer r.mu.RUnlock()
+	result := make(map[string]string)
+	parent, ok := r.agents[routing.NormalizeAgentID(parentAgentID)]
+	if !ok {
+		return result
+	}
+	for id, agent := range r.agents {
+		if id == routing.NormalizeAgentID(parentAgentID) {
+			continue
+		}
+		desc := strings.TrimSpace(agent.Name)
+		if desc == "" {
+			desc = id
+		}
+		if parent.Subagents != nil && parent.Subagents.AllowAgents != nil {
+			allowed := false
+			for _, a := range parent.Subagents.AllowAgents {
+				if a == "*" || routing.NormalizeAgentID(a) == id {
+					allowed = true
+					break
+				}
+			}
+			if !allowed {
+				continue
+			}
+		}
+		// Append Description from SubagentsConfig for extra context
+		if agent.Subagents != nil && strings.TrimSpace(agent.Subagents.Description) != "" {
+			desc += ": " + agent.Subagents.Description
+		}
+		result[id] = desc
+	}
+	return result
 }
 
 // ForEachTool calls fn for every tool registered under the given name
