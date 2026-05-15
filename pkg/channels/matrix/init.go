@@ -1,4 +1,4 @@
-//go:build matrix
+//go:build matrix && goolm
 
 package matrix
 

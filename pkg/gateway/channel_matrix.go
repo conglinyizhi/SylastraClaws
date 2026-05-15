@@ -1,11 +1,11 @@
-//go:build matrix
+//go:build matrix && goolm
 
-// This file gates Matrix support on a `matrix` build tag.
-// By default (no -tags matrix), Matrix is excluded to avoid
-// the CGO dependency on libolm via mautrix/crypto/libolm.
+// This file gates Matrix support on `matrix` AND `goolm` build tags.
+// `goolm` is required to avoid the CGO dependency on libolm via
+// mautrix/crypto/libolm — mautrix selects the pure-Go goolm backend
+// when the goolm build tag is present.
 //
-// Existing exclusions for mipsle/netbsd/freebsd-arm/android are
-// subsumed — `matrix` tag is the single gate now.
+// By default (no -tags), Matrix is entirely excluded.
 //
 //lint:file-ignore U1000 tagged package
 
