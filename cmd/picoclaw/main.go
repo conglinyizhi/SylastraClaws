@@ -132,14 +132,27 @@ sylastraclaws --no-color status`,
 	return cmd
 }
 
-const (
+
+// starDecorator returns the name with zero or more random stars around it.
+func starDecorator(name string) string {
+	// Rand from time seeded by program start — deterministic per session.
+	n := int(time.Now().UnixNano() % 4) // 0–3 stars
+	if n == 0 {
+		return name
+	}
+	left := strings.Repeat("✦ ", n)
+	right := strings.Repeat(" ✦", n)
+	return left + name + right
+}
+
+var (
 	colorBlue = "\033[1;38;2;62;93;185m"
 	colorRed  = "\033[1;38;2;213;70;70m"
 	banner    = "\r\n" +
-		colorBlue + "SylastraClaws" + colorRed + " — personal AI agent" +
+		colorBlue + starDecorator("SylastraClaws") + colorRed + " — personal AI agent" +
 		"\033[0m\r\n"
 	plainBanner = "\r\n" +
-		"SylastraClaws — personal AI agent" +
+		starDecorator("SylastraClaws") + " — personal AI agent" +
 		"\r\n"
 )
 
