@@ -66,7 +66,7 @@ func (al *AgentLoop) runTurn(ctx context.Context, ts *turnState, pipeline *Pipel
 	// userPromptMessage. We reply directly and end the turn so the user
 	// can compose their text before the LLM processes the files.
 	if ts.userMessage == "" && len(ts.media) > 0 {
-		msg := al.cfg.Agents.Defaults.GetFileOnlyResponse()
+		msg := "文件已收到，请继续说你的文字消息。我稍后会自动处理。"
 		_ = al.bus.PublishOutbound(ctx, outboundMessageForTurn(ts, msg))
 		return turnResult{}, nil
 	}
