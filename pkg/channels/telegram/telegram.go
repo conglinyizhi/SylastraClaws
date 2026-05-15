@@ -830,6 +830,15 @@ func (c *TelegramChannel) handleMessage(ctx context.Context, message *telego.Mes
 	}
 
 	// In group chats, apply unified group trigger filtering
+
+	// Intercept /new command in forum supergroups to create a new topic.
+	// This must happen before group trigger filtering so it works even when
+	// the bot isn't mentioned (like other admin tools).
+	if c.bot != nil {
+		if handled, err := c.handleNewTopic(ctx, message, chatID, content); handled {
+			return err
+		}
+	}
 	isMentioned := false
 	if message.Chat.Type != "private" {
 		isMentioned = c.isBotMentioned(message)
@@ -1187,6 +1196,55 @@ func logParseFailed(err error, useMarkdownV2 bool) {
 			"error": err.Error(),
 		},
 	)
+}
+
+// handleNewTopic checks if the message is a /new command in a forum supergroup
+// and, if so, attempts to create a new topic via Telegram's createForumTopic API.
+// Returns (true, nil) when the command was handled (success or failure message sent).
+// Returns (false, nil) when the message is not a /new command and should be
+// processed normally. Returns (true, err) on internal errors.
+func (c *TelegramChannel) handleNewTopic(ctx context.Context, message *telego.Message, chatID int64, content string) (bool, error) {
+	title := strings.TrimSpace(strings.TrimPrefix(content, "/new"))
+	if title == content {
+		title = strings.TrimSpace(strings.TrimPrefix(content, "/新的"))
+	}
+	if title == content {
+		return false, nil
+	}
+
+	// Only handle /new in forum supergroups. In private chats or non-forum groups,
+	// /new is just a regular message.
+	if message.Chat.Type != "supergroup" || !message.Chat.IsForum {
+		return false, nil
+	}
+
+	if title == "" {
+		reply := tu.Message(tu.ID(chatID), "用法: /new <话题标题>")
+		reply.ReplyParameters = &telego.ReplyParameters{
+			MessageID: message.MessageID,
+		}
+		_, _ = c.bot.SendMessage(ctx, reply)
+		return true, nil
+	}
+
+		result, err := c.bot.CreateForumTopic(ctx, &telego.CreateForumTopicParams{
+			ChatID: tu.ID(chatID),
+			Name:   title,
+		})
+		if err != nil {
+			errMsg := "话题创建失败: " + err.Error() + "\n请确认 Bot 有管理话题权限"
+			reply := tu.Message(tu.ID(chatID), errMsg)
+			_, _ = c.bot.SendMessage(ctx, reply)
+			return true, nil
+		}
+
+
+	// Send a welcome message in the new topic
+	welcome := "✅ 已创建话题「" + title + "」\n在此话题中可与 SylastraClaws 进行独立对话\n发送 /clear 可清空当前话题上下文"
+	welcomeMsg := tu.Message(tu.ID(chatID), welcome)
+	welcomeMsg.MessageThreadID = result.MessageThreadID
+	_, _ = c.bot.SendMessage(ctx, welcomeMsg)
+	return true, nil
 }
 
 // isBotMentioned checks if the bot is mentioned in the message via entities.
