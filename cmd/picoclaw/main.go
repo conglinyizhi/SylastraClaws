@@ -1,8 +1,8 @@
-// PicoClaw - Ultra-lightweight personal AI agent
-// Inspired by and based on nanobot: https://github.com/HKUDS/nanobot
+// SylastraClaws - Personal AI agent
+// Based on PicoClaw: https://github.com/sipeed/picoclaw
 // License: MIT
 //
-// Copyright (c) 2026 PicoClaw contributors
+// Copyright (c) 2026 SylastraClaws contributors
 
 package main
 
@@ -33,6 +33,9 @@ import (
 )
 
 var rootNoColor bool
+
+// binaryName is printed after the banner on the same line.
+const binaryName = "SylastraClaws"
 
 func syncCliUIColor(root *cobra.Command) {
 	no, _ := root.PersistentFlags().GetBool("no-color")
@@ -82,18 +85,18 @@ func extractFirstRunValue() string {
 }
 
 func NewPicoclawCommand() *cobra.Command {
-	short := fmt.Sprintf("%s PicoClaw — personal AI assistant", internal.Logo)
-	long := fmt.Sprintf(`%s PicoClaw is a lightweight personal AI assistant.
+	short := fmt.Sprintf("%s SylastraClaws — personal AI agent", internal.Logo)
+	long := fmt.Sprintf(`%s SylastraClaws is a personal AI assistant built from PicoClaw.
 
 Version: %s`, internal.Logo, config.FormatVersion())
 
 	cmd := &cobra.Command{
-		Use:   "picoclaw",
+		Use:   "sylastraclaws",
 		Short: short,
 		Long:  long,
-		Example: `picoclaw version
-picoclaw onboard
-picoclaw --no-color status`,
+		Example: `sylastraclaws version
+sylastraclaws onboard
+sylastraclaws --no-color status`,
 		SilenceErrors: true,
 		// Avoid plain UsageString() on stderr/stdout when a command fails; cliui
 		// renders matching panels on stderr instead.
@@ -122,7 +125,7 @@ picoclaw --no-color status`,
 		migrate.NewMigrateCommand(),
 		skills.NewSkillsCommand(),
 		model.NewModelCommand(),
-		updater.NewUpdateCommand("picoclaw"),
+		updater.NewUpdateCommand("sylastraclaws"),
 		version.NewVersionCommand(),
 	)
 
@@ -133,20 +136,10 @@ const (
 	colorBlue = "\033[1;38;2;62;93;185m"
 	colorRed  = "\033[1;38;2;213;70;70m"
 	banner    = "\r\n" +
-		colorBlue + "██████╗ ██╗ ██████╗ ██████╗ " + colorRed + " ██████╗██╗      █████╗ ██╗    ██╗\n" +
-		colorBlue + "██╔══██╗██║██╔════╝██╔═══██╗" + colorRed + "██╔════╝██║     ██╔══██╗██║    ██║\n" +
-		colorBlue + "██████╔╝██║██║     ██║   ██║" + colorRed + "██║     ██║     ███████║██║ █╗ ██║\n" +
-		colorBlue + "██╔═══╝ ██║██║     ██║   ██║" + colorRed + "██║     ██║     ██╔══██║██║███╗██║\n" +
-		colorBlue + "██║     ██║╚██████╗╚██████╔╝" + colorRed + "╚██████╗███████╗██║  ██║╚███╔███╔╝\n" +
-		colorBlue + "╚═╝     ╚═╝ ╚═════╝ ╚═════╝ " + colorRed + " ╚═════╝╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝\n " +
+		colorBlue + "SylastraClaws" + colorRed + " — personal AI agent" +
 		"\033[0m\r\n"
 	plainBanner = "\r\n" +
-		"██████╗ ██╗ ██████╗ ██████╗  ██████╗██╗      █████╗ ██╗    ██╗\n" +
-		"██╔══██╗██║██╔════╝██╔═══██╗██╔════╝██║     ██╔══██╗██║    ██║\n" +
-		"██████╔╝██║██║     ██║   ██║██║     ██║     ███████║██║ █╗ ██║\n" +
-		"██╔═══╝ ██║██║     ██║   ██║██║     ██║     ██╔══██║██║███╗██║\n" +
-		"██║     ██║╚██████╗╚██████╔╝╚██████╗███████╗██║  ██║╚███╔███╔╝\n" +
-		"╚═╝     ╚═╝ ╚═════╝ ╚═════╝  ╚═════╝╚══════╝╚═╝  ╚═╝ ╚══╝╚══╝\n " +
+		"SylastraClaws — personal AI agent" +
 		"\r\n"
 )
 
