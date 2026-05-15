@@ -18,7 +18,7 @@ func findDefinitionByName(t *testing.T, defs []Definition, name string) Definiti
 }
 
 func TestBuiltinHelpHandler_ReturnsFormattedMessage(t *testing.T) {
-	defs := BuiltinDefinitions()
+	defs := BuiltinProvider{}.CommandDefinitions()
 	helpDef := findDefinitionByName(t, defs, "help")
 	if helpDef.Handler == nil {
 		t.Fatalf("/help handler should not be nil")
@@ -50,8 +50,8 @@ func TestBuiltinHelpHandler_ReturnsFormattedMessage(t *testing.T) {
 }
 
 func TestBuiltinShowChannel_PreservesUserVisibleBehavior(t *testing.T) {
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), nil)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), nil)
 
 	cases := []string{"telegram", "whatsapp"}
 	for _, channel := range cases {
@@ -80,8 +80,8 @@ func TestBuiltinListChannels_UsesGetEnabledChannels(t *testing.T) {
 			return []string{"telegram", "slack"}
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -105,8 +105,8 @@ func TestBuiltinShowAgents_RestoresOldBehavior(t *testing.T) {
 			return []string{"default", "coder"}
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -130,8 +130,8 @@ func TestBuiltinListAgents_RestoresOldBehavior(t *testing.T) {
 			return []string{"default", "coder"}
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -155,8 +155,8 @@ func TestBuiltinListSkills_UsesRuntimeSkillNames(t *testing.T) {
 			return []string{"shell", "git"}
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -183,8 +183,8 @@ func TestBuiltinListMCP_UsesRuntimeServerStatus(t *testing.T) {
 			}
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -229,8 +229,8 @@ func TestBuiltinShowMCP_UsesRuntimeToolNames(t *testing.T) {
 			}, nil
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -261,8 +261,8 @@ func TestBuiltinShowMCP_UsesRuntimeToolNames(t *testing.T) {
 }
 
 func TestBuiltinUseCommand_PassthroughsToAgentLogic(t *testing.T) {
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), nil)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), nil)
 
 	res := ex.Execute(context.Background(), Request{
 		Text: "/use shell run ls",
@@ -284,8 +284,8 @@ func TestBuiltinBtwCommand_UsesSideQuestionRuntime(t *testing.T) {
 			return "4", nil
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -304,8 +304,8 @@ func TestBuiltinBtwCommand_UsesSideQuestionRuntime(t *testing.T) {
 }
 
 func TestBuiltinBtwCommand_MissingQuestion(t *testing.T) {
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), &Runtime{
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), &Runtime{
 		AskSideQuestion: func(context.Context, string) (string, error) {
 			return "", nil
 		},
@@ -337,8 +337,8 @@ func TestBuiltinBtwCommand_PreservesQuestionWhitespace(t *testing.T) {
 			return "ok", nil
 		},
 	}
-	defs := BuiltinDefinitions()
-	ex := NewExecutor(NewRegistry(defs), rt)
+	defs := BuiltinProvider{}.CommandDefinitions()
+	ex := NewExecutor(NewRegistryWithDefs(defs), rt)
 
 	res := ex.Execute(context.Background(), Request{
 		Text: "/btw " + want,

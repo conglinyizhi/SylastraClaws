@@ -7,7 +7,7 @@ func TestRegistry_Definitions_ReturnsCopy(t *testing.T) {
 		{Name: "help", Description: "Show help"},
 		{Name: "admin", Description: "Admin command"},
 	}
-	r := NewRegistry(defs)
+	r := NewRegistryWithDefs(defs)
 
 	got := r.Definitions()
 	if len(got) != 2 {
@@ -22,7 +22,7 @@ func TestRegistry_Definitions_ReturnsCopy(t *testing.T) {
 }
 
 func TestRegistry_Lookup_MatchesByLowercaseNameAndAlias(t *testing.T) {
-	r := NewRegistry([]Definition{
+	r := NewRegistryWithDefs([]Definition{
 		{Name: "Help", Aliases: []string{"Assist"}},
 		{Name: "List"},
 	})

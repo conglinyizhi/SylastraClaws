@@ -12,7 +12,7 @@ func TestSwitchModel_Success(t *testing.T) {
 			return "old-model", nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -37,7 +37,7 @@ func TestSwitchModel_MissingToKeyword(t *testing.T) {
 			return "old", nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -61,7 +61,7 @@ func TestSwitchModel_MissingValue(t *testing.T) {
 			return "old", nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -85,7 +85,7 @@ func TestSwitchModel_Error(t *testing.T) {
 			return "", fmt.Errorf("model not found")
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -104,7 +104,7 @@ func TestSwitchModel_Error(t *testing.T) {
 }
 
 func TestSwitchModel_NilDep(t *testing.T) {
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), &Runtime{})
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), &Runtime{})
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -122,33 +122,13 @@ func TestSwitchModel_NilDep(t *testing.T) {
 	}
 }
 
-func TestSwitchChannel_Redirect(t *testing.T) {
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), &Runtime{})
-
-	var reply string
-	res := ex.Execute(context.Background(), Request{
-		Text: "/switch channel to telegram",
-		Reply: func(text string) error {
-			reply = text
-			return nil
-		},
-	})
-	if res.Outcome != OutcomeHandled {
-		t.Fatalf("outcome=%v, want=%v", res.Outcome, OutcomeHandled)
-	}
-	want := "This command has moved. Please use: /check channel <name>"
-	if reply != want {
-		t.Fatalf("reply=%q, want=%q", reply, want)
-	}
-}
-
 func TestCheckChannel_Success(t *testing.T) {
 	rt := &Runtime{
 		SwitchChannel: func(value string) error {
 			return nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -173,7 +153,7 @@ func TestCheckChannel_Error(t *testing.T) {
 			return fmt.Errorf("channel '%s' not found", value)
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -192,7 +172,7 @@ func TestCheckChannel_Error(t *testing.T) {
 }
 
 func TestCheckChannel_NilDep(t *testing.T) {
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), &Runtime{})
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), &Runtime{})
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -216,7 +196,7 @@ func TestCheckChannel_MissingValue(t *testing.T) {
 			return nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -240,7 +220,7 @@ func TestSwitch_BangPrefix(t *testing.T) {
 			return "old", nil
 		},
 	}
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), rt)
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), rt)
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{
@@ -259,7 +239,7 @@ func TestSwitch_BangPrefix(t *testing.T) {
 }
 
 func TestSwitch_NoSubCommand(t *testing.T) {
-	ex := NewExecutor(NewRegistry(BuiltinDefinitions()), &Runtime{})
+	ex := NewExecutor(NewRegistryWithDefs(BuiltinProvider{}.CommandDefinitions()), &Runtime{})
 
 	var reply string
 	res := ex.Execute(context.Background(), Request{

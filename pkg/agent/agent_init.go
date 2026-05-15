@@ -62,7 +62,11 @@ func NewAgentLoop(
 		state:       stateManager,
 		eventBus:    eventBus,
 		fallback:    fallbackChain,
-		cmdRegistry: commands.NewRegistry(commands.BuiltinDefinitions()),
+		cmdRegistry: func() *commands.Registry {
+			reg := commands.NewRegistry()
+			reg.RegisterProvider(commands.BuiltinProvider{})
+			return reg
+		}(),
 		steering:    newSteeringQueue(parseSteeringMode(cfg.Agents.Defaults.SteeringMode)),
 		workerSem:   make(chan struct{}, workerPoolSize),
 	}

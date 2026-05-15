@@ -642,12 +642,9 @@ func (cb *ContextBuilder) buildDynamicContext(channel, chatID, senderID, senderD
 	if cb.missionStore != nil {
 		items := cb.missionStore.List()
 		if len(items) > 0 {
-			fmt.Fprintf(&sb, "
-
-## Active Missions")
-			for _, item := range items {
-				fmt.Fprintf(&sb, "
-- [%s] %s (id:%d, pri:%d)", item.Status, item.Title, item.ID, item.Priority)
+		fmt.Fprintf(&sb, "\n\n## Active Missions")
+		for _, item := range items {
+			fmt.Fprintf(&sb, "\n- [%s] %s (id:%d, pri:%d)", item.Status, item.Title, item.ID, item.Priority)
 			}
 		}
 	}
