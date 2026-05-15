@@ -307,10 +307,10 @@ func (c *WeixinChannel) handleInboundMessage(ctx context.Context, msg WeixinMess
 				// Use voice → text transcription from server
 				parts = append(parts, item.VoiceItem.Text)
 			} else {
-				parts = append(parts, "[audio]")
+				parts = append(parts, "[file]")
 			}
 		case MessageItemTypeImage:
-			parts = append(parts, "[image]")
+			parts = append(parts, "[file]")
 		case MessageItemTypeFile:
 			if item.FileItem != nil && item.FileItem.FileName != "" {
 				parts = append(parts, fmt.Sprintf("[file: %s]", item.FileItem.FileName))
@@ -318,7 +318,7 @@ func (c *WeixinChannel) handleInboundMessage(ctx context.Context, msg WeixinMess
 				parts = append(parts, "[file]")
 			}
 		case MessageItemTypeVideo:
-			parts = append(parts, "[video]")
+			parts = append(parts, "[file]")
 		}
 	}
 

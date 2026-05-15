@@ -4690,12 +4690,14 @@ func TestResolveMediaRefs_ImageInjectsPathTag(t *testing.T) {
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
 	if len(result[0].Media) != 0 {
-		t.Fatalf("expected 0 media (images use path tags), got %d", len(result[0].Media))
+		t.Fatalf("expected 0 media (files use file entries), got %d", len(result[0].Media))
 	}
 	localPath, _, _ := store.ResolveWithMeta(ref)
-	expectedContent := "describe this [image:" + localPath + "]"
-	if result[0].Content != expectedContent {
-		t.Fatalf("expected content %q, got %q", expectedContent, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+localPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/octet-stream") {
+		t.Fatalf("expected MIME type in content, got %q", result[0].Content)
 	}
 }
 
@@ -4722,27 +4724,21 @@ func TestResolveMediaRefs_ToolRoleImageAppendedAsUserMessage(t *testing.T) {
 	}
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
-	// Tool message should have path tag but no base64
+	// Tool message should have a file entry appended to its content
 	if len(result[0].Media) != 0 {
 		t.Fatalf("expected 0 media in tool message, got %d", len(result[0].Media))
 	}
 	localPath, _, _ := store.ResolveWithMeta(ref)
-	if !strings.Contains(result[0].Content, "[image:"+localPath+"]") {
-		t.Fatalf("expected image path tag in tool content, got %q", result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+localPath+"]") {
+		t.Fatalf("expected file entry in tool content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/octet-stream") {
+		t.Fatalf("expected MIME type in content, got %q", result[0].Content)
 	}
 
-	// A synthetic user message with base64 should follow
-	if len(result) != 2 {
-		t.Fatalf("expected 2 messages (tool + synthetic user), got %d", len(result))
-	}
-	if result[1].Role != "user" {
-		t.Fatalf("expected synthetic message role=user, got %q", result[1].Role)
-	}
-	if len(result[1].Media) != 1 {
-		t.Fatalf("expected 1 base64 media in synthetic user message, got %d", len(result[1].Media))
-	}
-	if !strings.HasPrefix(result[1].Media[0], "data:image/png;base64,") {
-		t.Fatalf("expected data:image/png;base64, prefix, got %q", result[1].Media[0][:40])
+	// Only 1 message — no synthetic user message appended
+	if len(result) != 1 {
+		t.Fatalf("expected 1 message (no synthetic user), got %d", len(result))
 	}
 }
 
@@ -4780,15 +4776,14 @@ func TestResolveMediaRefs_MultiToolCallPreservesOrdering(t *testing.T) {
 		t.Fatalf("result[2] expected tool, got %q", result[2].Role)
 	}
 
-	// Synthetic user message should come AFTER the tool block
-	if len(result) != 4 {
-		t.Fatalf("expected 4 messages (assistant + 2 tool + synthetic user), got %d", len(result))
+	// No synthetic user message — the file entry is injected into the tool message content
+	if len(result) != 3 {
+		t.Fatalf("expected 3 messages (assistant + 2 tool), got %d", len(result))
 	}
-	if result[3].Role != "user" {
-		t.Fatalf("result[3] expected user, got %q", result[3].Role)
-	}
-	if len(result[3].Media) != 1 || !strings.HasPrefix(result[3].Media[0], "data:image/png;base64,") {
-		t.Fatal("expected synthetic user message to contain base64 image")
+
+	localPath, _, _ := store.ResolveWithMeta(imgRef)
+	if !strings.Contains(result[1].Content, "- [file://"+localPath+"]") {
+		t.Fatalf("expected file entry in tool#1 content, got %q", result[1].Content)
 	}
 }
 
@@ -4812,12 +4807,14 @@ func TestResolveMediaRefs_OversizedImageSkipsBase64KeepsPathTag(t *testing.T) {
 	result := resolveMediaRefs(messages, store, 1024)
 
 	if len(result[0].Media) != 0 {
-		t.Fatalf("expected 0 media (oversized), got %d", len(result[0].Media))
+		t.Fatalf("expected 0 media, got %d", len(result[0].Media))
 	}
 	localPath, _, _ := store.ResolveWithMeta(ref)
-	expected := "hi [image:" + localPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+localPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/octet-stream") {
+		t.Fatalf("expected MIME type in content, got %q", result[0].Content)
 	}
 }
 
@@ -4839,9 +4836,11 @@ func TestResolveMediaRefs_UnknownTypeInjectsPath(t *testing.T) {
 	if len(result[0].Media) != 0 {
 		t.Fatalf("expected 0 media entries, got %d", len(result[0].Media))
 	}
-	expected := "hi [file:" + txtPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+txtPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/octet-stream") {
+		t.Fatalf("expected MIME type in content, got %q", result[0].Content)
 	}
 }
 
@@ -4897,12 +4896,14 @@ func TestResolveMediaRefs_UsesMetaContentType(t *testing.T) {
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
 	if len(result[0].Media) != 0 {
-		t.Fatalf("expected 0 media (images use path tags), got %d", len(result[0].Media))
+		t.Fatalf("expected 0 media entries, got %d", len(result[0].Media))
 	}
 	localPath, _, _ := store.ResolveWithMeta(ref)
-	expectedContent := "hi [image:" + localPath + "]"
-	if result[0].Content != expectedContent {
-		t.Fatalf("expected content %q, got %q", expectedContent, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+localPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "image/jpeg") {
+		t.Fatalf("expected MIME type image/jpeg in content, got %q", result[0].Content)
 	}
 }
 
@@ -4921,11 +4922,13 @@ func TestResolveMediaRefs_PDFInjectsFilePath(t *testing.T) {
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
 	if len(result[0].Media) != 0 {
-		t.Fatalf("expected 0 media (non-image), got %d", len(result[0].Media))
+		t.Fatalf("expected 0 media, got %d", len(result[0].Media))
 	}
-	expected := "report.pdf [file:" + pdfPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+pdfPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/pdf") {
+		t.Fatalf("expected MIME type application/pdf in content, got %q", result[0].Content)
 	}
 }
 
@@ -4945,9 +4948,11 @@ func TestResolveMediaRefs_AudioInjectsAudioPath(t *testing.T) {
 	if len(result[0].Media) != 0 {
 		t.Fatalf("expected 0 media, got %d", len(result[0].Media))
 	}
-	expected := "voice.ogg [audio:" + oggPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+oggPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "audio/ogg") {
+		t.Fatalf("expected MIME type audio/ogg in content, got %q", result[0].Content)
 	}
 }
 
@@ -4967,9 +4972,11 @@ func TestResolveMediaRefs_VideoInjectsVideoPath(t *testing.T) {
 	if len(result[0].Media) != 0 {
 		t.Fatalf("expected 0 media, got %d", len(result[0].Media))
 	}
-	expected := "clip.mp4 [video:" + mp4Path + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+mp4Path+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "video/mp4") {
+		t.Fatalf("expected MIME type video/mp4 in content, got %q", result[0].Content)
 	}
 }
 
@@ -4986,77 +4993,14 @@ func TestResolveMediaRefs_NoGenericTagAppendsPath(t *testing.T) {
 	}
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
-	expected := "here is my data [file:" + csvPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+csvPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "text/csv") {
+		t.Fatalf("expected MIME type text/csv in content, got %q", result[0].Content)
 	}
 }
 
-func TestInjectPathTags_HandlesVariousChannelPlaceholders(t *testing.T) {
-	cases := []struct {
-		name    string
-		content string
-		tag     string
-		want    string
-	}{
-		// Telegram / Feishu format
-		{"image_photo", "[image: photo]", "[image:/tmp/p.png]", "[image:/tmp/p.png]"},
-		// WeCom / WeChat / Line format
-		{"bare_image", "[image]", "[image:/tmp/p.png]", "[image:/tmp/p.png]"},
-		// QQ / Discord format with filename
-		{"image_filename", "[image: pic.jpg]", "[image:/tmp/p.png]", "[image:/tmp/p.png]"},
-		{"audio_with_filename", "[audio: voice.m4a]", "[audio:/tmp/a.m4a]", "[audio:/tmp/a.m4a]"},
-		{"bare_audio", "[audio]", "[audio:/tmp/a.m4a]", "[audio:/tmp/a.m4a]"},
-		{"bare_video", "[video]", "[video:/tmp/v.mp4]", "[video:/tmp/v.mp4]"},
-		{"bare_file", "[file]", "[file:/tmp/f.pdf]", "[file:/tmp/f.pdf]"},
-		// Mixed surrounding text
-		{
-			"with_text",
-			"hello [image] world",
-			"[image:/tmp/p.png]",
-			"hello [image:/tmp/p.png] world",
-		},
-		// No placeholder — append
-		{"no_placeholder", "hello world", "[image:/tmp/p.png]", "hello world [image:/tmp/p.png]"},
-	}
-
-	for _, tc := range cases {
-		t.Run(tc.name, func(t *testing.T) {
-			got := injectPathTags(tc.content, []string{tc.tag})
-			if got != tc.want {
-				t.Errorf("expected %q, got %q", tc.want, got)
-			}
-		})
-	}
-}
-
-func TestInjectPathTags_DoesNotReplacePathTag(t *testing.T) {
-	// If content already contains a path tag, we must not touch it.
-	content := "see [image:/already/placed.png] thanks"
-	got := injectPathTags(content, []string{"[image:/new/path.png]"})
-	want := "see [image:/already/placed.png] thanks [image:/new/path.png]"
-	if got != want {
-		t.Fatalf("expected %q, got %q", want, got)
-	}
-}
-
-func TestInjectPathTags_PrependsForJSONContent(t *testing.T) {
-	jsonContent := `{"schema":"2.0","body":{"elements":[{"tag":"img","img_key":"img_123"}]}}`
-	got := injectPathTags(jsonContent, []string{"[image:/tmp/photo.png]"})
-	want := "[image:/tmp/photo.png]\n" + jsonContent
-	if got != want {
-		t.Fatalf("expected tag prepended to JSON, got %q", got)
-	}
-}
-
-func TestInjectPathTags_BracketTextNotTreatedAsJSON(t *testing.T) {
-	content := "[update] see attached report"
-	got := injectPathTags(content, []string{"[file:/tmp/report.pdf]"})
-	want := "[update] see attached report [file:/tmp/report.pdf]"
-	if got != want {
-		t.Fatalf("expected tag appended to bracket text, got %q", got)
-	}
-}
 
 func TestResolveMediaRefs_JSONContentPrependsPathTag(t *testing.T) {
 	store := media.NewFileMediaStore()
@@ -5078,9 +5022,16 @@ func TestResolveMediaRefs_JSONContentPrependsPathTag(t *testing.T) {
 	}
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
-	want := "[image:" + pngPath + "]\n" + jsonContent
-	if result[0].Content != want {
-		t.Fatalf("expected path tag prepended to JSON content, got %q", result[0].Content)
+	// Should append file entry at the end (not prepend)
+	if !strings.Contains(result[0].Content, "- [file://"+pngPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "image/png") {
+		t.Fatalf("expected MIME type image/png in content, got %q", result[0].Content)
+	}
+	// JSON content should still be present
+	if !strings.Contains(result[0].Content, jsonContent) {
+		t.Fatalf("expected JSON content preserved, got %q", result[0].Content)
 	}
 }
 
@@ -5098,9 +5049,11 @@ func TestResolveMediaRefs_EmptyContentGetsPathTag(t *testing.T) {
 	}
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
-	expected := "[file:" + docPath + "]"
-	if result[0].Content != expected {
-		t.Fatalf("expected content %q, got %q", expected, result[0].Content)
+	if !strings.Contains(result[0].Content, "- [file://"+docPath+"]") {
+		t.Fatalf("expected file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, docxMIME) {
+		t.Fatalf("expected docx MIME type in content, got %q", result[0].Content)
 	}
 }
 
@@ -5128,13 +5081,19 @@ func TestResolveMediaRefs_MixedImageAndFile(t *testing.T) {
 	result := resolveMediaRefs(messages, store, config.DefaultMaxMediaSize)
 
 	if len(result[0].Media) != 0 {
-		t.Fatalf("expected 0 media (all types use path tags), got %d", len(result[0].Media))
+		t.Fatalf("expected 0 media (all types use file entries), got %d", len(result[0].Media))
 	}
 	imgLocalPath, _, _ := store.ResolveWithMeta(imgRef)
 	pdfLocalPath, _, _ := store.ResolveWithMeta(fileRef)
-	expectedContent := "check these [file:" + pdfLocalPath + "] [image:" + imgLocalPath + "]"
-	if result[0].Content != expectedContent {
-		t.Fatalf("expected content %q, got %q", expectedContent, result[0].Content)
+
+	if !strings.Contains(result[0].Content, "- [file://"+pdfLocalPath+"]") {
+		t.Fatalf("expected pdf file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "- [file://"+imgLocalPath+"]") {
+		t.Fatalf("expected image file entry in content, got %q", result[0].Content)
+	}
+	if !strings.Contains(result[0].Content, "application/pdf") {
+		t.Fatalf("expected PDF MIME type in content, got %q", result[0].Content)
 	}
 }
 

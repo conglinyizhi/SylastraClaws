@@ -269,19 +269,19 @@ func (c *VKChannel) processAttachments(attachments []object.MessagesMessageAttac
 	for _, att := range attachments {
 		switch att.Type {
 		case "photo":
-			parts = append(parts, "[photo]")
+			parts = append(parts, "[file]")
 		case "video":
-			parts = append(parts, "[video]")
+			parts = append(parts, "[file]")
 		case "audio":
-			parts = append(parts, "[audio]")
+			parts = append(parts, "[file]")
 		case "doc":
 			if att.Doc.Title != "" {
-				parts = append(parts, fmt.Sprintf("[document: %s]", att.Doc.Title))
+				parts = append(parts, fmt.Sprintf("[file: %s]", att.Doc.Title))
 			} else {
-				parts = append(parts, "[document]")
+				parts = append(parts, "[file]")
 			}
 		case "audio_message":
-			parts = append(parts, "[voice]")
+			parts = append(parts, "[file]")
 		case "sticker":
 			parts = append(parts, "[sticker]")
 		}

@@ -8,7 +8,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/tools/shared"
 )
 
-// m_add: add a new mission item.
+// task_add: add a new mission item.
 type AddTool struct {
 	store *Store
 }
@@ -17,7 +17,7 @@ func NewAddTool(s *Store) *AddTool {
 	return &AddTool{store: s}
 }
 
-func (t *AddTool) Name() string   { return "m_add" }
+func (t *AddTool) Name() string   { return "task_add" }
 func (t *AddTool) Description() string { return "Add a new mission/task item." }
 
 func (t *AddTool) Parameters() map[string]any {
@@ -70,7 +70,7 @@ func (t *AddTool) Execute(ctx context.Context, args map[string]any) *toolshared.
 	}
 }
 
-// m_up: update an existing mission item.
+// task_up: update an existing mission item.
 type UpdateTool struct {
 	store *Store
 }
@@ -79,7 +79,7 @@ func NewUpdateTool(s *Store) *UpdateTool {
 	return &UpdateTool{store: s}
 }
 
-func (t *UpdateTool) Name() string   { return "m_up" }
+func (t *UpdateTool) Name() string   { return "task_up" }
 func (t *UpdateTool) Description() string { return "Update a mission item's fields (status, title, priority)." }
 
 func (t *UpdateTool) Parameters() map[string]any {
@@ -158,7 +158,7 @@ func (t *UpdateTool) Execute(ctx context.Context, args map[string]any) *toolshar
 	return &toolshared.ToolResult{ForLLM: forLLM}
 }
 
-// m_rm: remove a mission item by ID. Returns the full item so the LLM knows
+// task_rm: remove a mission item by ID. Returns the full item so the LLM knows
 // what was removed.
 type RemoveTool struct {
 	store *Store
@@ -168,7 +168,7 @@ func NewRemoveTool(s *Store) *RemoveTool {
 	return &RemoveTool{store: s}
 }
 
-func (t *RemoveTool) Name() string   { return "m_rm" }
+func (t *RemoveTool) Name() string   { return "task_rm" }
 func (t *RemoveTool) Description() string { return "Remove a mission item by ID." }
 
 func (t *RemoveTool) Parameters() map[string]any {

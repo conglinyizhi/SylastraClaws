@@ -1046,7 +1046,7 @@ func TestTelegramQuotedContent_IncludesVoiceMarkerAlongsideCaption(t *testing.T)
 		},
 	}
 
-	assert.Equal(t, "listen to this\n[voice]", telegramQuotedContent(msg))
+	assert.Equal(t, "listen to this\n[file]", telegramQuotedContent(msg))
 }
 
 func TestQuotedTelegramMediaRefs_ResolvesQuotedAudioInOrder(t *testing.T) {

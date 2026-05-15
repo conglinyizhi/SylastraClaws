@@ -15,7 +15,6 @@ import (
 	"time"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg/agent"
-	"github.com/conglinyizhi/SylastraClaws/pkg/audio/asr"
 	"github.com/conglinyizhi/SylastraClaws/pkg/audio/tts"
 	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
 	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
@@ -394,13 +393,6 @@ func setupAndStartServices(
 	agentLoop.SetChannelManager(runningServices.ChannelManager)
 	agentLoop.SetMediaStore(runningServices.MediaStore)
 
-	transcriber := asr.DetectTranscriber(cfg)
-	if transcriber != nil {
-		agentLoop.SetTranscriber(transcriber)
-		logger.InfoCF("voice", "Transcription enabled (agent-level)", map[string]any{"provider": transcriber.Name()})
-	}
-
-	ttsAvailable := tts.DetectTTS(cfg) != nil
 
 	enabledChannels := runningServices.ChannelManager.GetEnabledChannels()
 	if len(enabledChannels) > 0 {
@@ -428,15 +420,6 @@ func setupAndStartServices(
 		return nil, fmt.Errorf("error starting channels: %w", err)
 	}
 
-	logChannelVoiceCapabilities(runningServices.ChannelManager, transcriber != nil, ttsAvailable)
-
-	if transcriber != nil {
-		// Start Voice Agent Orchestrator after channels are ready.
-		vaCtx, vaCancel := context.WithCancel(context.Background())
-		runningServices.VoiceAgentCancel = vaCancel
-		voiceAgent := asr.NewAgent(msgBus, transcriber)
-		voiceAgent.Start(vaCtx)
-	}
 
 	healthAddr := net.JoinHostPort(listenResult.ProbeHost, strconv.Itoa(cfg.Gateway.Port))
 	fmt.Printf(
@@ -646,22 +629,9 @@ func restartServices(
 		fmt.Println("  ✓ Device event service restarted")
 	}
 
-	transcriber := asr.DetectTranscriber(cfg)
-	al.SetTranscriber(transcriber)
-	if transcriber != nil {
-		logger.InfoCF("voice", "Transcription re-enabled (agent-level)", map[string]any{"provider": transcriber.Name()})
-
-		// Start Voice Agent Orchestrator on reload
-		vaCtx, vaCancel := context.WithCancel(context.Background())
-		runningServices.VoiceAgentCancel = vaCancel
-		voiceAgent := asr.NewAgent(msgBus, transcriber)
-		voiceAgent.Start(vaCtx)
-	} else {
-		logger.InfoCF("voice", "Transcription disabled", nil)
-	}
 
 	ttsAvailable := tts.DetectTTS(cfg) != nil
-	logChannelVoiceCapabilities(runningServices.ChannelManager, transcriber != nil, ttsAvailable)
+	logChannelVoiceCapabilities(runningServices.ChannelManager, false, ttsAvailable)
 	// NOTE: PID file is written once at startup and not updated on reload.
 	// Changing the gateway listen address requires a full restart.
 

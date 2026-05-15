@@ -9,14 +9,12 @@ package agent
 import (
 	"context"
 	"fmt"
-	"regexp"
 	"strings"
 	"sync"
 	"sync/atomic"
 	"time"
 
 	"github.com/conglinyizhi/SylastraClaws/pkg/agent/interfaces"
-	"github.com/conglinyizhi/SylastraClaws/pkg/audio/asr"
 	"github.com/conglinyizhi/SylastraClaws/pkg/bus"
 	"github.com/conglinyizhi/SylastraClaws/pkg/commands"
 	"github.com/conglinyizhi/SylastraClaws/pkg/config"
@@ -47,7 +45,6 @@ type AgentLoop struct {
 	fallback       *providers.FallbackChain
 	channelManager interfaces.ChannelManager
 	mediaStore     media.MediaStore
-	transcriber    asr.Transcriber
 	cmdRegistry    *commands.Registry
 	mcp            mcpRuntime
 	// contributorManager centralises prompt contributor registration.
@@ -439,13 +436,6 @@ func (al *AgentLoop) ReloadProviderAndConfig(
 
 // SetTranscriber injects a voice transcriber for agent-level audio transcription.
 
-// SetReloadFunc sets the callback function for triggering config reload.
-
-var audioAnnotationRe = regexp.MustCompile(`\[(voice|audio)(?::[^\]]*)?\]`)
-
-// transcribeAudioInMessage resolves audio media refs, transcribes them, and
-// replaces audio annotations in msg.Content with the transcribed text.
-// Returns the (possibly modified) message and true if audio was transcribed.
 
 // sendTranscriptionFeedback sends feedback to the user with the result of
 // audio transcription if the option is enabled. It uses Manager.SendMessage

@@ -285,7 +285,7 @@ func TestExtractInboundContent_ImageNoURLFallback(t *testing.T) {
 	if !ok {
 		t.Fatal("expected ok for image fallback")
 	}
-	if content != "[image: test.png]" {
+	if content != "[file]" {
 		t.Fatalf("unexpected content: %q", content)
 	}
 	if len(mediaRefs) != 0 {
@@ -305,7 +305,7 @@ func TestExtractInboundContent_AudioNoURLFallback(t *testing.T) {
 	if !ok {
 		t.Fatal("expected ok for audio fallback")
 	}
-	if content != "please transcribe\n[audio: voice.ogg]" {
+	if content != "please transcribe\n[file]" {
 		t.Fatalf("unexpected content: %q", content)
 	}
 	if len(mediaRefs) != 0 {

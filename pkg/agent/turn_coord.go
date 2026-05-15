@@ -61,6 +61,15 @@ func (al *AgentLoop) runTurn(ctx context.Context, ts *turnState, pipeline *Pipel
 	maxMediaSize := pipeline.Cfg.Agents.Defaults.GetMaxMediaSize()
 	finalContent := exec.finalContent
 
+	// Pure file messages: skip LLM entirely.
+	// The file entries have been written to Session in SetupTurn via
+	// userPromptMessage. We reply directly and end the turn so the user
+	// can compose their text before the LLM processes the files.
+	if ts.userMessage == "" && len(ts.media) > 0 {
+		_ = al.bus.PublishOutbound(ctx, outboundMessageForTurn(ts, "文件已收到，可以对这个文件进行追问"))
+		return turnResult{}, nil
+	}
+
 	for ts.currentIteration() < ts.agent.MaxIterations || len(exec.pendingMessages) > 0 || func() bool {
 		graceful, _ := ts.gracefulInterruptRequested()
 		return graceful

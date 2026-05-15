@@ -896,11 +896,11 @@ func qqAttachmentNote(attachment *dto.MessageAttachment) string {
 
 	switch qqAttachmentKind(attachment) {
 	case "image":
-		return fmt.Sprintf("[image: %s]", filename)
+		return fmt.Sprintf("[file: %s]", filename)
 	case "audio":
-		return fmt.Sprintf("[audio: %s]", filename)
+		return fmt.Sprintf("[file: %s]", filename)
 	case "video":
-		return fmt.Sprintf("[video: %s]", filename)
+		return fmt.Sprintf("[file: %s]", filename)
 	default:
 		return fmt.Sprintf("[file: %s]", filename)
 	}

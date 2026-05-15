@@ -626,18 +626,18 @@ func (c *DiscordChannel) handleMessage(s *discordgo.Session, m *discordgo.Messag
 			localPath := c.downloadAttachment(attachment.URL, attachment.Filename)
 			if localPath != "" {
 				mediaPaths = append(mediaPaths, storeMedia(localPath, attachment.Filename))
-				content = appendContent(content, fmt.Sprintf("[audio: %s]", attachment.Filename))
+				content = appendContent(content, fmt.Sprintf("[file: %s]", attachment.Filename))
 			} else {
 				logger.WarnCF("discord", "Failed to download audio attachment", map[string]any{
 					"url":      attachment.URL,
 					"filename": attachment.Filename,
 				})
 				mediaPaths = append(mediaPaths, attachment.URL)
-				content = appendContent(content, fmt.Sprintf("[attachment: %s]", attachment.URL))
+				content = appendContent(content, fmt.Sprintf("[file: %s]", attachment.URL))
 			}
 		} else {
 			mediaPaths = append(mediaPaths, attachment.URL)
-			content = appendContent(content, fmt.Sprintf("[attachment: %s]", attachment.URL))
+			content = appendContent(content, fmt.Sprintf("[file: %s]", attachment.URL))
 		}
 	}
 

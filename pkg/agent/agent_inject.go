@@ -3,7 +3,6 @@
 package agent
 
 import (
-	"github.com/conglinyizhi/SylastraClaws/pkg/audio/asr"
 	"github.com/conglinyizhi/SylastraClaws/pkg/channels"
 	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 	"github.com/conglinyizhi/SylastraClaws/pkg/media"
@@ -52,9 +51,6 @@ func (al *AgentLoop) SetMediaStore(s media.MediaStore) {
 	})
 }
 
-func (al *AgentLoop) SetTranscriber(t asr.Transcriber) {
-	al.transcriber = t
-}
 
 func (al *AgentLoop) SetReloadFunc(fn func() error) {
 	al.reloadFunc = fn

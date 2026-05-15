@@ -2,7 +2,7 @@
 
 ## Overview
 
-The mission system provides built-in task/mission tracking for SylastraClaws agents. Three tools (`m_add`, `m_up`, `m_rm`) manage a JSON-backed task store, and the current task list is automatically injected into the system prompt every turn.
+The mission system provides built-in task/mission tracking for SylastraClaws agents. Three tools (`task_add`, `task_up`, `task_rm`) manage a JSON-backed task store, and the current task list is automatically injected into the system prompt every turn.
 
 This is a private extension — not part of upstream PicoClaw.
 
@@ -34,7 +34,7 @@ This is a private extension — not part of upstream PicoClaw.
 
 ## Tools
 
-### `m_add` — Add a new task
+### `task_add` — Add a new task
 
 | Parameter     | Type   | Required | Description                         |
 |---------------|--------|----------|-------------------------------------|
@@ -45,7 +45,7 @@ This is a private extension — not part of upstream PicoClaw.
 
 Returns: `[pending] <title> (id:<N> pri:<N>)`
 
-### `m_up` — Update a task
+### `task_up` — Update a task
 
 | Parameter     | Type   | Required | Description                         |
 |---------------|--------|----------|-------------------------------------|
@@ -57,7 +57,7 @@ Returns: `[pending] <title> (id:<N> pri:<N>)`
 
 Returns: `updated #<N> (<changed-fields>): [<status>] <title> (id:<N> pri:<N>)`
 
-### `m_rm` — Remove a task
+### `task_rm` — Remove a task
 
 | Parameter | Type | Required | Description           |
 |-----------|------|----------|-----------------------|
@@ -76,7 +76,7 @@ Every turn, the `ContextBuilder.buildDynamicContext()` method reads the current 
 - [pending] Write documentation (id:3, pri:2)
 ```
 
-This is part of the dynamic context (time, runtime, session info), not cached in the system prompt. The list refreshes every turn from the JSON file, so any `m_add`/`m_up`/`m_rm` call from a previous turn is immediately reflected.
+This is part of the dynamic context (time, runtime, session info), not cached in the system prompt. The list refreshes every turn from the JSON file, so any `task_add`/`task_up`/`task_rm` call from a previous turn is immediately reflected.
 
 ## Implementation
 

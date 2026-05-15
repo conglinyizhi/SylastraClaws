@@ -19,7 +19,7 @@ pkg/
     fs/                    — File system tools
     hardware/              — I2C, SPI, Serial
     integration/           — Web search, MCP bridge, messaging, etc.
-    mission/               — Mission task management (m_add/m_up/m_rm)
+    mission/               — Mission task management (task_add/task_up/task_rm)
     shared/                — Tool interface and shared types
     mission_facade.go       — Facade for mission package
 ```
@@ -28,7 +28,7 @@ pkg/
 
 - **JSON only config** — No yaml tags on config structs. All config files are JSON.
 - **Fork, not fork-lift** — Based on PicoClaw v0.2.8 (tag `6e1fab80`). Upstream divergence is intentional, not accidental.
-- **Mission management** — Three tools: `m_add` (add task), `m_up` (update), `m_rm` (remove). Task list auto-injected into system prompt. Storage follows XDG base directory spec (`~/.local/share/sylastraclaws/missions.json`).
+- **Mission management** — Three tools: `task_add` (add task), `task_up` (update), `task_rm` (remove). Task list auto-injected into system prompt. Storage follows XDG base directory spec (`~/.local/share/sylastraclaws/missions.json`).
 - **Prompt contributors** — All registered through `ContributorManager` in `pkg/agent/contributors.go`. New contributors add a struct + method on `ContributorManager`, then call it from the right place in `agent_init.go`.
 - **MCP tools** — Registered through `al.contributorManager.RegisterMCP()` in `agent_mcp.go`, not directly on ContextBuilder.
 - **Command bus** — `pkg/commands/` uses `CommandProvider` interface + `Registry.RegisterProvider()`. Built-in commands provide via `BuiltinProvider`. Plugins implement `CommandDefinitions() []Definition` and call `reg.RegisterProvider()`. All handler logic is in named functions in `handler_*.go`, not anonymous closures in `cmd_*.go`. Design doc: `docs/design/command-bus.md`.

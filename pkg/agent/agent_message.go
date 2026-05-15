@@ -123,14 +123,6 @@ func (al *AgentLoop) processMessage(ctx context.Context, msg bus.InboundMessage)
 		},
 	)
 
-	var hadAudio bool
-	msg, hadAudio = al.transcribeAudioInMessage(ctx, msg)
-
-	// For audio messages the placeholder was deferred by the channel.
-	// Now that transcription (and optional feedback) is done, send it.
-	if hadAudio && al.channelManager != nil {
-		al.channelManager.SendPlaceholder(ctx, msg.Channel, msg.ChatID)
-	}
 
 	// Route system messages to processSystemMessage
 	if msg.Channel == "system" {

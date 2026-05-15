@@ -1026,16 +1026,10 @@ func appendMediaTags(content, messageType string, mediaRefs []string) string {
 
 	var tag string
 	switch messageType {
-	case larkim.MsgTypeImage:
-		tag = "[image: photo]"
-	case larkim.MsgTypeAudio:
-		tag = "[audio]"
-	case larkim.MsgTypeMedia:
-		tag = "[video]"
-	case larkim.MsgTypeFile:
+	case larkim.MsgTypeImage, larkim.MsgTypeAudio, larkim.MsgTypeMedia, larkim.MsgTypeFile:
 		tag = "[file]"
 	default:
-		tag = "[attachment]"
+		tag = "[file]"
 	}
 
 	if content == "" {

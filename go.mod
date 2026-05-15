@@ -50,7 +50,10 @@ require (
 	modernc.org/sqlite v1.50.1
 )
 
-require rsc.io/qr v0.2.0 // indirect
+require (
+	github.com/spf13/afero v1.15.0 // indirect
+	rsc.io/qr v0.2.0 // indirect
+)
 
 require (
 	aead.dev/minisign v0.2.0 // indirect

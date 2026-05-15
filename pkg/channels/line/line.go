@@ -323,30 +323,30 @@ func (c *LINEChannel) processEvent(event lineEvent) {
 		if isGroup {
 			content = c.stripBotMention(content, msg)
 		}
-	case "image":
+		case "image":
 		localPath := c.downloadContent(msg.ID, "image.jpg")
 		if localPath != "" {
 			mediaPaths = append(mediaPaths, storeMedia(localPath, "image.jpg"))
-			content = "[image]"
+			content = "[file]"
 		}
 	case "audio":
 		localPath := c.downloadContent(msg.ID, "audio.m4a")
 		if localPath != "" {
 			mediaPaths = append(mediaPaths, storeMedia(localPath, "audio.m4a"))
-			content = "[audio]"
+			content = "[file]"
 		}
 	case "video":
 		localPath := c.downloadContent(msg.ID, "video.mp4")
 		if localPath != "" {
 			mediaPaths = append(mediaPaths, storeMedia(localPath, "video.mp4"))
-			content = "[video]"
+			content = "[file]"
 		}
 	case "file":
 		content = "[file]"
 	case "sticker":
 		content = "[sticker]"
 	default:
-		content = fmt.Sprintf("[%s]", msg.Type)
+		content = "[file]"
 	}
 
 	if strings.TrimSpace(content) == "" {

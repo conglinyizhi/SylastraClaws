@@ -1054,7 +1054,7 @@ func TestAgentLoop_Continue_PreservesSteeringMedia(t *testing.T) {
 		if msg.Role != "user" || !strings.Contains(msg.Content, "describe this image") {
 			continue
 		}
-		if strings.Contains(msg.Content, "[image:") {
+		if strings.Contains(msg.Content, "- [file://") {
 			foundResolvedMedia = true
 			break
 		}

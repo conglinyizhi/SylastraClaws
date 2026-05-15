@@ -51,7 +51,7 @@ The scope of changes — deep tool replacement, architectural restructuring, and
 | **Tool Architecture** | Renamed internal tools per `better_*` convention via shared facade aliases. `ExecTool` now supports process tree inspection (`list-tree` action). |
 | **Channel Integration** | Telegram, Feishu, WeChat, QQBot active. Matrix opt-in. |
 | **Licensing** | MIT — upstream copyright preserved, modifications carry own copyright. |
-| **Mission Management** | Built-in mission/task system (m_add/m_up/m_rm tools). Tasks auto-injected into system prompt. |
+| **Mission Management** | Built-in mission/task system (task_add/task_up/task_rm tools). Tasks auto-injected into system prompt. |
 | **Skill Triggers** | Private extension: SKILL.md frontmatter supports `trigger` field with regex. Matching skills highlighted in each turn (ephemeral). |
 | **Prompt Architecture** | Unified prompt contributor registry, multi-layer prompt stack with caching, flat map injector for AGENTS.md. |
 
@@ -67,7 +67,7 @@ The scope of changes — deep tool replacement, architectural restructuring, and
 | **Batch Editing** | Per-file operations | betools Batch / WriteFilesAtomic |
 | **Focus** | Embedded/$10 hardware | Desktop/cloud agent infrastructure |
 
-| **Task Management** | None | m_add / m_up / m_rm tools, auto-injected into prompt |
+| **Task Management** | None | task_add / task_up / task_rm tools, auto-injected into prompt |
 | **Skill Matching** | None | Trigger regex patterns in SKILL.md frontmatter |
 | **Config Format** | YAML+TOML dual | JSON-only |
 

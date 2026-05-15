@@ -783,7 +783,7 @@ func (c *TelegramChannel) handleMessage(ctx context.Context, message *telego.Mes
 			if content != "" {
 				content += "\n"
 			}
-			content += "[image: photo]"
+			content += "[file]"
 		}
 	}
 
@@ -795,7 +795,7 @@ func (c *TelegramChannel) handleMessage(ctx context.Context, message *telego.Mes
 			if content != "" {
 				content += "\n"
 			}
-			content += "[voice]"
+			content += "[file]"
 		}
 	}
 
@@ -806,7 +806,7 @@ func (c *TelegramChannel) handleMessage(ctx context.Context, message *telego.Mes
 			if content != "" {
 				content += "\n"
 			}
-			content += "[audio]"
+			content += "[file]"
 		}
 	}
 
@@ -1005,13 +1005,13 @@ func telegramQuotedContent(message *telego.Message) string {
 	}
 	switch {
 	case len(message.Photo) > 0:
-		parts = append(parts, "[image: photo]")
+		parts = append(parts, "[file]")
 	}
 	switch {
 	case message.Voice != nil:
-		parts = append(parts, "[voice]")
+		parts = append(parts, "[file]")
 	case message.Audio != nil:
-		parts = append(parts, "[audio]")
+		parts = append(parts, "[file]")
 	}
 	if message.Document != nil {
 		parts = append(parts, "[file]")

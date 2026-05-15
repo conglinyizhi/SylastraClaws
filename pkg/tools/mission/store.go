@@ -8,17 +8,20 @@ import (
 	"sort"
 	"sync"
 	"time"
+
+	"github.com/spf13/afero"
 )
 
-// Store manages mission items as a JSON file in XDG data home.
+// Store manages mission items as a JSON file.
 type Store struct {
 	mu       sync.RWMutex
+	fs       afero.Fs
 	filePath string
 	items    []MissionItem
 	nextID   int
 }
 
-// NewStore opens or creates the mission store.
+// NewStore opens or creates the mission store at the default XDG path.
 func NewStore() (*Store, error) {
 	dataHome := os.Getenv("XDG_DATA_HOME")
 	if dataHome == "" {
@@ -34,8 +37,14 @@ func NewStore() (*Store, error) {
 		return nil, fmt.Errorf("cannot create data dir %s: %w", dir, err)
 	}
 
+	return NewStoreWithFS(afero.NewOsFs(), filepath.Join(dir, "missions.json"))
+}
+
+// NewStoreWithFS creates a store backed by the given filesystem.
+func NewStoreWithFS(fs afero.Fs, filePath string) (*Store, error) {
 	s := &Store{
-		filePath: filepath.Join(dir, "missions.json"),
+		fs:       fs,
+		filePath: filePath,
 	}
 	if err := s.load(); err != nil {
 		return nil, err
@@ -139,7 +148,7 @@ func (s *Store) findIndex(id int) int {
 }
 
 func (s *Store) load() error {
-	data, err := os.ReadFile(s.filePath)
+	data, err := afero.ReadFile(s.fs, s.filePath)
 	if err != nil {
 		if os.IsNotExist(err) {
 			s.items = nil
@@ -189,10 +198,10 @@ func (s *Store) save() error {
 
 	// Atomic write: write to tmp, then rename
 	tmpPath := s.filePath + ".tmp"
-	if err := os.WriteFile(tmpPath, data, 0644); err != nil {
+	if err := afero.WriteFile(s.fs, tmpPath, data, 0644); err != nil {
 		return fmt.Errorf("cannot write mission file %s: %w", tmpPath, err)
 	}
-	if err := os.Rename(tmpPath, s.filePath); err != nil {
+	if err := s.fs.Rename(tmpPath, s.filePath); err != nil {
 		return fmt.Errorf("cannot commit mission file %s: %w", s.filePath, err)
 	}
 	return nil

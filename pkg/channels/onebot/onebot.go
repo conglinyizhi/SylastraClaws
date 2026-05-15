@@ -813,7 +813,7 @@ func (c *OneBotChannel) parseMessageSegments(
 						LoggerPrefix: "onebot",
 					})
 					if localPath != "" {
-						textParts = append(textParts, "[voice]")
+						textParts = append(textParts, "[file]")
 						mediaRefs = append(mediaRefs, storeFile(localPath, "voice.amr"))
 					}
 				}

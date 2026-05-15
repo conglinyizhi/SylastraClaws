@@ -98,7 +98,7 @@ func TestHandleC2CMessage_AttachmentOnlyPublishesMedia(t *testing.T) {
 	}
 
 	inbound := waitInboundMessage(t, messageBus)
-	if inbound.Content != "[image: image.png]" {
+	if inbound.Content != "[file: image.png]" {
 		t.Fatalf("inbound.Content = %q", inbound.Content)
 	}
 	if len(inbound.Media) != 1 {
