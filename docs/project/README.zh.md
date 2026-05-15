@@ -33,6 +33,36 @@
 >
 > *Sylastra* 是载体，是母舰，是所有子 Agent 诞生的调度平台。*Claws* 是延伸出去的执行之手——赋予 LLM 真正在系统里"上手做事"的物理化能力。
 
+## 快速开始
+
+### 首次设置
+
+```bash
+# 编译并一键配置
+go build -o sylastraclaws ./cmd/picoclaw/
+
+# 交互式首次配置 —— API key、模型名、中转地址任意顺序
+./sylastraclaws --first-run "sk-xxx,gpt-4o"
+./sylastraclaws --first-run "sk-ant-xxx,claude-sonnet-4-20250514,https://api.anthropic.com"
+
+# 开始聊天
+./sylastraclaws agent
+```
+
+`--first-run` 自动识别提供商（OpenAI、Anthropic、Gemini、DeepSeek 等 20+），发送测试消息验证，然后写入配置文件。无需手动编辑。
+
+### 全量编译（含 Matrix 通道）
+
+```bash
+# 日常开发 —— 不含 Matrix（无 CGo 依赖）
+go build ./...
+
+# 全量编译 —— 含 Matrix 通道（纯 Go 加密，零 CGo）
+make build-all
+```
+
+Matrix 通道需要同时使用 `matrix` 和 `goolm` 两个 build tag（`make build-all` 会自动处理）。默认 `go build ./...` 完全排除 Matrix。
+
 ---
 
 ## 这是什么？

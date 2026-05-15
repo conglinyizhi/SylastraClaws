@@ -31,6 +31,36 @@ Together: **Forest of Stars**, or **The Starwood**.
 > 
 > *Sylastra* is the carrier, the mothership from which all sub-agents are born. *Claws* are the reaching hands — the extensions that give LLMs the physical ability to grip, execute, and act in the system.
 
+## Quick Start
+
+### First Time Setup
+
+```bash
+# Build and configure in one command
+go build -o sylastraclaws ./cmd/picoclaw/
+
+# Interactive setup — pass API key, model, and optional base URL in any order
+./sylastraclaws --first-run "sk-xxx,gpt-4o"
+./sylastraclaws --first-run "sk-ant-xxx,claude-sonnet-4-20250514,https://api.anthropic.com"
+
+# Start chatting
+./sylastraclaws agent
+```
+
+The `--first-run` flag auto-detects your provider (OpenAI, Anthropic, Gemini, DeepSeek, 20+), sends a test message, and writes the config file. No manual config editing needed.
+
+### Full Build (with Matrix support)
+
+```bash
+# Daily development — no Matrix (no CGo needed)
+go build ./...
+
+# Full build with Matrix channel (pure Go encryption, zero CGo)
+make build-all
+```
+
+The Matrix channel requires `matrix` and `goolm` build tags together (`make build-all` handles this). Default builds (`go build ./...`) exclude Matrix entirely.
+
 ### What This Fork Is
 
 This project took PicoClaw's ultra-lightweight AI agent infrastructure and redirected it toward a different design philosophy — replacing the original file-system tools with [better-edit-tools-mcp](https://github.com/conglinyizhi/better-edit-tools-mcp) (v0.6.0) as the native read/write filesystem layer, with ongoing divergence in both tooling and architecture.
