@@ -19,6 +19,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
 	"github.com/conglinyizhi/SylastraClaws/pkg/providers"
 	"github.com/conglinyizhi/SylastraClaws/pkg/skills"
+	"github.com/conglinyizhi/SylastraClaws/pkg/tools/mission"
 	"github.com/conglinyizhi/SylastraClaws/pkg/utils"
 )
 
@@ -28,6 +29,7 @@ type ContextBuilder struct {
 	memory         *MemoryStore
 	splitOnMarker  bool
 	promptRegistry *PromptRegistry
+	missionStore   *mission.Store
 
 	// Cache for system prompt to avoid rebuilding on every call.
 	// This fixes issue #607: repeated reprocessing of the entire context.
@@ -88,7 +90,18 @@ func NewContextBuilder(workspace string) *ContextBuilder {
 		skillsLoader:   skills.NewSkillsLoader(workspace, globalSkillsDir, builtinSkillsDir),
 		memory:         NewMemoryStore(workspace),
 		promptRegistry: NewPromptRegistry(),
+		missionStore:   initMissionStore(),
 	}
+}
+
+
+func initMissionStore() *mission.Store {
+	store, err := mission.NewStore()
+	if err != nil {
+		logger.WarnCF("agent", "Failed to init mission store for context injection", map[string]any{"error": err.Error()})
+		return nil
+	}
+	return store
 }
 
 func (cb *ContextBuilder) RegisterPromptSource(desc PromptSourceDescriptor) error {
@@ -623,6 +636,21 @@ func (cb *ContextBuilder) buildDynamicContext(channel, chatID, senderID, senderD
 		fmt.Fprintf(&sb, "\n\n## Current Sender\n%s", senderLine)
 	}
 
+	
+
+	// Mission task list (injected every turn — not cached)
+	if cb.missionStore != nil {
+		items := cb.missionStore.List()
+		if len(items) > 0 {
+			fmt.Fprintf(&sb, "
+
+## Active Missions")
+			for _, item := range items {
+				fmt.Fprintf(&sb, "
+- [%s] %s (id:%d, pri:%d)", item.Status, item.Title, item.ID, item.Priority)
+			}
+		}
+	}
 	return sb.String()
 }
 
