@@ -116,7 +116,7 @@ If your first goal is simply to prove that the hook flow works and observe real 
 
 1. Enable `hooks.enabled`
 2. Save the Python example from this document to a local file, for example `/tmp/review_gate.py`
-3. Set `PICOCLAW_HOOK_LOG_FILE`
+3. Set `SYLASTRACLAWS_LOG_FILE` (or `PICOCLAW_LOG_FILE` for legacy)
 4. Restart the gateway
 5. Watch the log file with `tail -f`
 

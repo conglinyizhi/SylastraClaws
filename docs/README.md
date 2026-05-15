@@ -1,6 +1,7 @@
-# PicoClaw Documentation
+# SylastraClaws Documentation
 
-PicoClaw documentation is organized by document type first and language second.
+This project is forked from PicoClaw and rebranded as SylastraClaws.  
+The documentation structure below follows the original layout — many guides still reference "picoclaw" but remain functionally accurate.
 
 This file describes the recommended documentation layout, how translated files should be named, and what `make lint-docs` currently checks locally.
 
