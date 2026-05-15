@@ -53,4 +53,5 @@ go run ./cmd/picoclaw/
 - When the user asks for code changes, read the relevant files first before making assumptions. The codebase has diverged significantly from upstream.
 - The user prefers directness and hates wasted token spend. Keep responses tight.
 - When suggesting changes, prefer minimal diff. If you can fix something in 3 lines, don't propose 30.
+- **Triggered skills** (`docs/design/triggered-skills.md`) — Private extension: SKILL.md frontmatter supports `trigger` field with regex patterns. When user message matches, the skill is highlighted in the turn annotation. Review and update this doc when adding/changing trigger behavior.
 - The user is learning Go and has good taste. They will call out hand-wavy explanations.
