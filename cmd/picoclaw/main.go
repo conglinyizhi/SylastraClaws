@@ -9,6 +9,7 @@ package main
 import (
 	"fmt"
 	"os"
+	"strings"
 	"time"
 
 	"github.com/spf13/cobra"
@@ -18,6 +19,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/auth"
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/cliui"
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/cron"
+	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/firstrun"
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/gateway"
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/mcp"
 	"github.com/conglinyizhi/SylastraClaws/cmd/picoclaw/internal/migrate"
@@ -49,6 +51,34 @@ func earlyColorDisabled() bool {
 		}
 	}
 	return false
+}
+
+// extractFirstRunValue returns the --first-run flag value from os.Args.
+// Supports both:
+//
+//	--first-run <value>    (next arg)
+//	--first-run=<value>    (equals form)
+func extractFirstRunValue() string {
+	for i := 1; i < len(os.Args); i++ {
+		arg := os.Args[i]
+		if arg == "--first-run" || arg == "--first-run=true" {
+			if i+1 < len(os.Args) && arg == "--first-run" {
+				if !strings.HasPrefix(os.Args[i+1], "--") {
+					return os.Args[i+1]
+				}
+			}
+			// --first-run without value or --first-run=true both mean empty
+			return ""
+		}
+		if strings.HasPrefix(arg, "--first-run=") {
+			val := strings.TrimPrefix(arg, "--first-run=")
+			if val == "true" || val == "" {
+				return ""
+			}
+			return val
+		}
+	}
+	return ""
 }
 
 func NewPicoclawCommand() *cobra.Command {
@@ -127,6 +157,15 @@ func main() {
 		fmt.Print(plainBanner)
 	} else {
 		fmt.Printf("%s", banner)
+	}
+
+	// Handle --first-run before normal command execution
+	if val := extractFirstRunValue(); val != "" {
+		if err := firstrun.Run(val); err != nil && err != firstrun.ErrNotFirstRun {
+			fmt.Fprintf(os.Stderr, "Error: %v\n", err)
+			os.Exit(1)
+		}
+		os.Exit(0)
 	}
 
 	tzEnv := os.Getenv("TZ")
