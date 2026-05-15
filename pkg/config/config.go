@@ -264,6 +264,10 @@ type AgentDefaults struct {
 	ToolFeedback              ToolFeedbackConfig `json:"tool_feedback,omitempty"`
 	SplitOnMarker             bool               `json:"split_on_marker"                  env:"PICOCLAW_AGENTS_DEFAULTS_SPLIT_ON_MARKER"` // split messages on <|[SPLIT]|> marker
 	ContextManager            string             `json:"context_manager,omitempty"        env:"PICOCLAW_AGENTS_DEFAULTS_CONTEXT_MANAGER"`
+	// FileOnlyResponses defines the messages shown when a user sends only files (no text).
+	// One is chosen at random each time. Supports i18n and roleplay contexts.
+	// Default: ["文件已收到，可以对这个文件进行追问"]
+	FileOnlyResponses []string `json:"file_only_responses,omitempty" env:"PICOCLAW_AGENTS_DEFAULTS_FILE_ONLY_RESPONSES"`
 	ContextManagerConfig      json.RawMessage    `json:"context_manager_config,omitempty" env:"PICOCLAW_AGENTS_DEFAULTS_CONTEXT_MANAGER_CONFIG"`
 }
 
@@ -296,6 +300,18 @@ func (d *AgentDefaults) IsToolFeedbackSeparateMessagesEnabled() bool {
 	return d.ToolFeedback.SeparateMessages
 }
 
+// DefaultFileOnlyResponses is the fallback when config has none set.
+var DefaultFileOnlyResponses = []string{"文件已收到，可以对这个文件进行追问"}
+
+// GetFileOnlyResponse returns a randomly chosen file-only message from the configured list.
+// If none configured, returns the default.
+func (d *AgentDefaults) GetFileOnlyResponse() string {
+	list := d.FileOnlyResponses
+	if len(list) == 0 {
+		list = DefaultFileOnlyResponses
+	}
+	return list[rand.Intn(len(list))]
+}
 // GetModelName returns the effective model name for the agent defaults.
 // It prefers the new "model_name" field but falls back to "model" for backward compatibility.
 func (d *AgentDefaults) GetModelName() string {
