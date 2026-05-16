@@ -72,12 +72,19 @@ func (p *Pipeline) CallLLM(
 	if exec.useNativeSearch {
 		exec.llmOpts["native_search"] = true
 	}
-	if ts.agent.ThinkingLevel != ThinkingOff {
+	// Determine effective thinking level: channel override > agent global
+	effectiveThinkingLevel := ts.agent.ThinkingLevel
+	if behavior := al.getChannelBehavior(ts.channel); behavior != nil {
+		if override := behavior.EffectiveThinkingOverride(); override != "" {
+			effectiveThinkingLevel = parseThinkingLevel(override)
+		}
+	}
+	if effectiveThinkingLevel != ThinkingOff {
 		if tc, ok := ts.agent.Provider.(providers.ThinkingCapable); ok && tc.SupportsThinking() {
-			exec.llmOpts["thinking_level"] = string(ts.agent.ThinkingLevel)
+			exec.llmOpts["thinking_level"] = string(effectiveThinkingLevel)
 		} else {
 			logger.WarnCF("agent", "thinking_level is set but current provider does not support it, ignoring",
-				map[string]any{"agent_id": ts.agent.ID, "thinking_level": string(ts.agent.ThinkingLevel)})
+				map[string]any{"agent_id": ts.agent.ID, "thinking_level": string(effectiveThinkingLevel)})
 		}
 	}
 
@@ -382,23 +389,43 @@ func (p *Pipeline) CallLLM(
 	}
 
 	reasoningContent := responseReasoningContent(exec.response)
+	hasReasoning := reasoningContent != ""
 	shouldPublishInterimToolCalls := !constants.IsInternalChannel(ts.channel) && len(exec.response.ToolCalls) > 0
 	shouldPublishPicoToolCallInterim := shouldPublishInterimToolCalls && ts.channel == "pico"
+
+	// Check channel behavior for ShowReasoning.
+	// Default: true (backward compatible — reasoning is shown unless explicitly disabled).
+	behavior := al.getChannelBehavior(ts.channel)
+	showReasoningDefault := true
+	if behavior != nil && behavior.ShowReasoning != nil {
+		showReasoningDefault = *behavior.ShowReasoning
+	} else if al.cfg.Agents.Defaults.BehaviorDefaults != nil && al.cfg.Agents.Defaults.BehaviorDefaults.ShowReasoning != nil {
+		showReasoningDefault = *al.cfg.Agents.Defaults.BehaviorDefaults.ShowReasoning
+	}
+	showReasoning := hasReasoning && showReasoningDefault
+
 	if shouldPublishPicoToolCallInterim {
 		// Pico tool-call turns publish their reasoning/content/tool summary as a
 		// structured sequence after the tool-call payload is normalized below.
 	} else if shouldPublishInterimToolCalls {
 		// Non-pico channels: still publish, go via handleReasoning for the interim
 		// content, and structured tool-call details will be published after normalization.
+		if showReasoning {
+			go al.handleReasoning(turnCtx, reasoningContent, ts.channel, al.targetReasoningChannelID(ts.channel))
+		}
 	} else if ts.channel == "pico" {
-		go al.publishPicoReasoning(turnCtx, reasoningContent, ts.chatID)
+		if showReasoning {
+			go al.publishPicoReasoning(turnCtx, reasoningContent, ts.chatID)
+		}
 	} else {
-		go al.handleReasoning(
-			turnCtx,
-			reasoningContent,
-			ts.channel,
-			al.targetReasoningChannelID(ts.channel),
-		)
+		if showReasoning {
+			go al.handleReasoning(
+				turnCtx,
+				reasoningContent,
+				ts.channel,
+				al.targetReasoningChannelID(ts.channel),
+			)
+		}
 	}
 	al.emitEvent(
 		EventKindLLMResponse,
@@ -523,7 +550,9 @@ func (p *Pipeline) CallLLM(
 		)
 	} else if shouldPublishInterimToolCalls {
 		// Non-pico channels: publish reasoning and tool-call summary for visibility
-		go al.handleReasoning(turnCtx, reasoningContent, ts.channel, al.targetReasoningChannelID(ts.channel))
+		if showReasoning {
+			go al.handleReasoning(turnCtx, reasoningContent, ts.channel, al.targetReasoningChannelID(ts.channel))
+		}
 		if strings.TrimSpace(exec.response.Content) != "" {
 			go func() {
 				pubCtx, pubCancel := context.WithTimeout(turnCtx, 3*time.Second)

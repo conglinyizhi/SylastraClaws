@@ -49,3 +49,7 @@ func (a *channelManagerAdapter) DismissToolFeedback(
 ) {
 	a.inner.DismissToolFeedback(ctx, channel, chatID, outboundCtx)
 }
+
+func (a *channelManagerAdapter) GetStreamer(ctx context.Context, channel, chatID string) (bus.Streamer, bool) {
+	return a.inner.GetStreamer(ctx, channel, chatID)
+}

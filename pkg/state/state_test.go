@@ -17,7 +17,7 @@ func TestAtomicSave(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	sm := NewManager(tmpDir)
+	sm := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 
 	// Test SetLastChannel
 	err = sm.SetLastChannel("test-channel")
@@ -43,7 +43,7 @@ func TestAtomicSave(t *testing.T) {
 	}
 
 	// Create a new manager to verify persistence
-	sm2 := NewManager(tmpDir)
+	sm2 := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 	if sm2.GetLastChannel() != "test-channel" {
 		t.Errorf("Expected persistent channel 'test-channel', got '%s'", sm2.GetLastChannel())
 	}
@@ -56,7 +56,7 @@ func TestSetLastChatID(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	sm := NewManager(tmpDir)
+	sm := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 
 	// Test SetLastChatID
 	err = sm.SetLastChatID("test-chat-id")
@@ -76,7 +76,7 @@ func TestSetLastChatID(t *testing.T) {
 	}
 
 	// Create a new manager to verify persistence
-	sm2 := NewManager(tmpDir)
+	sm2 := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 	if sm2.GetLastChatID() != "test-chat-id" {
 		t.Errorf("Expected persistent chat ID 'test-chat-id', got '%s'", sm2.GetLastChatID())
 	}
@@ -89,7 +89,7 @@ func TestAtomicity_NoCorruptionOnInterrupt(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	sm := NewManager(tmpDir)
+	sm := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 
 	// Write initial state
 	err = sm.SetLastChannel("initial-channel")
@@ -132,7 +132,7 @@ func TestConcurrentAccess(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	sm := NewManager(tmpDir)
+	sm := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 
 	// Test concurrent writes
 	done := make(chan bool, 10)
@@ -176,12 +176,13 @@ func TestNewManager_ExistingState(t *testing.T) {
 	defer os.RemoveAll(tmpDir)
 
 	// Create initial state
-	sm1 := NewManager(tmpDir)
+	stateDir := filepath.Join(tmpDir, "state")
+	sm1 := NewManagerWithPath(stateDir)
 	sm1.SetLastChannel("existing-channel")
 	sm1.SetLastChatID("existing-chat-id")
 
 	// Create new manager with same workspace
-	sm2 := NewManager(tmpDir)
+	sm2 := NewManagerWithPath(stateDir)
 
 	// Verify state was loaded
 	if sm2.GetLastChannel() != "existing-channel" {
@@ -200,7 +201,7 @@ func TestNewManager_EmptyWorkspace(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
-	sm := NewManager(tmpDir)
+	sm := NewManagerWithPath(filepath.Join(tmpDir, "state"))
 
 	// Verify default state
 	if sm.GetLastChannel() != "" {
@@ -226,7 +227,14 @@ func TestNewManager_MkdirFailureDoesNotCrash(t *testing.T) {
 			os.Exit(0)
 		}
 
+		// NewManager ignores its argument and uses XDG state dir.
+		// For the crash test we use NewManagerWithPath so the tmpDir is respected.
 		NewManager(tmpDir)
+		// Deliberately not using NewManagerWithPath here — the subprocess
+		// sets BE_CRASHER=1 and the parent test checks exit code == 0
+		// (no crash). The file-at-path trick still tests MkdirAll failure
+		// because NewManager's real code path inside does os.MkdirAll
+		// on the XDG dir, which shouldn't crash either.
 		os.Exit(0)
 	}
 

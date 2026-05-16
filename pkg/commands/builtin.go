@@ -18,5 +18,6 @@ func (BuiltinProvider) CommandDefinitions() []Definition {
 		contextCommand(),
 		subagentsCommand(),
 		reloadCommand(),
+		thinkCommand(),
 	}
 }

@@ -51,4 +51,8 @@ type ChannelManager interface {
 	// outboundCtx carries topic/thread info needed for channels that use
 	// scoped tracker keys (e.g., Telegram forum topics); may be nil.
 	DismissToolFeedback(ctx context.Context, channel, chatID string, outboundCtx *bus.InboundContext)
+
+	// GetStreamer returns a Streamer for streaming partial LLM output if the
+	// channel supports it. Used by token flow statistics during streaming.
+	GetStreamer(ctx context.Context, channel, chatID string) (bus.Streamer, bool)
 }

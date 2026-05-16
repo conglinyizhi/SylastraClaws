@@ -286,6 +286,10 @@ type AgentDefaults struct {
 	// Relative paths are resolved against the workspace directory.
 	PromptTemplates string `json:"prompt_templates,omitempty" env:"SYLASTRACLAWS_AGENTS_DEFAULTS_PROMPT_TEMPLATES"`
 	ContextManagerConfig      json.RawMessage    `json:"context_manager_config,omitempty" env:"SYLASTRACLAWS_AGENTS_DEFAULTS_CONTEXT_MANAGER_CONFIG"`
+
+	// BehaviorDefaults sets the default channel behavior for all channels.
+	// Individual channels can override via their behavior field.
+	BehaviorDefaults *ChannelBehaviorConfig `json:"behavior_defaults,omitempty"`
 }
 
 const DefaultMaxMediaSize = 20 * 1024 * 1024 // 20 MB
@@ -327,6 +331,71 @@ func (d *AgentDefaults) GetModelName() string {
 type GroupTriggerConfig struct {
 	MentionOnly bool     `json:"mention_only,omitempty"`
 	Prefixes    []string `json:"prefixes,omitempty"`
+}
+
+// ChannelBehaviorConfig controls per-channel LLM behavior such as
+// whether to show reasoning content, token throughput statistics,
+// and thinking override levels.
+type ChannelBehaviorConfig struct {
+	// ShowReasoning controls whether the model's reasoning/thinking content
+	// is sent to this channel's reasoning_channel_id (or to the same chat
+	// if reasoning_channel_id is not set).
+	// nil = inherit from global default.
+	ShowReasoning *bool `json:"show_reasoning,omitempty"`
+
+	// ShowTokenFlow controls whether token throughput statistics are
+	// displayed in real-time for this channel.
+	// nil = inherit from global default.
+	ShowTokenFlow *bool `json:"show_token_flow,omitempty"`
+
+	// TokenFlowIntervalSec controls how often (in seconds) the token
+	// throughput message is updated. Must be >= 1. Default: 3.
+	TokenFlowIntervalSec *int `json:"token_flow_interval_sec,omitempty"`
+
+	// ThinkingOverride overrides the global thinking level for this
+	// specific channel. When empty, the global agent thinking level
+	// is used. Valid values: "off", "low", "medium", "high", "xhigh", "adaptive".
+	ThinkingOverride string `json:"thinking_override,omitempty"`
+}
+
+// EffectiveShowReasoning returns the effective ShowReasoning value:
+// channel-level override if set, otherwise the global default.
+func (b *ChannelBehaviorConfig) EffectiveShowReasoning(globalDefault bool) bool {
+	if b != nil && b.ShowReasoning != nil {
+		return *b.ShowReasoning
+	}
+	return globalDefault
+}
+
+// EffectiveShowTokenFlow returns the effective ShowTokenFlow value:
+// channel-level override if set, otherwise the global default.
+func (b *ChannelBehaviorConfig) EffectiveShowTokenFlow(globalDefault bool) bool {
+	if b != nil && b.ShowTokenFlow != nil {
+		return *b.ShowTokenFlow
+	}
+	return globalDefault
+}
+
+// EffectiveTokenFlowInterval returns the effective token flow update interval.
+// Returns channel-level override if set (and >= 1), otherwise globalDefault.
+// If globalDefault < 1, falls back to 3.
+func (b *ChannelBehaviorConfig) EffectiveTokenFlowInterval(globalDefault int) int {
+	if b != nil && b.TokenFlowIntervalSec != nil && *b.TokenFlowIntervalSec >= 1 {
+		return *b.TokenFlowIntervalSec
+	}
+	if globalDefault >= 1 {
+		return globalDefault
+	}
+	return 3
+}
+
+// EffectiveThinkingOverride returns the effective thinking override for this channel.
+// Returns the override string if set, otherwise empty (meaning "use global").
+func (b *ChannelBehaviorConfig) EffectiveThinkingOverride() string {
+	if b != nil {
+		return b.ThinkingOverride
+	}
+	return ""
 }
 
 // TypingConfig controls typing indicator behavior (Phase 10).

@@ -515,6 +515,27 @@ func (al *AgentLoop) runAgentLoop(
 			opts.Dispatch.SessionKey,
 			opts.Dispatch.SessionScope,
 		)
+
+		// Append token flow statistics to the final message when available.
+		content := result.finalContent
+		if !constants.IsInternalChannel(opts.Dispatch.Channel()) {
+			behavior := al.getChannelBehavior(opts.Dispatch.Channel())
+			globalDefault := true
+			if al.cfg != nil && al.cfg.Agents.Defaults.BehaviorDefaults != nil && al.cfg.Agents.Defaults.BehaviorDefaults.ShowTokenFlow != nil {
+				globalDefault = *al.cfg.Agents.Defaults.BehaviorDefaults.ShowTokenFlow
+			}
+			showTokenFlow := behavior.EffectiveShowTokenFlow(globalDefault)
+			if showTokenFlow {
+				if usage := ts.GetLastUsage(); usage != nil {
+					elapsed := time.Since(ts.startedAt)
+					stats := buildTokenFlowFinalStats(int64(len(content)), elapsed, usage)
+					if stats != "" {
+						content = content + "\n\n" + stats
+					}
+				}
+			}
+		}
+
 		al.bus.PublishOutbound(ctx, bus.OutboundMessage{
 			Context: outboundContextFromInbound(
 				opts.Dispatch.InboundContext,
@@ -525,7 +546,7 @@ func (al *AgentLoop) runAgentLoop(
 			AgentID:      agentID,
 			SessionKey:   sessionKey,
 			Scope:        scope,
-			Content:      result.finalContent,
+			Content:      content,
 			ContextUsage: computeContextUsage(agent, opts.Dispatch.SessionKey),
 		})
 	}
@@ -597,5 +618,51 @@ func (al *AgentLoop) runAgentLoop(
 
 // filterClientWebSearch returns a copy of tools with the client-side
 // web_search tool removed. Used when native provider search is preferred.
+
+// getChannelBehavior returns the effective ChannelBehaviorConfig for a channel,
+// merging channel-level overrides with the global defaults.
+func (al *AgentLoop) getChannelBehavior(channelName string) *config.ChannelBehaviorConfig {
+	if al == nil || al.cfg == nil {
+		return nil
+	}
+	globalDefaults := al.cfg.Agents.Defaults.BehaviorDefaults
+	ch := al.cfg.Channels.Get(channelName)
+	if ch == nil || ch.Behavior == nil {
+		return globalDefaults
+	}
+	// Merge: channel overrides on top of global defaults
+	merged := &config.ChannelBehaviorConfig{}
+	if globalDefaults != nil {
+		if globalDefaults.ShowReasoning != nil {
+			v := *globalDefaults.ShowReasoning
+			merged.ShowReasoning = &v
+		}
+		if globalDefaults.ShowTokenFlow != nil {
+			v := *globalDefaults.ShowTokenFlow
+			merged.ShowTokenFlow = &v
+		}
+		if globalDefaults.TokenFlowIntervalSec != nil {
+			v := *globalDefaults.TokenFlowIntervalSec
+			merged.TokenFlowIntervalSec = &v
+		}
+		merged.ThinkingOverride = globalDefaults.ThinkingOverride
+	}
+	if ch.Behavior.ShowReasoning != nil {
+		v := *ch.Behavior.ShowReasoning
+		merged.ShowReasoning = &v
+	}
+	if ch.Behavior.ShowTokenFlow != nil {
+		v := *ch.Behavior.ShowTokenFlow
+		merged.ShowTokenFlow = &v
+	}
+	if ch.Behavior.TokenFlowIntervalSec != nil {
+		v := *ch.Behavior.TokenFlowIntervalSec
+		merged.TokenFlowIntervalSec = &v
+	}
+	if ch.Behavior.ThinkingOverride != "" {
+		merged.ThinkingOverride = ch.Behavior.ThinkingOverride
+	}
+	return merged
+}
 
 // Helper to extract provider from registry for cleanup

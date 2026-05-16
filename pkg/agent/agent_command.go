@@ -322,7 +322,17 @@ func (al *AgentLoop) buildCommandsRuntime(
 			return oldModel, nil
 		}
 
-		rt.ClearHistory = func() error {
+		rt.SwitchThinkLevel = func(level string) (string, error) {
+		oldLevel := string(agent.ThinkingLevel)
+		newLevel := parseThinkingLevel(level)
+		if newLevel == ThinkingOff && level != "off" && level != "" {
+			return string(oldLevel), fmt.Errorf("invalid thinking level %q", level)
+		}
+		agent.ThinkingLevel = newLevel
+		return oldLevel, nil
+	}
+
+	rt.ClearHistory = func() error {
 			if opts == nil {
 				return fmt.Errorf("process options not available")
 			}

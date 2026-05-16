@@ -54,6 +54,24 @@ func NewManager(_ string) *Manager {
 	return sm
 }
 
+// NewManagerWithPath creates a state manager with an explicit state directory path.
+// Used by tests — production code should use NewManager.
+func NewManagerWithPath(stateDir string) *Manager {
+	stateFile := filepath.Join(stateDir, "state.json")
+
+	if err := os.MkdirAll(stateDir, 0o700); err != nil {
+		log.Printf("[WARN] state: failed to create state directory %s: %v", stateDir, err)
+	}
+
+	sm := &Manager{
+		stateFile: stateFile,
+		state:     &State{},
+	}
+
+	_ = sm.load()
+	return sm
+}
+
 // SetLastChannel atomically updates the last channel and saves the state.
 // This method uses a temp file + rename pattern for atomic writes,
 // ensuring that the state file is never corrupted even if the process crashes.

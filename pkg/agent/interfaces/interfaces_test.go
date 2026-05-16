@@ -39,6 +39,7 @@ type mockChannelManager struct {
 	sendMediaFn            func(ctx context.Context, msg bus.OutboundMediaMessage) error
 	sendPlaceholderFn      func(ctx context.Context, channel, chatID string) bool
 	dismissToolFeedbackFn  func(ctx context.Context, channel, chatID string, outboundCtx *bus.InboundContext)
+	getStreamerFn          func(ctx context.Context, channel, chatID string) (bus.Streamer, bool)
 }
 
 func (m *mockChannelManager) GetChannel(name string) (channels.Channel, bool) {
@@ -61,6 +62,9 @@ func (m *mockChannelManager) SendPlaceholder(ctx context.Context, channel, chatI
 }
 func (m *mockChannelManager) DismissToolFeedback(ctx context.Context, channel, chatID string, outboundCtx *bus.InboundContext) {
 	m.dismissToolFeedbackFn(ctx, channel, chatID, outboundCtx)
+}
+func (m *mockChannelManager) GetStreamer(ctx context.Context, channel, chatID string) (bus.Streamer, bool) {
+	return m.getStreamerFn(ctx, channel, chatID)
 }
 
 // ---- Tests ----
