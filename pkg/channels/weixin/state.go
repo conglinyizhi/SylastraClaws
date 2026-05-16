@@ -40,7 +40,7 @@ type contextTokensFile struct {
 	Tokens map[string]string `json:"tokens"`
 }
 
-func picoclawHomeDir() string {
+func sylastraClawsHomeDir() string {
 	return config.GetHome()
 }
 
@@ -54,11 +54,11 @@ func genWeixinAccountKey(cfg *config.WeixinSettings) string {
 }
 
 func buildWeixinSyncBufPath(cfg *config.WeixinSettings) string {
-	return filepath.Join(picoclawHomeDir(), "channels", "weixin", "sync", genWeixinAccountKey(cfg)+".json")
+	return filepath.Join(sylastraClawsHomeDir(), "channels", "weixin", "sync", genWeixinAccountKey(cfg)+".json")
 }
 
 func buildWeixinContextTokensPath(cfg *config.WeixinSettings) string {
-	return filepath.Join(picoclawHomeDir(), "channels", "weixin", "context-tokens", genWeixinAccountKey(cfg)+".json")
+	return filepath.Join(sylastraClawsHomeDir(), "channels", "weixin", "context-tokens", genWeixinAccountKey(cfg)+".json")
 }
 
 func loadGetUpdatesBuf(path string) (string, error) {

@@ -23,7 +23,7 @@ import (
 )
 
 const (
-	wecomQRSourceID          = "picoclaw"
+	wecomQRSourceID          = "sylastraclaws"
 	wecomQRGenerateEndpoint  = "https://work.weixin.qq.com/ai/qc/generate"
 	wecomQRQueryEndpoint     = "https://work.weixin.qq.com/ai/qc/query_result"
 	wecomQRPageEndpoint      = "https://work.weixin.qq.com/ai/qc/gen"

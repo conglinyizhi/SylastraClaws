@@ -152,7 +152,7 @@ func builtinPromptSources() []PromptSourceDescriptor {
 		{
 			ID:              PromptSourceKernel,
 			Owner:           "agent",
-			Description:     "Core picoclaw identity and hard rules",
+			Description:     "Core SylastraClaws identity and hard rules",
 			Allowed:         []PromptPlacement{{Layer: PromptLayerKernel, Slot: PromptSlotIdentity}},
 			StableByDefault: true,
 		},

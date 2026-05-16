@@ -47,10 +47,9 @@ const (
 // GetHome returns the base directory for all SylastraClaws data.
 // Resolution order:
 //  1. $SYLASTRACLAWS_HOME (explicit override)
-//  2. $XDG_CONFIG_HOME/sylastraclaws  (XDG spec, first priority)
+//  2. $XDG_CONFIG_HOME/sylastraclaws  (XDG spec)
 //  3. ~/.config/sylastraclaws         (XDG fallback)
-//  4. ~/.picoclaw                     (legacy, for migration compatibility)
-//  5. .                               (last resort)
+//  4. .                               (last resort)
 func GetHome() string {
 	// 1. Explicit override
 	if h := os.Getenv(EnvHome); h != "" {
@@ -64,16 +63,7 @@ func GetHome() string {
 
 	// 3. XDG fallback: ~/.config/sylastraclaws
 	if home, err := os.UserHomeDir(); err == nil && home != "" {
-		xdgPath := filepath.Join(home, ".config", pkg.DefaultConfigDir)
-		if _, err := os.Stat(xdgPath); err == nil {
-			return xdgPath
-		}
-		legacyPath := filepath.Join(home, pkg.DeprecatedPicoClawHome)
-		if _, err := os.Stat(legacyPath); err == nil {
-			return legacyPath
-		}
-		// Neither exists — prefer XDG path for new installations
-		return xdgPath
+		return filepath.Join(home, ".config", pkg.DefaultConfigDir)
 	}
 
 	return "."
