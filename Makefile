@@ -11,7 +11,7 @@ build:
 	go build ./...
 
 build-all:
-	go build $(GOFLAGS_ALL) -o $(BINARY) ./cmd/picoclaw/
+	go build $(GOFLAGS_ALL) -o $(BINARY) .
 
 test-all:
 	go test $(GOFLAGS_ALL) ./...
