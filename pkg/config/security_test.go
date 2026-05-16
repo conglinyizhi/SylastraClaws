@@ -254,8 +254,8 @@ skills:
 			Tools: original.Tools,
 		}
 
-		t.Setenv("PICOCLAW_CHANNELS_QQ_APP_SECRET", "qq_app_secret_env")
-		t.Setenv("PICOCLAW_TOOLS_WEB_BRAVE_API_KEYS", "brave_key_env,abc")
+		t.Setenv("SYLASTRACLAWS_CHANNELS_QQ_APP_SECRET", "qq_app_secret_env")
+		t.Setenv("SYLASTRACLAWS_TOOLS_WEB_BRAVE_API_KEYS", "brave_key_env,abc")
 
 		require.NoError(t, env.Parse(envCfg))
 		// Channel env overrides need explicit handling since ChannelsConfig is map-based

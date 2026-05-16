@@ -12,46 +12,69 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg"
 )
 
-// Runtime environment variable keys for the picoclaw process.
+// Runtime environment variable keys for the SylastraClaws process.
 // These control the location of files and binaries at runtime and are read
-// directly via os.Getenv / os.LookupEnv. All picoclaw-specific keys use the
-// PICOCLAW_ prefix. Reference these constants instead of inline string
-// literals to keep all supported knobs visible in one place and to prevent
-// typos.
+// directly via os.Getenv / os.LookupEnv. All SylastraClaws-specific keys use
+// the SYLASTRACLAWS_ prefix. Reference these constants instead of inline
+// string literals to keep all supported knobs visible in one place and to
+// prevent typos.
 const (
-	// EnvHome overrides the base directory for all picoclaw data
+	// EnvHome overrides the base directory for all SylastraClaws data
 	// (config, workspace, skills, auth store, …).
-	// Default: ~/.picoclaw
-	EnvHome = "PICOCLAW_HOME"
+	// Default: $XDG_CONFIG_HOME/sylastraclaws (fallback ~/.config/sylastraclaws).
+	// Legacy fallback: ~/.picoclaw if none of the above exist.
+	EnvHome = "SYLASTRACLAWS_HOME"
 
 	// EnvConfig overrides the full path to the JSON config file.
-	// Default: $PICOCLAW_HOME/config.json
-	EnvConfig = "PICOCLAW_CONFIG"
+	// Default: $SYLASTRACLAWS_HOME/config.json
+	EnvConfig = "SYLASTRACLAWS_CONFIG"
 
 	// EnvBuiltinSkills overrides the directory from which built-in
 	// skills are loaded.
 	// Default: <cwd>/skills
-	EnvBuiltinSkills = "PICOCLAW_BUILTIN_SKILLS"
+	EnvBuiltinSkills = "SYLASTRACLAWS_BUILTIN_SKILLS"
 
-	// EnvBinary overrides the path to the picoclaw executable.
+	// EnvBinary overrides the path to the SylastraClaws executable.
 	// Used by the web launcher when spawning the gateway subprocess.
 	// Default: resolved from the same directory as the current executable.
-	EnvBinary = "PICOCLAW_BINARY"
+	EnvBinary = "SYLASTRACLAWS_BINARY"
 
 	// EnvGatewayHost overrides the host address for the gateway server.
 	// Default: "localhost"
-	EnvGatewayHost = "PICOCLAW_GATEWAY_HOST"
+	EnvGatewayHost = "SYLASTRACLAWS_GATEWAY_HOST"
 )
 
+// GetHome returns the base directory for all SylastraClaws data.
+// Resolution order:
+//  1. $SYLASTRACLAWS_HOME (explicit override)
+//  2. $XDG_CONFIG_HOME/sylastraclaws  (XDG spec, first priority)
+//  3. ~/.config/sylastraclaws         (XDG fallback)
+//  4. ~/.picoclaw                     (legacy, for migration compatibility)
+//  5. .                               (last resort)
 func GetHome() string {
-	homePath, _ := os.UserHomeDir()
-	if picoclawHome := os.Getenv(EnvHome); picoclawHome != "" {
-		homePath = picoclawHome
-	} else if homePath != "" {
-		homePath = filepath.Join(homePath, pkg.DefaultPicoClawHome)
+	// 1. Explicit override
+	if h := os.Getenv(EnvHome); h != "" {
+		return h
 	}
-	if homePath == "" {
-		homePath = "."
+
+	// 2. XDG_CONFIG_HOME
+	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
+		return filepath.Join(xdg, pkg.DefaultConfigDir)
 	}
-	return homePath
+
+	// 3. XDG fallback: ~/.config/sylastraclaws
+	if home, err := os.UserHomeDir(); err == nil && home != "" {
+		xdgPath := filepath.Join(home, ".config", pkg.DefaultConfigDir)
+		if _, err := os.Stat(xdgPath); err == nil {
+			return xdgPath
+		}
+		legacyPath := filepath.Join(home, pkg.DeprecatedPicoClawHome)
+		if _, err := os.Stat(legacyPath); err == nil {
+			return legacyPath
+		}
+		// Neither exists — prefer XDG path for new installations
+		return xdgPath
+	}
+
+	return "."
 }

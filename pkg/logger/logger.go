@@ -219,7 +219,7 @@ func DisableFileLogging() {
 func ConfigureFromEnv() {
 	logFile := os.Getenv("SYLASTRACLAWS_LOG_FILE")
 	if logFile == "" {
-		logFile = os.Getenv("PICOCLAW_LOG_FILE")
+		logFile = os.Getenv("SYLASTRACLAWS_LOG_FILE")
 	}
 	if logFile != "" {
 		if strings.HasPrefix(logFile, "~/") {

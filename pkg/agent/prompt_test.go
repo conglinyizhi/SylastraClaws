@@ -84,7 +84,7 @@ func TestRenderPromptPartsLegacy_UsesLayerAndSlotOrder(t *testing.T) {
 }
 
 func TestBuildMessagesFromPrompt_IncludesSystemPromptOverlay(t *testing.T) {
-	t.Setenv("PICOCLAW_BUILTIN_SKILLS", t.TempDir())
+	t.Setenv("SYLASTRACLAWS_BUILTIN_SKILLS", t.TempDir())
 	cb := NewContextBuilder(t.TempDir())
 
 	messages := cb.BuildMessagesFromPrompt(PromptBuildRequest{
@@ -109,7 +109,7 @@ func TestBuildMessagesFromPrompt_IncludesSystemPromptOverlay(t *testing.T) {
 }
 
 func TestBuildMessagesFromPrompt_AttachesInternalPromptMetadata(t *testing.T) {
-	t.Setenv("PICOCLAW_BUILTIN_SKILLS", t.TempDir())
+	t.Setenv("SYLASTRACLAWS_BUILTIN_SKILLS", t.TempDir())
 	cb := NewContextBuilder(t.TempDir())
 
 	messages := cb.BuildMessagesFromPrompt(PromptBuildRequest{
@@ -171,7 +171,7 @@ func TestBuildMessagesFromPrompt_AttachesInternalPromptMetadata(t *testing.T) {
 }
 
 func TestContextBuilder_CollectsToolDiscoveryContributor(t *testing.T) {
-	t.Setenv("PICOCLAW_BUILTIN_SKILLS", t.TempDir())
+	t.Setenv("SYLASTRACLAWS_BUILTIN_SKILLS", t.TempDir())
 	cb := NewContextBuilder(t.TempDir()).WithToolDiscovery(true, false)
 
 	messages := cb.BuildMessagesFromPrompt(PromptBuildRequest{CurrentMessage: "hello"})
@@ -198,7 +198,7 @@ func TestContextBuilder_CollectsToolDiscoveryContributor(t *testing.T) {
 }
 
 func TestContextBuilder_CollectsMCPServerContributor(t *testing.T) {
-	t.Setenv("PICOCLAW_BUILTIN_SKILLS", t.TempDir())
+	t.Setenv("SYLASTRACLAWS_BUILTIN_SKILLS", t.TempDir())
 	cb := NewContextBuilder(t.TempDir())
 	err := cb.RegisterPromptContributor(mcpServerPromptContributor{
 		serverName: "GitHub Server",
@@ -246,7 +246,7 @@ func (c testPromptContributor) ContributePrompt(_ context.Context, _ PromptBuild
 }
 
 func TestContextBuilder_CollectsRegisteredPromptContributors(t *testing.T) {
-	t.Setenv("PICOCLAW_BUILTIN_SKILLS", t.TempDir())
+	t.Setenv("SYLASTRACLAWS_BUILTIN_SKILLS", t.TempDir())
 	cb := NewContextBuilder(t.TempDir())
 
 	sourceID := PromptSourceID("test:contributor")

@@ -7,9 +7,13 @@ const (
 	// AppName is the name of the app
 	AppName = "SylastraClaws"
 
-	// DefaultPicoClawHome is the default config directory name.
-	// Kept as ".picoclaw" for backward compatibility — existing installations
-	// keep their config. Override with $PICOCLAW_HOME env var.
-	DefaultPicoClawHome = ".picoclaw"
-	WorkspaceName       = "workspace"
+	// DefaultConfigDir is the default config directory name under
+	// $XDG_CONFIG_HOME (fallback ~/.config).
+	DefaultConfigDir = "sylastraclaws"
+
+	// DeprecatedPicoClawHome is the legacy config directory name.
+	// Used only as a fallback when neither XDG nor SYLASTRACLAWS_HOME is set.
+	DeprecatedPicoClawHome = ".picoclaw"
+
+	WorkspaceName = "workspace"
 )
