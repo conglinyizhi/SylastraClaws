@@ -23,7 +23,7 @@ func init() {
 			}
 			storePath := c.SessionStorePath
 			if storePath == "" {
-				storePath = filepath.Join(cfg.WorkspacePath(), "whatsapp")
+				storePath = filepath.Join(config.GetStateDir(), "channels", "whatsapp")
 			}
 			ch, err := NewWhatsAppNativeChannel(bc, channelName, c, b, storePath)
 			if err != nil {

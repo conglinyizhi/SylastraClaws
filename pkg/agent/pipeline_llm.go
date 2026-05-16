@@ -382,10 +382,14 @@ func (p *Pipeline) CallLLM(
 	}
 
 	reasoningContent := responseReasoningContent(exec.response)
-	shouldPublishPicoToolCallInterim := ts.channel == "pico" && len(exec.response.ToolCalls) > 0
+	shouldPublishInterimToolCalls := !constants.IsInternalChannel(ts.channel) && len(exec.response.ToolCalls) > 0
+	shouldPublishPicoToolCallInterim := shouldPublishInterimToolCalls && ts.channel == "pico"
 	if shouldPublishPicoToolCallInterim {
 		// Pico tool-call turns publish their reasoning/content/tool summary as a
 		// structured sequence after the tool-call payload is normalized below.
+	} else if shouldPublishInterimToolCalls {
+		// Non-pico channels: still publish, go via handleReasoning for the interim
+		// content, and structured tool-call details will be published after normalization.
 	} else if ts.channel == "pico" {
 		go al.publishPicoReasoning(turnCtx, reasoningContent, ts.chatID)
 	} else {
@@ -517,6 +521,16 @@ func (p *Pipeline) CallLLM(
 			exec.response.Content,
 			assistantMsg.ToolCalls,
 		)
+	} else if shouldPublishInterimToolCalls {
+		// Non-pico channels: publish reasoning and tool-call summary for visibility
+		go al.handleReasoning(turnCtx, reasoningContent, ts.channel, al.targetReasoningChannelID(ts.channel))
+		if strings.TrimSpace(exec.response.Content) != "" {
+			go func() {
+				pubCtx, pubCancel := context.WithTimeout(turnCtx, 3*time.Second)
+				defer pubCancel()
+				_ = al.bus.PublishOutbound(pubCtx, outboundMessageForTurn(ts, exec.response.Content))
+			}()
+		}
 	}
 
 	return ControlToolLoop, nil

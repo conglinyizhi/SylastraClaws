@@ -25,7 +25,7 @@ func init() {
 			}
 			cryptoDatabasePath := c.CryptoDatabasePath
 			if cryptoDatabasePath == "" {
-				cryptoDatabasePath = filepath.Join(cfg.WorkspacePath(), "matrix")
+				cryptoDatabasePath = filepath.Join(config.GetStateDir(), "channels", "matrix")
 			}
 			ch, err := NewMatrixChannel(bc, c, b, cryptoDatabasePath)
 			if err != nil {
