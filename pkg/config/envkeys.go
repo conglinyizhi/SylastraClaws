@@ -44,27 +44,59 @@ const (
 	EnvGatewayHost = "SYLASTRACLAWS_GATEWAY_HOST"
 )
 
-// GetHome returns the base directory for all SylastraClaws data.
+// GetHome returns the config directory for SylastraClaws.
 // Resolution order:
-//  1. $SYLASTRACLAWS_HOME (explicit override)
+//  1. $SYLASTRACLAWS_HOME (explicit override — overrides all XDG domains)
 //  2. $XDG_CONFIG_HOME/sylastraclaws  (XDG spec)
 //  3. ~/.config/sylastraclaws         (XDG fallback)
 //  4. .                               (last resort)
 func GetHome() string {
-	// 1. Explicit override
 	if h := os.Getenv(EnvHome); h != "" {
 		return h
 	}
-
-	// 2. XDG_CONFIG_HOME
 	if xdg := os.Getenv("XDG_CONFIG_HOME"); xdg != "" {
 		return filepath.Join(xdg, pkg.DefaultConfigDir)
 	}
-
-	// 3. XDG fallback: ~/.config/sylastraclaws
 	if home, err := os.UserHomeDir(); err == nil && home != "" {
 		return filepath.Join(home, ".config", pkg.DefaultConfigDir)
 	}
-
 	return "."
+}
+
+// GetDataDir returns the XDG data directory for SylastraClaws.
+// Resolution order:
+//  1. $SYLASTRACLAWS_HOME/data  (when SYLASTRACLAWS_HOME is set)
+//  2. $XDG_DATA_HOME/sylastraclaws
+//  3. ~/.local/share/sylastraclaws
+//  4. GetHome()/data            (last resort)
+func GetDataDir() string {
+	if os.Getenv(EnvHome) != "" {
+		return filepath.Join(os.Getenv(EnvHome), "data")
+	}
+	if xdg := os.Getenv("XDG_DATA_HOME"); xdg != "" {
+		return filepath.Join(xdg, pkg.DefaultConfigDir)
+	}
+	if home, err := os.UserHomeDir(); err == nil && home != "" {
+		return filepath.Join(home, ".local", "share", pkg.DefaultConfigDir)
+	}
+	return filepath.Join(GetHome(), "data")
+}
+
+// GetStateDir returns the XDG state directory for SylastraClaws.
+// Resolution order:
+//  1. $SYLASTRACLAWS_HOME/state (when SYLASTRACLAWS_HOME is set)
+//  2. $XDG_STATE_HOME/sylastraclaws
+//  3. ~/.local/state/sylastraclaws
+//  4. GetHome()/state           (last resort)
+func GetStateDir() string {
+	if os.Getenv(EnvHome) != "" {
+		return filepath.Join(os.Getenv(EnvHome), "state")
+	}
+	if xdg := os.Getenv("XDG_STATE_HOME"); xdg != "" {
+		return filepath.Join(xdg, pkg.DefaultConfigDir)
+	}
+	if home, err := os.UserHomeDir(); err == nil && home != "" {
+		return filepath.Join(home, ".local", "state", pkg.DefaultConfigDir)
+	}
+	return filepath.Join(GetHome(), "state")
 }

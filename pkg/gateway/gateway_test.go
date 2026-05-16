@@ -60,7 +60,7 @@ func TestRun_StartupFailuresReturnErrorAndEmitStructuredLog(t *testing.T) {
 			cmd := exec.Command(os.Args[0], "-test.run=TestGatewayRunStartupFailureHelper")
 			cmd.Env = append(os.Environ(),
 				"GO_WANT_GATEWAY_RUN_HELPER=1",
-				"PICO_TEST_HOME="+homeDir,
+				"SYLASTRACLAWS_HOME="+homeDir,
 				"PICO_TEST_CONFIG="+configPath,
 			)
 
@@ -74,7 +74,9 @@ func TestRun_StartupFailuresReturnErrorAndEmitStructuredLog(t *testing.T) {
 				t.Fatalf("helper output missing expected error substring %q:\n%s", tt.wantErr, out)
 			}
 
-			logData, readErr := os.ReadFile(filepath.Join(homeDir, logPath, logFile))
+			// Logs are written under XDG state dir (homeDir/state/logs/gateway.log).
+			logDir := filepath.Join(config.GetStateDir(), "logs")
+			logData, readErr := os.ReadFile(filepath.Join(logDir, logFile))
 			if readErr != nil {
 				t.Fatalf("ReadFile(gateway.log) error = %v", readErr)
 			}
@@ -94,10 +96,9 @@ func TestGatewayRunStartupFailureHelper(t *testing.T) {
 		return
 	}
 
-	homeDir := os.Getenv("PICO_TEST_HOME")
 	configPath := os.Getenv("PICO_TEST_CONFIG")
 
-	err := Run(false, homeDir, configPath, false)
+	err := Run(false, configPath, false)
 	if err == nil {
 		fmt.Fprintln(os.Stdout, "expected startup error, got nil")
 		os.Exit(2)

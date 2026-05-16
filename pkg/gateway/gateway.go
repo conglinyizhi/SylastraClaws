@@ -112,15 +112,18 @@ func (p *startupBlockedProvider) GetDefaultModel() string {
 }
 
 // Run starts the gateway runtime using the configuration loaded from configPath.
-func Run(debug bool, homePath, configPath string, allowEmptyStartup bool) (runErr error) {
-	panicPath := filepath.Join(homePath, logPath, panicFile)
+func Run(debug bool, configPath string, allowEmptyStartup bool) (runErr error) {
+	stateDir := config.GetStateDir()
+	logDir := filepath.Join(stateDir, "logs")
+
+	panicPath := filepath.Join(logDir, panicFile)
 	panicFunc, err := logger.InitPanic(panicPath)
 	if err != nil {
 		return fmt.Errorf("error initializing panic log: %w", err)
 	}
 	defer panicFunc()
 
-	if err = logger.EnableFileLogging(filepath.Join(homePath, logPath, logFile)); err != nil {
+	if err = logger.EnableFileLogging(filepath.Join(logDir, logFile)); err != nil {
 		logger.Fatal(fmt.Sprintf("error enabling file logging: %v", err))
 	}
 	defer logger.DisableFileLogging()
@@ -133,11 +136,10 @@ func Run(debug bool, homePath, configPath string, allowEmptyStartup bool) (runEr
 	defer func() {
 		if runErr != nil {
 			logger.ErrorCF("gateway", "Gateway startup failed", map[string]any{
-				"config_path": configPath,
-				"error":       runErr.Error(),
-				"home_path":   homePath,
-				"allow_empty": allowEmptyStartup,
-				"debug":       debug,
+				"config_path":       configPath,
+				"error":             runErr.Error(),
+				"allow_empty":       allowEmptyStartup,
+				"debug":             debug,
 			})
 		}
 	}()
@@ -166,7 +168,7 @@ func Run(debug bool, homePath, configPath string, allowEmptyStartup bool) (runEr
 	}
 
 	// Enforce singleton: write PID file with generated token.
-	pidData, err := pid.WritePidFile(homePath, bindPlan.ProbeHost, cfg.Gateway.Port)
+	pidData, err := pid.WritePidFile(bindPlan.ProbeHost, cfg.Gateway.Port)
 	if err != nil {
 		logger.Warnf("write pid file failed: %v", err)
 		for _, ln := range listenResult.Listeners {
@@ -174,7 +176,7 @@ func Run(debug bool, homePath, configPath string, allowEmptyStartup bool) (runEr
 		}
 		return fmt.Errorf("singleton check failed: %w", err)
 	}
-	defer pid.RemovePidFile(homePath)
+	defer pid.RemovePidFile()
 	closeListeners := true
 	defer func() {
 		if !closeListeners {

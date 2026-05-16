@@ -270,8 +270,7 @@ func LoadConfig(path string) (*Config, error) {
 
 	// Ensure Workspace has a default if not set
 	if cfg.Agents.Defaults.Workspace == "" {
-		homePath := GetHome()
-		cfg.Agents.Defaults.Workspace = filepath.Join(homePath, pkg.WorkspaceName)
+		cfg.Agents.Defaults.Workspace = filepath.Join(GetDataDir(), pkg.WorkspaceName)
 	}
 
 	return cfg, nil

@@ -41,7 +41,7 @@ type contextTokensFile struct {
 }
 
 func sylastraClawsHomeDir() string {
-	return config.GetHome()
+	return config.GetStateDir()
 }
 
 func genWeixinAccountKey(cfg *config.WeixinSettings) string {

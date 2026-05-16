@@ -7,15 +7,31 @@ import (
 	"testing"
 )
 
-// tmpDir returns a clean temporary directory for a test.
+// tmpDir returns a clean temporary directory for a test, setting SYLASTRACLAWS_HOME
+// so that config.GetStateDir() resolves inside dir.
 func tmpDir(t *testing.T) string {
 	t.Helper()
 	dir, err := os.MkdirTemp("", "pidtest-*")
 	if err != nil {
 		t.Fatal(err)
 	}
+	oldHome := os.Getenv("SYLASTRACLAWS_HOME")
+	os.Setenv("SYLASTRACLAWS_HOME", dir)
 	t.Cleanup(func() { os.RemoveAll(dir) })
+	t.Cleanup(func() {
+		if oldHome != "" {
+			os.Setenv("SYLASTRACLAWS_HOME", oldHome)
+		} else {
+			os.Unsetenv("SYLASTRACLAWS_HOME")
+		}
+	})
 	return dir
+}
+
+// testPidPath returns the expected PID file path under the current test's state dir.
+func testPidPath(t *testing.T) string {
+	t.Helper()
+	return filepath.Join(os.Getenv("SYLASTRACLAWS_HOME"), "state", pidFileName)
 }
 
 // TestGenerateToken verifies that generateToken produces a 32-character hex string.
@@ -41,20 +57,23 @@ func TestGenerateTokenUniqueness(t *testing.T) {
 	}
 }
 
-// TestPidFilePath returns the expected path.
+// TestPidFilePath verifies that pidFilePath() resolves to the correct path
+// when SYLASTRACLAWS_HOME is set.
 func TestPidFilePath(t *testing.T) {
-	dir := tmpDir(t)
-	got := pidFilePath(dir)
-	want := filepath.Join(dir, pidFileName)
+	_ = tmpDir(t)
+	got := pidFilePath()
+	want := testPidPath(t)
 	if got != want {
-		t.Errorf("pidFilePath(%q) = %q, want %q", dir, got, want)
+		t.Errorf("pidFilePath() = %q, want %q", got, want)
 	}
 }
 
 // TestWritePidFile creates a PID file and verifies its contents.
 func TestWritePidFile(t *testing.T) {
-	dir := tmpDir(t)
-	data, err := WritePidFile(dir, "127.0.0.1", 18790)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
+
+	data, err := WritePidFile("127.0.0.1", 18790)
 	if err != nil {
 		t.Fatalf("WritePidFile failed: %v", err)
 	}
@@ -73,7 +92,7 @@ func TestWritePidFile(t *testing.T) {
 	}
 
 	// Verify the file exists and can be unmarshalled.
-	raw, err := os.ReadFile(filepath.Join(dir, pidFileName))
+	raw, err := os.ReadFile(pf)
 	if err != nil {
 		t.Fatalf("failed to read pid file: %v", err)
 	}
@@ -87,7 +106,7 @@ func TestWritePidFile(t *testing.T) {
 	}
 
 	// Verify file permissions (owner-only read/write).
-	info, err := os.Stat(filepath.Join(dir, pidFileName))
+	info, err := os.Stat(pf)
 	if err != nil {
 		t.Fatalf("failed to stat pid file: %v", err)
 	}
@@ -99,15 +118,15 @@ func TestWritePidFile(t *testing.T) {
 
 // TestWritePidFileOverwrite writes twice and verifies the PID file is replaced.
 func TestWritePidFileOverwrite(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
 
-	data1, err := WritePidFile(dir, "0.0.0.0", 18790)
+	data1, err := WritePidFile("0.0.0.0", 18790)
 	if err != nil {
 		t.Fatalf("first WritePidFile failed: %v", err)
 	}
 
 	// Second write should succeed because the PID matches our process.
-	data2, err := WritePidFile(dir, "0.0.0.0", 18800)
+	data2, err := WritePidFile("0.0.0.0", 18800)
 	if err != nil {
 		t.Fatalf("second WritePidFile failed: %v", err)
 	}
@@ -123,14 +142,16 @@ func TestWritePidFileOverwrite(t *testing.T) {
 // TestWritePidFileStalePID writes a PID file with a non-running PID, then
 // verifies WritePidFile cleans it up and writes a new one.
 func TestWritePidFileStalePID(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	// Write a PID file with a PID that almost certainly doesn't exist.
 	stale := PidFileData{PID: 99999999, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(stale, "", "  ")
-	os.WriteFile(filepath.Join(dir, pidFileName), raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	data, err := WritePidFile(dir, "127.0.0.1", 18790)
+	data, err := WritePidFile("127.0.0.1", 18790)
 	if err != nil {
 		t.Fatalf("WritePidFile with stale PID failed: %v", err)
 	}
@@ -141,7 +162,7 @@ func TestWritePidFileStalePID(t *testing.T) {
 
 // TestReadPidFileWithCheck verifies reading a valid PID file for the current process.
 func TestReadPidFileWithCheck(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
 
 	// Some sandboxed environments (e.g. macOS test runner) may restrict
 	// signal(0), causing isProcessRunning(getpid()) to return false.
@@ -149,12 +170,12 @@ func TestReadPidFileWithCheck(t *testing.T) {
 		t.Skip("skipping: isProcessRunning(getpid()) is false in this environment")
 	}
 
-	written, err := WritePidFile(dir, "127.0.0.1", 18790)
+	written, err := WritePidFile("127.0.0.1", 18790)
 	if err != nil {
 		t.Fatalf("WritePidFile failed: %v", err)
 	}
 
-	read := ReadPidFileWithCheck(dir)
+	read := ReadPidFileWithCheck()
 	if read == nil {
 		t.Fatal("ReadPidFileWithCheck returned nil for current process")
 	}
@@ -165,8 +186,8 @@ func TestReadPidFileWithCheck(t *testing.T) {
 
 // TestReadPidFileWithCheckNonexistent returns nil for missing file.
 func TestReadPidFileWithCheckNonexistent(t *testing.T) {
-	dir := tmpDir(t)
-	data := ReadPidFileWithCheck(dir)
+	_ = tmpDir(t)
+	data := ReadPidFileWithCheck()
 	if data != nil {
 		t.Error("expected nil for nonexistent PID file")
 	}
@@ -174,106 +195,114 @@ func TestReadPidFileWithCheckNonexistent(t *testing.T) {
 
 // TestReadPidFileWithCheckStalePID auto-cleans a PID file whose process is dead.
 func TestReadPidFileWithCheckStalePID(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	stale := PidFileData{PID: 99999999, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(stale, "", "  ")
-	os.WriteFile(filepath.Join(dir, pidFileName), raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	data := ReadPidFileWithCheck(dir)
+	data := ReadPidFileWithCheck()
 	if data != nil {
 		t.Error("expected nil for stale PID")
 	}
 
 	// File should be cleaned up.
-	if _, err := os.Stat(filepath.Join(dir, pidFileName)); !os.IsNotExist(err) {
+	if _, err := os.Stat(pf); !os.IsNotExist(err) {
 		t.Error("stale PID file should be removed")
 	}
 }
 
 // TestReadPidFileWithCheckInvalidFile auto-cleans malformed PID file.
 func TestReadPidFileWithCheckInvalidFile(t *testing.T) {
-	dir := tmpDir(t)
-	path := filepath.Join(dir, pidFileName)
-	os.WriteFile(path, []byte("not json"), 0o600)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, []byte("not json"), 0o600)
 
-	data := ReadPidFileWithCheck(dir)
+	data := ReadPidFileWithCheck()
 	if data != nil {
 		t.Error("expected nil for malformed pid file")
 	}
 
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
+	if _, err := os.Stat(pf); !os.IsNotExist(err) {
 		t.Error("malformed PID file should be removed")
 	}
 }
 
 // TestRemovePidFile removes the PID file for the current process.
 func TestRemovePidFile(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
-	if _, err := WritePidFile(dir, "127.0.0.1", 18790); err != nil {
+	if _, err := WritePidFile("127.0.0.1", 18790); err != nil {
 		t.Fatalf("WritePidFile failed: %v", err)
 	}
 
-	RemovePidFile(dir)
+	RemovePidFile()
 
-	if _, err := os.Stat(filepath.Join(dir, pidFileName)); !os.IsNotExist(err) {
+	if _, err := os.Stat(pf); !os.IsNotExist(err) {
 		t.Error("PID file should be removed")
 	}
 }
 
 // TestRemovePidFileDifferentPID does not remove a PID file owned by another process.
 func TestRemovePidFileDifferentPID(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	other := PidFileData{PID: 99999999, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(other, "", "  ")
-	os.WriteFile(filepath.Join(dir, pidFileName), raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	RemovePidFile(dir)
+	RemovePidFile()
 
-	if _, err := os.Stat(filepath.Join(dir, pidFileName)); os.IsNotExist(err) {
+	if _, err := os.Stat(pf); os.IsNotExist(err) {
 		t.Error("PID file should NOT be removed (different PID)")
 	}
 }
 
 // TestRemovePidFileNonexistent does not error on missing file.
 func TestRemovePidFileNonexistent(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
 	// Should not panic or error.
-	RemovePidFile(dir)
+	RemovePidFile()
 }
 
 func TestRemovePidFileIfPID(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	other := PidFileData{PID: 99999999, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(other, "", "  ")
-	path := filepath.Join(dir, pidFileName)
-	os.WriteFile(path, raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	removed := RemovePidFileIfPID(dir, 99999999)
+	removed := RemovePidFileIfPID(99999999)
 	if !removed {
 		t.Fatal("expected RemovePidFileIfPID to remove matching pid file")
 	}
-	if _, err := os.Stat(path); !os.IsNotExist(err) {
+	if _, err := os.Stat(pf); !os.IsNotExist(err) {
 		t.Error("PID file should be removed for matching expected PID")
 	}
 }
 
 func TestRemovePidFileIfPIDMismatch(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	other := PidFileData{PID: 99999999, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(other, "", "  ")
-	path := filepath.Join(dir, pidFileName)
-	os.WriteFile(path, raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	removed := RemovePidFileIfPID(dir, 88888888)
+	removed := RemovePidFileIfPID(88888888)
 	if removed {
 		t.Fatal("expected RemovePidFileIfPID to keep non-matching pid file")
 	}
-	if _, err := os.Stat(path); os.IsNotExist(err) {
+	if _, err := os.Stat(pf); os.IsNotExist(err) {
 		t.Error("PID file should NOT be removed for mismatching expected PID")
 	}
 }
@@ -281,13 +310,15 @@ func TestRemovePidFileIfPIDMismatch(t *testing.T) {
 // TestWritePidFileContainerPID1 verifies that a leftover PID file with PID 1
 // (typical container entrypoint) is treated as stale and overwritten.
 func TestWritePidFileContainerPID1(t *testing.T) {
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	stale := PidFileData{PID: 1, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(stale, "", "  ")
-	os.WriteFile(filepath.Join(dir, pidFileName), raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	data, err := WritePidFile(dir, "127.0.0.1", 18790)
+	data, err := WritePidFile("127.0.0.1", 18790)
 	if err != nil {
 		t.Fatalf("WritePidFile should treat PID 1 as stale, got error: %v", err)
 	}
@@ -302,29 +333,32 @@ func TestReadPidFileWithCheckContainerPID1(t *testing.T) {
 	if os.Getpid() == 1 {
 		t.Skip("test not meaningful when running as PID 1")
 	}
-	dir := tmpDir(t)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
 
 	stale := PidFileData{PID: 1, Token: "deadbeef12345678deadbeef12345678"}
 	raw, _ := json.MarshalIndent(stale, "", "  ")
-	os.WriteFile(filepath.Join(dir, pidFileName), raw, 0o600)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, raw, 0o600)
 
-	data := ReadPidFileWithCheck(dir)
+	data := ReadPidFileWithCheck()
 	if data != nil {
 		t.Error("expected nil for PID 1 leftover")
 	}
 
-	if _, err := os.Stat(filepath.Join(dir, pidFileName)); !os.IsNotExist(err) {
+	if _, err := os.Stat(pf); !os.IsNotExist(err) {
 		t.Error("PID 1 leftover file should be removed")
 	}
 }
 
 // TestReadPidFileUnlockedInvalidJSON returns error for malformed content.
 func TestReadPidFileUnlockedInvalidJSON(t *testing.T) {
-	dir := tmpDir(t)
-	path := filepath.Join(dir, pidFileName)
-	os.WriteFile(path, []byte("not json"), 0o600)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, []byte("not json"), 0o600)
 
-	_, err := readPidFileUnlocked(path)
+	_, err := readPidFileUnlocked(pf)
 	if err == nil {
 		t.Error("expected error for invalid JSON")
 	}
@@ -332,11 +366,12 @@ func TestReadPidFileUnlockedInvalidJSON(t *testing.T) {
 
 // TestReadPidFileUnlockedInvalidPID returns error for non-positive PID.
 func TestReadPidFileUnlockedInvalidPID(t *testing.T) {
-	dir := tmpDir(t)
-	path := filepath.Join(dir, pidFileName)
-	os.WriteFile(path, []byte(`{"pid": -1, "token": "a"}`), 0o600)
+	_ = tmpDir(t)
+	pf := testPidPath(t)
+	os.MkdirAll(filepath.Dir(pf), 0o755)
+	os.WriteFile(pf, []byte(`{"pid": -1, "token": "a"}`), 0o600)
 
-	_, err := readPidFileUnlocked(path)
+	_, err := readPidFileUnlocked(pf)
 	if err == nil {
 		t.Error("expected error for invalid PID")
 	}

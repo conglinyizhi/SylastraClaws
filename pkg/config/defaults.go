@@ -14,7 +14,7 @@ import (
 
 // DefaultConfig returns the default configuration for PicoClaw.
 func DefaultConfig() *Config {
-	workspacePath := filepath.Join(GetHome(), pkg.WorkspaceName)
+	workspacePath := filepath.Join(GetDataDir(), pkg.WorkspaceName)
 
 	return &Config{
 		Version: CurrentVersion,

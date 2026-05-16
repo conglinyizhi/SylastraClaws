@@ -15,7 +15,8 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/logger"
 )
 
-const pidFileName = ".sylastraclaws.pid"
+// pidFileName is the basename of the PID file stored in the XDG state directory.
+const pidFileName = ".pid"
 
 var errInvalidPidFile = errors.New("invalid pid file")
 
@@ -30,9 +31,9 @@ type PidFileData struct {
 
 var pidMu sync.Mutex
 
-// pidFilePath returns the absolute path for the PID file given the home directory.
-func pidFilePath(homePath string) string {
-	return filepath.Join(homePath, pidFileName)
+// pidFilePath returns the absolute path for the PID file in the XDG state directory.
+func pidFilePath() string {
+	return filepath.Join(config.GetStateDir(), ".pid")
 }
 
 // generateToken creates a cryptographically random 32-character hex token.
@@ -48,11 +49,11 @@ func generateToken() string {
 // WritePidFile creates (or overwrites) the PID file atomically.
 // It returns an error if another gateway instance appears to be running
 // (a valid PID file exists with a live process).
-func WritePidFile(homePath, host string, port int) (*PidFileData, error) {
+func WritePidFile(host string, port int) (*PidFileData, error) {
 	pidMu.Lock()
 	defer pidMu.Unlock()
 
-	pidPath := pidFilePath(homePath)
+	pidPath := pidFilePath()
 
 	// Check for existing PID file → singleton enforcement.
 	if data, err := readPidFileUnlocked(pidPath); err == nil {
@@ -110,11 +111,11 @@ func WritePidFile(homePath, host string, port int) (*PidFileData, error) {
 // ReadPidFileWithCheck reads the PID file and additionally checks if
 // the recorded process is still alive. Returns nil if the file is
 // missing, unreadable, or the process has exited.
-func ReadPidFileWithCheck(homePath string) *PidFileData {
+func ReadPidFileWithCheck() *PidFileData {
 	pidMu.Lock()
 	defer pidMu.Unlock()
 
-	pidPath := pidFilePath(homePath)
+	pidPath := pidFilePath()
 	data, err := readPidFileUnlocked(pidPath)
 	if err != nil {
 		if os.IsNotExist(err) {
@@ -147,11 +148,11 @@ func ReadPidFileWithCheck(homePath string) *PidFileData {
 }
 
 // RemovePidFile deletes the PID file (e.g. on graceful shutdown).
-func RemovePidFile(homePath string) {
+func RemovePidFile() {
 	pidMu.Lock()
 	defer pidMu.Unlock()
 
-	pidPath := pidFilePath(homePath)
+	pidPath := pidFilePath()
 	// Only remove if the PID matches our own process (avoid deleting
 	// a file that belongs to a newer gateway instance).
 	if data, err := readPidFileUnlocked(pidPath); err == nil {
@@ -166,7 +167,7 @@ func RemovePidFile(homePath string) {
 
 // RemovePidFileIfPID deletes the PID file only when the recorded PID matches
 // expectedPID. It returns true when the file is removed successfully.
-func RemovePidFileIfPID(homePath string, expectedPID int) bool {
+func RemovePidFileIfPID(expectedPID int) bool {
 	if expectedPID <= 0 {
 		return false
 	}
@@ -174,7 +175,7 @@ func RemovePidFileIfPID(homePath string, expectedPID int) bool {
 	pidMu.Lock()
 	defer pidMu.Unlock()
 
-	pidPath := pidFilePath(homePath)
+	pidPath := pidFilePath()
 	data, err := readPidFileUnlocked(pidPath)
 	if err != nil {
 		return false

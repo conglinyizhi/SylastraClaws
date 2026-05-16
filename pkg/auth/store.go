@@ -46,7 +46,7 @@ func (c *AuthCredential) NeedsRefresh() bool {
 }
 
 func authFilePath() string {
-	return filepath.Join(config.GetHome(), "auth.json")
+	return filepath.Join(config.GetStateDir(), "auth.json")
 }
 
 func canonicalProvider(provider string) string {

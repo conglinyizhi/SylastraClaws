@@ -72,7 +72,7 @@ func (cb *ContextBuilder) WithSplitOnMarker(enabled bool) *ContextBuilder {
 }
 
 func getGlobalConfigDir() string {
-	return config.GetHome()
+	return config.GetDataDir()
 }
 
 func NewContextBuilder(workspace string) *ContextBuilder {

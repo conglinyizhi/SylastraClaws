@@ -7,6 +7,8 @@ import (
 	"path/filepath"
 	"sync"
 	"time"
+
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 )
 
 type wecomRoute struct {
@@ -35,10 +37,7 @@ func newReqIDStore(path string) *reqIDStore {
 }
 
 func defaultReqIDStorePath() string {
-	if home, err := os.UserHomeDir(); err == nil && home != "" {
-		return filepath.Join(home, ".config", "sylastraclaws", "wecom", "reqid-store.json")
-	}
-	return filepath.Join(os.TempDir(), "sylastraclaws-wecom-reqid-store.json")
+	return filepath.Join(config.GetStateDir(), "channels", "wecom", "reqid-store.json")
 }
 
 func (s *reqIDStore) Put(chatID, reqID string, chatType uint32, ttl time.Duration) error {

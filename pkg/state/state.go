@@ -9,6 +9,7 @@ import (
 	"sync"
 	"time"
 
+	"github.com/conglinyizhi/SylastraClaws/pkg/config"
 	"github.com/conglinyizhi/SylastraClaws/pkg/fileutil"
 )
 
@@ -27,17 +28,15 @@ type State struct {
 
 // Manager manages persistent state with atomic saves.
 type Manager struct {
-	workspace string
 	state     *State
 	mu        sync.RWMutex
 	stateFile string
 }
 
-// NewManager creates a new state manager for the given workspace.
-func NewManager(workspace string) *Manager {
-	stateDir := filepath.Join(workspace, "state")
+// NewManager creates a new state manager using the XDG state directory.
+func NewManager(_ string) *Manager {
+	stateDir := filepath.Join(config.GetStateDir(), "state")
 	stateFile := filepath.Join(stateDir, "state.json")
-	oldStateFile := filepath.Join(workspace, "state.json")
 
 	// Create state directory if it doesn't exist
 	if err := os.MkdirAll(stateDir, 0o700); err != nil {
@@ -45,29 +44,12 @@ func NewManager(workspace string) *Manager {
 	}
 
 	sm := &Manager{
-		workspace: workspace,
 		stateFile: stateFile,
 		state:     &State{},
 	}
 
-	// Try to load from new location first
-	if _, err := os.Stat(stateFile); os.IsNotExist(err) {
-		// New file doesn't exist, try migrating from old location
-		if data, err := os.ReadFile(oldStateFile); err == nil {
-			if err := json.Unmarshal(data, sm.state); err == nil {
-				// Migrate to new location
-				if err := sm.saveAtomic(); err != nil {
-					log.Printf("[WARN] state: failed to save state: %v", err)
-				}
-				log.Printf("[INFO] state: migrated state from %s to %s", oldStateFile, stateFile)
-			}
-		}
-	} else {
-		// Load from new location
-		if err := sm.load(); err != nil {
-			log.Printf("[WARN] state: failed to load state: %v", err)
-		}
-	}
+	// Load from state location
+	_ = sm.load()
 
 	return sm
 }
