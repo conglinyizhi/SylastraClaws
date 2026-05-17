@@ -38,10 +38,7 @@ func (m *ContributorManager) RegisterToolDiscovery(useBM25, useRegex bool) {
 		return
 	}
 	for _, cb := range m.builders {
-		if err := cb.RegisterPromptContributor(toolDiscoveryPromptContributor{
-			useBM25:  useBM25,
-			useRegex: useRegex,
-		}); err != nil {
+		if err := cb.RegisterPromptContributor(toolDiscoveryPromptContributor{}); err != nil {
 			logger.WarnCF("agent", "Failed to register tool discovery prompt contributor",
 				map[string]any{"error": err.Error()})
 		}
@@ -192,26 +189,13 @@ func (c toolListPromptContributor) ContributePrompt(
 }
 
 // formatToolDiscoveryRule generates the instruction block for
-// tool-discovery via regex or BM25 search. Copied from the old
-// toolDiscoveryPromptContributor logic; kept here because it is only
-// called from this manager.
-func formatToolDiscoveryRule(useBM25, useRegex bool) string {
-	if !useBM25 && !useRegex {
-		return ""
-	}
-
+// formatToolDiscoveryRule generates a concise prompt rule telling the LLM how to find
+// hidden tools via the combined tool_search tool.
+func formatToolDiscoveryRule() string {
 	var b strings.Builder
-	b.WriteString("To find a tool that you need, search the tool list")
-	if useBM25 {
-		b.WriteString(" using `tool_search_tool_bm25` with a natural language query")
-	}
-	if useBM25 && useRegex {
-		b.WriteString(", or")
-	}
-	if useRegex {
-		b.WriteString(" using `tool_search_tool_regex` with a regex pattern")
-	}
-	b.WriteString(".")
+	b.WriteString("To find a hidden tool that you need, use `tool_search` with a search query. ")
+	b.WriteString("If your query is a valid regex pattern, it will match tool names and descriptions precisely. ")
+	b.WriteString("Otherwise, it uses natural language (BM25) search to find relevant tools.")
 	return b.String()
 }
 
@@ -321,12 +305,9 @@ func promptSourceComponent(value string) string {
 	return result
 }
 
-// Legacy helpers kept for backward compatibility with the old
-// toolDiscoveryPromptContributor referenced from context.go.
-type toolDiscoveryPromptContributor struct {
-	useBM25  bool
-	useRegex bool
-}
+// toolDiscoveryPromptContributor generates a concise prompt rule telling the LLM
+// how to find hidden tools via the combined tool_search tool.
+type toolDiscoveryPromptContributor struct{}
 
 func (c toolDiscoveryPromptContributor) PromptSource() PromptSourceDescriptor {
 	return PromptSourceDescriptor{
@@ -342,7 +323,7 @@ func (c toolDiscoveryPromptContributor) ContributePrompt(
 	_ context.Context,
 	_ PromptBuildRequest,
 ) ([]PromptPart, error) {
-	content := formatToolDiscoveryRule(c.useBM25, c.useRegex)
+	content := formatToolDiscoveryRule()
 	if strings.TrimSpace(content) == "" {
 		return nil, nil
 	}

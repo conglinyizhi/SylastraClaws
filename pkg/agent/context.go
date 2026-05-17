@@ -54,10 +54,7 @@ func (cb *ContextBuilder) WithToolDiscovery(useBM25, useRegex bool) *ContextBuil
 	// Deprecated: ContributorManager.RegisterToolDiscovery replaces this.
 	// Kept for backward compatibility; now delegates to a standalone registration.
 	if useBM25 || useRegex {
-		if err := cb.RegisterPromptContributor(toolDiscoveryPromptContributor{
-			useBM25:  useBM25,
-			useRegex: useRegex,
-		}); err != nil {
+		if err := cb.RegisterPromptContributor(toolDiscoveryPromptContributor{}); err != nil {
 			logger.WarnCF("agent", "Failed to register tool discovery prompt contributor", map[string]any{
 				"error": err.Error(),
 			})

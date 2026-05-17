@@ -20,6 +20,7 @@ import (
 	"github.com/conglinyizhi/SylastraClaws/pkg/state"
 	"github.com/conglinyizhi/SylastraClaws/pkg/template"
 	"github.com/conglinyizhi/SylastraClaws/pkg/tools"
+	integrationtools "github.com/conglinyizhi/SylastraClaws/pkg/tools/integration"
 )
 
 func NewAgentLoop(
@@ -124,25 +125,19 @@ func registerSharedTools(
 			continue
 		}
 
-		if cfg.Tools.IsToolEnabled("web") {
-			searchTool, err := tools.NewWebSearchTool(tools.WebSearchToolOptionsFromConfig(cfg))
-			if err != nil {
-				logger.ErrorCF("agent", "Failed to create web search tool", map[string]any{"error": err.Error()})
-			} else if searchTool != nil {
-				agent.Tools.Register(searchTool)
-			}
-		}
-		if cfg.Tools.IsToolEnabled("web_fetch") {
-			fetchTool, err := tools.NewWebFetchToolWithProxy(
-				50000,
+		if cfg.Tools.IsToolEnabled("web") || cfg.Tools.IsToolEnabled("web_fetch") {
+			searchOpts := integrationtools.WebSearchToolOptionsFromConfig(cfg)
+			searchAndGet, err := tools.NewWebSearchAndGetTool(
+				searchOpts,
 				cfg.Tools.Web.Proxy,
 				cfg.Tools.Web.Format,
 				cfg.Tools.Web.FetchLimitBytes,
-				cfg.Tools.Web.PrivateHostWhitelist)
+				cfg.Tools.Web.PrivateHostWhitelist,
+			)
 			if err != nil {
-				logger.ErrorCF("agent", "Failed to create web fetch tool", map[string]any{"error": err.Error()})
-			} else {
-				agent.Tools.Register(fetchTool)
+				logger.ErrorCF("agent", "Failed to create web_search_and_get tool", map[string]any{"error": err.Error()})
+			} else if searchAndGet != nil {
+				agent.Tools.Register(searchAndGet)
 			}
 		}
 
