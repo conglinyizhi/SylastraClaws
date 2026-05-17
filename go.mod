@@ -35,6 +35,7 @@ require (
 	github.com/pion/webrtc/v3 v3.3.6
 	github.com/rs/zerolog v1.35.1
 	github.com/slack-go/slack v0.17.3
+	github.com/spf13/afero v1.15.0
 	github.com/spf13/cobra v1.10.2
 	github.com/spf13/pflag v1.0.10
 	github.com/stretchr/testify v1.11.1
@@ -50,10 +51,7 @@ require (
 	modernc.org/sqlite v1.50.1
 )
 
-require (
-	github.com/spf13/afero v1.15.0 // indirect
-	rsc.io/qr v0.2.0 // indirect
-)
+require rsc.io/qr v0.2.0 // indirect
 
 require (
 	aead.dev/minisign v0.2.0 // indirect

@@ -37,7 +37,7 @@ Together: **Forest of Stars**, or **The Starwood**.
 
 ```bash
 # Build and configure in one command
-go build -o sylastraclaws ./cmd/picoclaw/
+go build -o sylastraclaws .
 
 # Interactive setup — pass API key, model, and optional base URL in any order
 ./sylastraclaws --first-run "sk-xxx,gpt-4o"

@@ -415,7 +415,7 @@ func newScriptedServerConnection(
 	}
 
 	client := sdkmcp.NewClient(&sdkmcp.Implementation{
-		Name:    "picoclaw-test",
+		Name:    "sylastraclaws-test",
 		Version: "1.0.0",
 	}, nil)
 	session, err := client.Connect(context.Background(), transport, nil)

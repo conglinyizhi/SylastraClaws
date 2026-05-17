@@ -18,10 +18,10 @@ func TestNewPicoclawCommand(t *testing.T) {
 
 	require.NotNil(t, cmd)
 
-	short := fmt.Sprintf("%s PicoClaw — personal AI assistant", internal.Logo)
+	short := fmt.Sprintf("%s SylastraClaws — personal AI agent", internal.Logo)
 	longHas := strings.Contains(cmd.Long, config.FormatVersion())
 
-	assert.Equal(t, "picoclaw", cmd.Use)
+	assert.Equal(t, "sylastraclaws", cmd.Use)
 	assert.Equal(t, short, cmd.Short)
 	assert.True(t, longHas)
 

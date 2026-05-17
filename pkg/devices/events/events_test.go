@@ -18,11 +18,11 @@ func TestDeviceEventFormatMessage(t *testing.T) {
 				Kind:         KindUSB,
 				DeviceID:     "1-2",
 				Vendor:       "Sipeed",
-				Product:      "PicoClaw",
+				Product:      "SylastraClaws",
 				Serial:       "SN12345",
 				Capabilities: "Audio, Serial",
 			},
-			want: []string{"🔌", "Device", "Connected", "Type: usb", "Device: Sipeed PicoClaw", "Capabilities: Audio, Serial", "Serial: SN12345"},
+			want: []string{"🔌", "Device", "Connected", "Type: usb", "Device: Sipeed SylastraClaws", "Capabilities: Audio, Serial", "Serial: SN12345"},
 		},
 		{
 			name: "remove action",

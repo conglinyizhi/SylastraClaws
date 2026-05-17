@@ -75,7 +75,7 @@ func TestRun_StartupFailuresReturnErrorAndEmitStructuredLog(t *testing.T) {
 			}
 
 			// Logs are written under XDG state dir (homeDir/state/logs/gateway.log).
-			logDir := filepath.Join(config.GetStateDir(), "logs")
+			logDir := filepath.Join(homeDir, "state", "logs")
 			logData, readErr := os.ReadFile(filepath.Join(logDir, logFile))
 			if readErr != nil {
 				t.Fatalf("ReadFile(gateway.log) error = %v", readErr)

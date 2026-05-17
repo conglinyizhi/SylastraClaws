@@ -1,8 +1,8 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 // Inspired by and based on nanobot: https://github.com/HKUDS/nanobot
 // License: MIT
 //
-// Copyright (c) 2026 PicoClaw contributors
+// Copyright (c) 2026 SylastraClaws contributors
 
 package agent
 
@@ -146,7 +146,7 @@ func TestEnsureMCPInitialized_LoadFailureSetsInitErr(t *testing.T) {
 			Servers: map[string]config.MCPServerConfig{
 				"broken": {
 					Enabled: true,
-					Command: "picoclaw-command-that-does-not-exist-for-mcp-tests",
+					Command: "sylastraclaws-command-that-does-not-exist-for-mcp-tests",
 				},
 			},
 		},

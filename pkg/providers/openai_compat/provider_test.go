@@ -1114,7 +1114,7 @@ func TestProviderChat_CustomHeadersInjected(t *testing.T) {
 		"key",
 		server.URL,
 		"",
-		WithUserAgent("PicoClaw/Test"),
+		WithUserAgent("SylastraClaws/Test"),
 		WithCustomHeaders(map[string]string{
 			"X-Source":      "coding-plan",
 			"Authorization": "Token custom-auth",
@@ -1162,7 +1162,7 @@ func TestProviderChatStream_CustomHeadersInjected(t *testing.T) {
 		"key",
 		server.URL,
 		"",
-		WithUserAgent("PicoClaw/Test"),
+		WithUserAgent("SylastraClaws/Test"),
 		WithCustomHeaders(map[string]string{
 			"X-Source":      "coding-plan",
 			"Authorization": "Token stream-auth",

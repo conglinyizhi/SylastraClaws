@@ -57,7 +57,7 @@ func TestResolveTargetHome(t *testing.T) {
 
 	result, err := ResolveTargetHome("")
 	require.NoError(t, err)
-	assert.Equal(t, filepath.Join(home, ".picoclaw"), result)
+	assert.Equal(t, filepath.Join(home, ".config", "sylastraclaws"), result)
 }
 
 func TestResolveTargetHomeWithOverride(t *testing.T) {

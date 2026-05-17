@@ -264,7 +264,7 @@ func TestBuildWeixinSyncBufPathUsesPicoclawHome(t *testing.T) {
 	}
 	wxCfg.SetToken("token-123")
 	got := buildWeixinSyncBufPath(wxCfg)
-	if filepath.Dir(got) != filepath.Join(home, "channels", "weixin", "sync") {
+	if filepath.Dir(got) != filepath.Join(home, "state", "channels", "weixin", "sync") {
 		t.Fatalf("sync path dir = %q", filepath.Dir(got))
 	}
 }

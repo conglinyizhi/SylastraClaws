@@ -1,7 +1,7 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 // License: MIT
 //
-// Copyright (c) 2026 PicoClaw contributors
+// Copyright (c) 2026 SylastraClaws contributors
 
 package providers
 
@@ -1034,7 +1034,7 @@ const openaiCompatResponse = `{"choices":[{"message":{"content":"ok"},"finish_re
 const anthropicResponse = `{"content":[{"type":"text","text":"ok"}],"stop_reason":"end_turn","model":"claude-sonnet-4-20250514","usage":{"input_tokens":10,"output_tokens":5}}`
 
 func TestCreateProviderFromConfig_UserAgent(t *testing.T) {
-	defaultUA := "PicoClaw/" + config.Version
+	defaultUA := "SylastraClaws/" + config.Version
 
 	tests := []struct {
 		name      string

@@ -1,7 +1,7 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 // License: MIT
 //
-// Copyright (c) 2026 PicoClaw contributors
+// Copyright (c) 2026 SylastraClaws contributors
 
 package config
 
@@ -38,8 +38,8 @@ func TestSecurityPath(t *testing.T) {
 	}{
 		{
 			name:      "standard path",
-			configDir: "/home/user/.picoclaw/config.json",
-			want:      "/home/user/.picoclaw/.security.yml",
+			configDir: "/home/user/.sylastraclaws/config.json",
+			want:      "/home/user/.sylastraclaws/.security.yml",
 		},
 		{
 			name:      "nested path",

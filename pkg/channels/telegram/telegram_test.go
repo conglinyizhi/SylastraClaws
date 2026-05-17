@@ -991,7 +991,7 @@ func TestHandleMessage_ReplyToOwnBotMessage_UsesAssistantRole(t *testing.T) {
 					ID:        42,
 					IsBot:     true,
 					FirstName: "Pico",
-					Username:  "afjcjsbx_picoclaw_bot",
+					Username:  "afjcjsbx_sylastraclaws_bot",
 				}), nil
 			}
 			t.Fatalf("unexpected API call: %s", url)
@@ -1020,7 +1020,7 @@ func TestHandleMessage_ReplyToOwnBotMessage_UsesAssistantRole(t *testing.T) {
 				ID:        42,
 				IsBot:     true,
 				FirstName: "Pico",
-				Username:  "afjcjsbx_picoclaw_bot",
+				Username:  "afjcjsbx_sylastraclaws_bot",
 			},
 		},
 	}
@@ -1033,7 +1033,7 @@ func TestHandleMessage_ReplyToOwnBotMessage_UsesAssistantRole(t *testing.T) {
 	assert.Equal(t, "101", inbound.Context.ReplyToMessageID)
 	assert.Equal(
 		t,
-		"[quoted assistant message from afjcjsbx_picoclaw_bot]: Fatto! Ho creato il file notizie_2026_03_28.md\n\nti ricordi questo file?",
+		"[quoted assistant message from afjcjsbx_sylastraclaws_bot]: Fatto! Ho creato il file notizie_2026_03_28.md\n\nti ricordi questo file?",
 		inbound.Content,
 	)
 }
