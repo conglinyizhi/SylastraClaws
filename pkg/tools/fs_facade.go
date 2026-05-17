@@ -16,13 +16,6 @@ type (
 	AppendFileTool    = fstools.AppendFileTool
 	LoadImageTool     = fstools.LoadImageTool
 	SendFileTool      = fstools.SendFileTool
-	BetterReadTool    = fstools.BetterReadTool
-	BetterReplaceTool = fstools.BetterReplaceTool
-	BetterInsertTool  = fstools.BetterInsertTool
-	BetterDeleteTool  = fstools.BetterDeleteTool
-	BetterBatchTool   = fstools.BetterBatchTool
-	BetterWriteTool    = fstools.BetterWriteTool
-	BetterRollbackTool = fstools.BetterRollbackTool
 )
 
 const MaxReadFileSize = fstools.MaxReadFileSize
@@ -106,30 +99,4 @@ func NewSendFileTool(
 	return fstools.NewSendFileTool(workspace, restrict, maxFileSize, store, allowPaths...)
 }
 
-func NewBetterReadTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterReadTool {
-	return fstools.NewBetterReadTool(workspace, restrict, allowPaths...)
-}
 
-func NewBetterReplaceTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterReplaceTool {
-	return fstools.NewBetterReplaceTool(workspace, restrict, allowPaths...)
-}
-
-func NewBetterInsertTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterInsertTool {
-	return fstools.NewBetterInsertTool(workspace, restrict, allowPaths...)
-}
-
-func NewBetterDeleteTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterDeleteTool {
-	return fstools.NewBetterDeleteTool(workspace, restrict, allowPaths...)
-}
-
-func NewBetterBatchTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterBatchTool {
-	return fstools.NewBetterBatchTool(workspace, restrict, allowPaths...)
-}
-
-func NewBetterWriteTool(workspace string, restrict bool, allowPaths ...[]*regexp.Regexp) *BetterWriteTool {
-	return fstools.NewBetterWriteTool(workspace, restrict, allowPaths...)
-}
-
-func NewBetterRollbackTool() *BetterRollbackTool {
-	return fstools.NewBetterRollbackTool()
-}
