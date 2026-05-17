@@ -13,7 +13,7 @@ require (
 	github.com/bwmarrin/discordgo v0.29.0
 	github.com/caarlos0/env/v11 v11.4.1
 	github.com/charmbracelet/lipgloss v1.1.0
-	github.com/conglinyizhi/better-edit-tools-mcp v0.7.0
+	github.com/conglinyizhi/better-edit-tools-mcp v0.8.0
 	github.com/creack/pty v1.1.24
 	github.com/ergochat/irc-go v0.6.0
 	github.com/ergochat/readline v0.1.3
@@ -102,7 +102,7 @@ require (
 	github.com/ncruces/go-strftime v1.0.0 // indirect
 	github.com/petermattis/goid v0.0.0-20260330135022-df67b199bc81 // indirect
 	github.com/pion/randutil v0.1.0 // indirect
-	github.com/pmezard/go-difflib v1.0.0 // indirect
+	github.com/pmezard/go-difflib v1.0.0
 	github.com/remyoudompheng/bigfft v0.0.0-20230129092748-24d4a6f8daec // indirect
 	github.com/rivo/uniseg v0.4.7 // indirect
 	github.com/segmentio/asm v1.1.3 // indirect

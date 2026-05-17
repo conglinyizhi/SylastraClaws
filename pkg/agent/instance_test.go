@@ -332,7 +332,7 @@ func TestNewAgentInstance_AllowsMediaTempDirForReadListAndExec(t *testing.T) {
 		t.Fatalf("list_dir output missing media file: %s", listResult.ForLLM)
 	}
 
-	execTool, ok := agent.Tools.Get("exec")
+	execTool, ok := agent.Tools.Get("shell")
 	if !ok {
 		t.Fatal("exec tool not registered")
 	}

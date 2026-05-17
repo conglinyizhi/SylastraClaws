@@ -13,7 +13,7 @@ import (
 )
 
 // urlLikePattern matches inputs that look like URLs or host:path constructs.
-var urlLikePattern = regexp.MustCompile(`^(https?://|[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*(:[0-9]+)?(/|$)`)
+var urlLikePattern = regexp.MustCompile(`^(https?://|[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?(\.[a-zA-Z0-9]([-a-zA-Z0-9]*[a-zA-Z0-9])?)*(:[0-9]+)?(/|$))`)
 
 // WebSearchAndGetTool merges web_search and web_fetch into a single tool.
 type WebSearchAndGetTool struct {

@@ -69,10 +69,11 @@ func TestSubagentTool_Name(t *testing.T) {
 	provider := &MockLLMProvider{}
 	manager := NewSubagentManager(provider, "test-model", "/tmp/test")
 	tool := NewSubagentTool(manager)
-
-	if tool.Name() != "subagent" {
-		t.Errorf("Expected name 'subagent', got '%s'", tool.Name())
-	}
+	t.Run("Expected name", func(t *testing.T) {
+		if name := tool.Name(); name != "task_start_subagent" {
+			t.Errorf("Expected name 'task_start_subagent', got '%s'", name)
+		}
+	})
 }
 
 // TestSubagentTool_Description verifies tool description

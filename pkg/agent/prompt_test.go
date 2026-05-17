@@ -176,7 +176,7 @@ func TestContextBuilder_CollectsToolDiscoveryContributor(t *testing.T) {
 
 	messages := cb.BuildMessagesFromPrompt(PromptBuildRequest{CurrentMessage: "hello"})
 	system := messages[0]
-	if !strings.Contains(system.Content, "tool_search_tool_bm25") {
+	if !strings.Contains(system.Content, "tool_search") {
 		t.Fatalf("system prompt missing tool discovery rule: %q", system.Content)
 	}
 

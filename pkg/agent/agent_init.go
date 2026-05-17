@@ -210,6 +210,28 @@ func registerSharedTools(
 			agent.Tools.Register(sendFileTool)
 		}
 
+		// betools-based file operations
+		if cfg.Tools.IsToolEnabled("read") {
+			agent.Tools.Register(tools.NewBetterReadTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("replace") {
+			agent.Tools.Register(tools.NewBetterReplaceTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("insert") {
+			agent.Tools.Register(tools.NewBetterInsertTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("delete") {
+			agent.Tools.Register(tools.NewBetterDeleteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+		if cfg.Tools.IsToolEnabled("write") {
+			agent.Tools.Register(tools.NewBetterWriteTool(agent.Workspace, cfg.Agents.Defaults.RestrictToWorkspace, allowReadPaths))
+		}
+
+		// be-trx-rollback: always registered when betools is enabled (requires no path validation)
+		if cfg.Tools.IsToolEnabled("trx-rollback") {
+			agent.Tools.Register(tools.NewBetterRollbackTool())
+		}
+
 		if ttsProvider != nil {
 			agent.Tools.Register(tools.NewSendTTSTool(ttsProvider, nil))
 		}

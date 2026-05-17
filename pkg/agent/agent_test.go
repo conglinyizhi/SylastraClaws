@@ -171,8 +171,8 @@ func TestNewAgentLoop_RegistersWebSearchTool(t *testing.T) {
 	if agent == nil {
 		t.Fatal("expected default agent")
 	}
-	if _, ok := agent.Tools.Get("web_search"); !ok {
-		t.Fatal("expected web_search tool to be registered")
+	if _, ok := agent.Tools.Get("web_search_and_get"); !ok {
+		t.Fatal("expected web_search_and_get tool to be registered")
 	}
 }
 
@@ -189,8 +189,8 @@ func TestNewAgentLoop_RegistersWebSearchTool_WhenExplicitProviderUnavailable(t *
 	if agent == nil {
 		t.Fatal("expected default agent")
 	}
-	if _, ok := agent.Tools.Get("web_search"); !ok {
-		t.Fatal("expected web_search tool to fall back to auto provider selection")
+	if _, ok := agent.Tools.Get("web_search_and_get"); !ok {
+		t.Fatal("expected web_search_and_get tool to fall back to auto provider selection")
 	}
 }
 
@@ -869,6 +869,8 @@ func TestNewAgentLoop_StateInitialized(t *testing.T) {
 	}
 	defer os.RemoveAll(tmpDir)
 
+	t.Setenv("XDG_STATE_HOME", tmpDir)
+
 	// Create test config
 	cfg := &config.Config{
 		Agents: config.AgentsConfig{
@@ -892,7 +894,8 @@ func TestNewAgentLoop_StateInitialized(t *testing.T) {
 	}
 
 	// Verify state directory was created
-	stateDir := filepath.Join(tmpDir, "state")
+	// GetStateDir resolves to: $XDG_STATE_HOME/sylastraclaws
+	stateDir := filepath.Join(tmpDir, "sylastraclaws", "state")
 	if _, err := os.Stat(stateDir); os.IsNotExist(err) {
 		t.Error("Expected state directory to exist")
 	}
@@ -1217,16 +1220,22 @@ func TestRunAgentLoop_ResponseHandledToolPublishesForUserWhenSendResponseDisable
 	}
 
 	deadline := time.Now().Add(2 * time.Second)
-	for len(telegramChannel.sentMessages) == 0 && time.Now().Before(deadline) {
+	for len(telegramChannel.sentMessages) < 2 && time.Now().Before(deadline) {
 		time.Sleep(10 * time.Millisecond)
 	}
-	if len(telegramChannel.sentMessages) != 1 {
-		t.Fatalf("expected exactly 1 sent text message, got %d", len(telegramChannel.sentMessages))
+	if len(telegramChannel.sentMessages) != 2 {
+		for i, m := range telegramChannel.sentMessages {
+			t.Logf("  sent[%d]: %+v", i, m.Content)
+		}
+		t.Fatalf("expected exactly 2 sent text messages (token flow + tool output), got %d", len(telegramChannel.sentMessages))
 	}
-	if telegramChannel.sentMessages[0].Content != "Handled user output from tool." {
-		t.Fatalf("unexpected sent text message: %+v", telegramChannel.sentMessages[0])
+	if telegramChannel.sentMessages[0].Content != "Delivering the result now." {
+		t.Fatalf("unexpected first (token flow) message: %+v", telegramChannel.sentMessages[0])
 	}
-	if telegramChannel.sentMessages[0].AgentID != defaultAgent.ID {
+	if telegramChannel.sentMessages[1].Content != "Handled user output from tool." {
+		t.Fatalf("unexpected second (tool output) message: %+v", telegramChannel.sentMessages[1])
+	}
+	if telegramChannel.sentMessages[1].AgentID != defaultAgent.ID {
 		t.Fatalf("sent text agent_id = %q, want %q", telegramChannel.sentMessages[0].AgentID, defaultAgent.ID)
 	}
 	if telegramChannel.sentMessages[0].SessionKey != "session-1" {
