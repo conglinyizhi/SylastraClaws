@@ -2446,6 +2446,17 @@ func (h testHelper) executeAndGetResponse(tb testing.TB, ctx context.Context, ms
 	return response
 }
 
+func (h testHelper) executeAndGetResponseWithTimeout(tb testing.TB, ctx context.Context, timeout time.Duration, msg bus.InboundMessage) string {
+	timeoutCtx, cancel := context.WithTimeout(ctx, timeout)
+	defer cancel()
+
+	response, err := h.al.processMessage(timeoutCtx, testInboundMessage(msg))
+	if err != nil {
+		tb.Fatalf("processMessage failed: %v", err)
+	}
+	return response
+}
+
 func testInboundMessage(msg bus.InboundMessage) bus.InboundMessage {
 	if msg.Context.Channel == "" &&
 		msg.Context.Account == "" &&
@@ -2561,7 +2572,7 @@ func TestProcessMessage_CommandOutcomes(t *testing.T) {
 		},
 	}
 
-	showResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	showResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Context: bus.InboundContext{
 			Channel:  baseMsg.Context.Channel,
 			ChatID:   baseMsg.Context.ChatID,
@@ -2577,7 +2588,7 @@ func TestProcessMessage_CommandOutcomes(t *testing.T) {
 		t.Fatalf("LLM should not be called for handled command, calls=%d", provider.calls)
 	}
 
-	fooResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	fooResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Context: bus.InboundContext{
 			Channel:  baseMsg.Context.Channel,
 			ChatID:   baseMsg.Context.ChatID,
@@ -2593,7 +2604,7 @@ func TestProcessMessage_CommandOutcomes(t *testing.T) {
 		t.Fatalf("LLM should be called exactly once after /foo passthrough, calls=%d", provider.calls)
 	}
 
-	newResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	newResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Context: bus.InboundContext{
 			Channel:  baseMsg.Context.Channel,
 			ChatID:   baseMsg.Context.ChatID,
@@ -2656,7 +2667,7 @@ func TestProcessMessage_MCPCommandsHandledWithoutLLMCall(t *testing.T) {
 		SenderID: "user1",
 	}
 
-	listResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	listResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Context: baseContext,
 		Content: "/list mcp",
 	})
@@ -2667,7 +2678,7 @@ func TestProcessMessage_MCPCommandsHandledWithoutLLMCall(t *testing.T) {
 		t.Fatalf("LLM should not be called for /list mcp, calls=%d", provider.calls)
 	}
 
-	showResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	showResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Context: baseContext,
 		Content: "/show mcp github",
 	})
@@ -2717,7 +2728,7 @@ func TestProcessMessage_SwitchModelShowModelConsistency(t *testing.T) {
 	al := NewAgentLoop(cfg, msgBus, provider)
 	helper := testHelper{al: al}
 
-	switchResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	switchResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2727,7 +2738,7 @@ func TestProcessMessage_SwitchModelShowModelConsistency(t *testing.T) {
 		t.Fatalf("unexpected /switch reply: %q", switchResp)
 	}
 
-	showResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	showResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2774,7 +2785,7 @@ func TestProcessMessage_SwitchModelRejectsUnknownAlias(t *testing.T) {
 	al := NewAgentLoop(cfg, msgBus, provider)
 	helper := testHelper{al: al}
 
-	switchResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	switchResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2784,7 +2795,7 @@ func TestProcessMessage_SwitchModelRejectsUnknownAlias(t *testing.T) {
 		t.Fatalf("unexpected /switch error reply: %q", switchResp)
 	}
 
-	showResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	showResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2850,7 +2861,7 @@ func TestProcessMessage_SwitchModelRoutesSubsequentRequestsToSelectedProvider(t 
 	al := NewAgentLoop(cfg, msgBus, provider)
 	helper := testHelper{al: al}
 
-	firstResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	firstResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2869,7 +2880,7 @@ func TestProcessMessage_SwitchModelRoutesSubsequentRequestsToSelectedProvider(t 
 		t.Fatalf("local model before switch = %q, want %q", localModel, "Qwen3.5-35B-A3B")
 	}
 
-	switchResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	switchResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2879,7 +2890,7 @@ func TestProcessMessage_SwitchModelRoutesSubsequentRequestsToSelectedProvider(t 
 		t.Fatalf("unexpected /switch reply: %q", switchResp)
 	}
 
-	secondResp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	secondResp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -2968,7 +2979,7 @@ func TestProcessMessage_ModelRoutingUsesLightProvider(t *testing.T) {
 	al := NewAgentLoop(cfg, msgBus, provider)
 	helper := testHelper{al: al}
 
-	resp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	resp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -3049,7 +3060,7 @@ func TestProcessMessage_FallbackUsesPerCandidateProvider(t *testing.T) {
 	al := NewAgentLoop(cfg, msgBus, provider)
 	helper := testHelper{al: al}
 
-	resp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	resp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
@@ -3126,7 +3137,7 @@ func TestProcessMessage_FallbackUsesActiveProviderWhenCandidateNotRegistered(t *
 	al := NewAgentLoop(cfg, msgBus, provider)
 
 	helper := testHelper{al: al}
-	resp := helper.executeAndGetResponse(t, context.Background(), bus.InboundMessage{
+	resp := helper.executeAndGetResponseWithTimeout(t, context.Background(), 10*time.Second, bus.InboundMessage{
 		Channel:  "telegram",
 		SenderID: "user1",
 		ChatID:   "chat1",
