@@ -37,7 +37,7 @@ Together: **Forest of Stars**, or **The Starwood**.
 
 ```bash
 # Build and configure in one command
-go build -o sylastraclaws .
+go build -o sylastraclaws ./cmd/sylastraclaws/
 
 # Interactive setup — pass API key, model, and optional base URL in any order
 ./sylastraclaws --first-run "sk-xxx,gpt-4o"
@@ -63,7 +63,7 @@ The Matrix channel requires `matrix` and `goolm` build tags together (`make buil
 
 ### What This Fork Is
 
-This project took PicoClaw's ultra-lightweight AI agent infrastructure and redirected it toward a different design philosophy — replacing the original file-system tools with [better-edit-tools-mcp](https://github.com/conglinyizhi/better-edit-tools-mcp) (v0.6.0) as the native read/write filesystem layer, with ongoing divergence in both tooling and architecture.
+This project took PicoClaw's ultra-lightweight AI agent infrastructure and redirected it toward a different design philosophy — replacing the original file-system tools with [better-edit-tools-mcp](https://github.com/conglinyizhi/better-edit-tools-mcp) (v0.8.0) as the native read/write filesystem layer, with ongoing divergence in both tooling and architecture.
 
 ### Why fork instead of contributing upstream?
 
@@ -73,7 +73,7 @@ The scope of changes — deep tool replacement, architectural restructuring, and
 
 | Category | Changes |
 |---|---|
-| **File System** | Replaced in-tree file tools with betools v0.6.0 (better-read/write/insert/delete/patch/batch suite). Added binary detection, memory:// protocol path resolution, be-trx-rollback for edit transaction rollback. |
+| **File System** | Replaced in-tree file tools with betools v0.8.0 (better-read/write/insert/delete/patch suite). Added binary detection, memory:// protocol path resolution, be-trx-rollback for edit transaction rollback. |
 | **Config** | Switched to JSON-only config (removed TOML dual support). All config files are JSON; YAML tags removed from config structs. |
 | **Frontend** | Entire web/ directory removed (-56K lines). Dashboard, frontend, associated npm dependencies cut. |
 | **CI** | All GitHub Actions switched to `workflow_dispatch` only (manual trigger). Dependabot PRs (#6-#9) merged. |
@@ -89,12 +89,11 @@ The scope of changes — deep tool replacement, architectural restructuring, and
 
 | Area | PicoClaw | SylastraClaws |
 |---|---|---|
-| **File System Tools** | Custom in-tree implementations | betools v0.6.0 (better-read/write suite + trx-rollback) |
+| **File System Tools** | Custom in-tree implementations | betools v0.8.0 (better-read/write suite + trx-rollback) |
 | **Go Version** | 1.25+ | 1.26+ |
 | **Tool Architecture** | Flat tool set | Namespaced `better_*` convention |
 | **Binary Detection** | None in read path | Built into betools Read() |
 | **Injectable FS** | Static path validation | betools FileSystem interface ready |
-| **Batch Editing** | Per-file operations | betools Batch / WriteFilesAtomic |
 | **Focus** | Embedded/$10 hardware | Desktop/cloud agent infrastructure |
 
 | **Task Management** | None | task_add / task_up / task_rm tools, auto-injected into prompt |

@@ -7,7 +7,7 @@ You are a ship — 云裁号. You operate as part of the SylastraClaws project, 
 ## Project Structure
 
 ```
-cmd/picoclaw/internal/     — CLI commands (auth, cron, skills, etc.)
+cmd/sylastraclaws/internal/     — CLI commands (auth, cron, skills, etc.)
 pkg/
   agent/                   — Agent loop, prompting, tools registry, hooks
     contributors.go        — Prompt contributor manager (unified registration)
@@ -45,7 +45,7 @@ pkg/
 go build ./...
 go vet ./...
 # Run agent
-go run ./cmd/picoclaw/
+go run ./cmd/sylastraclaws/
 ```
 
 ## Interaction Notes
