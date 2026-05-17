@@ -360,7 +360,7 @@ func (t *SubagentTool) SetSpawner(spawner SubTurnSpawner) {
 }
 
 func (t *SubagentTool) Name() string {
-	return "subagent"
+	return "task_start_subagent"
 }
 
 func (t *SubagentTool) Description() string {

@@ -182,7 +182,7 @@ func NewExecToolWithConfig(
 }
 
 func (t *ExecTool) Name() string {
-	return "exec"
+	return "shell"
 }
 
 func (t *ExecTool) Description() string {
