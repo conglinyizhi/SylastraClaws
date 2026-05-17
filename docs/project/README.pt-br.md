@@ -1,17 +1,17 @@
 <div align="center">
-<img src="../../assets/logo.webp" alt="PicoClaw" width="512">
+<img src="../../assets/logo.webp" alt="SylastraClaws" width="512">
 
-<h1>PicoClaw: Assistente de IA Ultra-Eficiente em Go</h1>
+<h1>SylastraClaws: Assistente de IA Ultra-Eficiente em Go</h1>
 
-<h3>Hardware de $10 · 10MB de RAM · Boot em ms · Let's Go, PicoClaw!</h3>
+<h3>Hardware de $10 · 10MB de RAM · Boot em ms · Let's Go, SylastraClaws!</h3>
   <p>
     <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
     <img src="https://img.shields.io/badge/Arch-x86__64%2C%20ARM64%2C%20MIPS%2C%20RISC--V%2C%20LoongArch-blue" alt="Hardware">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
     <br>
-    <a href="https://picoclaw.io"><img src="https://img.shields.io/badge/Website-picoclaw.io-blue?style=flat&logo=google-chrome&logoColor=white" alt="Website"></a>
-    <a href="https://docs.picoclaw.io/"><img src="https://img.shields.io/badge/Docs-Official-007acc?style=flat&logo=read-the-docs&logoColor=white" alt="Docs"></a>
-    <a href="https://deepwiki.com/sipeed/picoclaw"><img src="https://img.shields.io/badge/Wiki-DeepWiki-FFA500?style=flat&logo=wikipedia&logoColor=white" alt="Wiki"></a>
+    <a href="https://sylastraclaws.io"><img src="https://img.shields.io/badge/Website-sylastraclaws.io-blue?style=flat&logo=google-chrome&logoColor=white" alt="Website"></a>
+    <a href="https://docs.sylastraclaws.io/"><img src="https://img.shields.io/badge/Docs-Official-007acc?style=flat&logo=read-the-docs&logoColor=white" alt="Docs"></a>
+    <a href="https://deepwiki.com/conglinyizhi/SylastraClaws"><img src="https://img.shields.io/badge/Wiki-DeepWiki-FFA500?style=flat&logo=wikipedia&logoColor=white" alt="Wiki"></a>
     <br>
     <a href="https://x.com/SipeedIO"><img src="https://img.shields.io/badge/X_(Twitter)-SipeedIO-black?style=flat&logo=x&logoColor=white" alt="Twitter"></a>
     <a href="../../assets/wechat.png"><img src="https://img.shields.io/badge/WeChat-Group-41d56b?style=flat&logo=wechat&logoColor=white"></a>
@@ -24,9 +24,9 @@
 
 ---
 
-> **PicoClaw** é um projeto open-source independente iniciado pela [Sipeed](https://sipeed.com), escrito inteiramente em **Go** do zero — não é um fork do OpenClaw, NanoBot ou qualquer outro projeto.
+> **SylastraClaws** é um projeto open-source independente iniciado pela [Sipeed](https://sipeed.com), escrito inteiramente em **Go** do zero — não é um fork do OpenClaw, NanoBot ou qualquer outro projeto.
 
-**PicoClaw** é um assistente de IA pessoal ultra-leve inspirado no [NanoBot](https://github.com/HKUDS/nanobot). Foi reconstruído do zero em **Go** por meio de um processo de "auto-bootstrapping" — o próprio AI Agent conduziu a migração de arquitetura e a otimização do código.
+**SylastraClaws** é um assistente de IA pessoal ultra-leve inspirado no [NanoBot](https://github.com/HKUDS/nanobot). Foi reconstruído do zero em **Go** por meio de um processo de "auto-bootstrapping" — o próprio AI Agent conduziu a migração de arquitetura e a otimização do código.
 
 **Roda em hardware de $10 com menos de 10MB de RAM** — isso é 99% menos memória que o OpenClaw e 98% mais barato que um Mac mini!
 
@@ -34,7 +34,7 @@
 <tr align="center">
 <td align="center" valign="top">
 <p align="center">
-<img src="../../assets/picoclaw_mem.gif" width="360" height="240">
+<img src="../../assets/sylastraclaws_mem.gif" width="360" height="240">
 </p>
 </td>
 <td align="center" valign="top">
@@ -48,19 +48,19 @@
 > [!CAUTION]
 > **Aviso de Segurança**
 >
-> * **SEM CRIPTO:** O PicoClaw **não** emitiu nenhum token oficial ou criptomoeda. Todas as alegações no `pump.fun` ou outras plataformas de negociação são **golpes**.
-> * **DOMÍNIO OFICIAL:** O **ÚNICO** site oficial é **[picoclaw.io](https://picoclaw.io)**, e o site da empresa é **[sipeed.com](https://sipeed.com)**
+> * **SEM CRIPTO:** O SylastraClaws **não** emitiu nenhum token oficial ou criptomoeda. Todas as alegações no `pump.fun` ou outras plataformas de negociação são **golpes**.
+> * **DOMÍNIO OFICIAL:** O **ÚNICO** site oficial é **[sylastraclaws.io](https://sylastraclaws.io)**, e o site da empresa é **[sipeed.com](https://sipeed.com)**
 > * **ATENÇÃO:** Muitos domínios `.ai/.org/.com/.net/...` foram registrados por terceiros. Não confie neles.
-> * **NOTA:** O PicoClaw está em desenvolvimento rápido inicial. Podem existir problemas de segurança não resolvidos. Não implante em produção antes da v1.0.
-> * **NOTA:** O PicoClaw mesclou muitos PRs recentemente. Builds recentes podem usar 10-20MB de RAM. A otimização de recursos está planejada após a estabilização de funcionalidades.
+> * **NOTA:** O SylastraClaws está em desenvolvimento rápido inicial. Podem existir problemas de segurança não resolvidos. Não implante em produção antes da v1.0.
+> * **NOTA:** O SylastraClaws mesclou muitos PRs recentemente. Builds recentes podem usar 10-20MB de RAM. A otimização de recursos está planejada após a estabilização de funcionalidades.
 
 ## 📢 Novidades
 
-2026-03-31 📱 **Suporte Android!** PicoClaw agora roda no Android! Baixe o APK em [picoclaw.io](https://picoclaw.io/download)
+2026-03-31 📱 **Suporte Android!** SylastraClaws agora roda no Android! Baixe o APK em [sylastraclaws.io](https://sylastraclaws.io/download)
 
-2026-03-25 🚀 **v0.2.4 Lançada!** Reformulação da arquitetura Agent (SubTurn, Hooks, Steering, EventBus), integração WeChat/WeCom, fortalecimento de segurança (.security.yml, filtragem de dados sensíveis), novos providers (AWS Bedrock, Azure, Xiaomi MiMo) e 35 correções de bugs. O PicoClaw atingiu **26K Stars**!
+2026-03-25 🚀 **v0.2.4 Lançada!** Reformulação da arquitetura Agent (SubTurn, Hooks, Steering, EventBus), integração WeChat/WeCom, fortalecimento de segurança (.security.yml, filtragem de dados sensíveis), novos providers (AWS Bedrock, Azure, Xiaomi MiMo) e 35 correções de bugs. O SylastraClaws atingiu **26K Stars**!
 
-2026-03-17 🚀 **v0.2.3 Lançada!** UI na bandeja do sistema (Windows e Linux), consulta de status de sub-agent (`spawn_status`), hot-reload experimental do Gateway, controle de segurança do Cron e 2 correções de segurança. O PicoClaw atingiu **25K Stars**!
+2026-03-17 🚀 **v0.2.3 Lançada!** UI na bandeja do sistema (Windows e Linux), consulta de status de sub-agent (`spawn_status`), hot-reload experimental do Gateway, controle de segurança do Cron e 2 correções de segurança. O SylastraClaws atingiu **25K Stars**!
 
 2026-03-09 🎉 **v0.2.1 — Maior atualização até agora!** Suporte ao protocolo MCP, 4 novos channels (Matrix/IRC/WeCom/Discord Proxy), 3 novos providers (Kimi/Minimax/Avian), pipeline de visão, armazenamento de memória JSONL, roteamento de modelos.
 
@@ -69,13 +69,13 @@
 <details>
 <summary>Notícias anteriores...</summary>
 
-2026-02-26 🎉 O PicoClaw atinge **20K Stars** em apenas 17 dias! Orquestração automática de channels e interfaces de capacidade estão disponíveis.
+2026-02-26 🎉 O SylastraClaws atinge **20K Stars** em apenas 17 dias! Orquestração automática de channels e interfaces de capacidade estão disponíveis.
 
-2026-02-16 🎉 O PicoClaw ultrapassa 12K Stars em uma semana! Funções de mantenedor da comunidade e [Roadmap](../../ROADMAP.md) lançados oficialmente.
+2026-02-16 🎉 O SylastraClaws ultrapassa 12K Stars em uma semana! Funções de mantenedor da comunidade e [Roadmap](../../ROADMAP.md) lançados oficialmente.
 
-2026-02-13 🎉 O PicoClaw ultrapassa 5000 Stars em 4 dias! Roadmap do projeto e grupos de desenvolvedores em andamento.
+2026-02-13 🎉 O SylastraClaws ultrapassa 5000 Stars em 4 dias! Roadmap do projeto e grupos de desenvolvedores em andamento.
 
-2026-02-09 🎉 **PicoClaw Lançado!** Construído em 1 dia para levar AI Agents a hardware de $10 com menos de 10MB de RAM. Let's Go, PicoClaw!
+2026-02-09 🎉 **SylastraClaws Lançado!** Construído em 1 dia para levar AI Agents a hardware de $10 com menos de 10MB de RAM. Let's Go, SylastraClaws!
 
 </details>
 
@@ -101,21 +101,21 @@ _*Builds recentes podem usar 10-20MB devido a merges rápidos de PRs. Otimizaç�
 
 <div align="center">
 
-|                                | OpenClaw      | NanoBot                  | **PicoClaw**                           |
+|                                | OpenClaw      | NanoBot                  | **SylastraClaws**                           |
 | ------------------------------ | ------------- | ------------------------ | -------------------------------------- |
 | **Linguagem**                  | TypeScript    | Python                   | **Go**                                 |
 | **RAM**                        | >1GB          | >100MB                   | **< 10MB***                            |
 | **Tempo de boot**</br>(core 0,8GHz) | >500s    | >30s                     | **<1s**                                |
 | **Custo**                      | Mac Mini $599 | Maioria das placas Linux ~$50 | **Qualquer placa Linux**</br>**a partir de $10** |
 
-<img src="../../assets/compare.jpg" alt="PicoClaw" width="512">
+<img src="../../assets/compare.jpg" alt="SylastraClaws" width="512">
 
 </div>
 
 > **[Lista de Compatibilidade de Hardware](../guides/hardware-compatibility.pt-br.md)** — Veja todas as placas testadas, de RISC-V de $5 ao Raspberry Pi e celulares Android. Sua placa não está listada? Envie um PR!
 
 <p align="center">
-<img src="../../assets/hardware-banner.jpg" alt="PicoClaw Hardware Compatibility" width="100%">
+<img src="../../assets/hardware-banner.jpg" alt="SylastraClaws Hardware Compatibility" width="100%">
 </p>
 
 ## 🦾 Demonstração
@@ -129,9 +129,9 @@ _*Builds recentes podem usar 10-20MB devido a merges rápidos de PRs. Otimizaç�
 <th><p align="center">Busca na Web e Aprendizado</p></th>
 </tr>
 <tr>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_code.gif" width="240" height="180"></p></td>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_memory.gif" width="240" height="180"></p></td>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_search.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_code.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_memory.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_search.gif" width="240" height="180"></p></td>
 </tr>
 <tr>
 <td align="center">Desenvolver · Implantar · Escalar</td>
@@ -142,7 +142,7 @@ _*Builds recentes podem usar 10-20MB devido a merges rápidos de PRs. Otimizaç�
 
 ### 🐜 Implantação Inovadora de Baixo Consumo
 
-O PicoClaw pode ser implantado em praticamente qualquer dispositivo Linux!
+O SylastraClaws pode ser implantado em praticamente qualquer dispositivo Linux!
 
 - $9,9 [LicheeRV-Nano](https://www.aliexpress.com/item/1005006519668532.html) edição E(Ethernet) ou W(WiFi6), para um assistente doméstico mínimo
 - $30~50 [NanoKVM](https://www.aliexpress.com/item/1005007369816019.html), ou $100 [NanoKVM-Pro](https://www.aliexpress.com/item/1005010048471263.html), para operações automatizadas de servidor
@@ -154,13 +154,13 @@ O PicoClaw pode ser implantado em praticamente qualquer dispositivo Linux!
 
 ## 📦 Instalação
 
-### Download pelo picoclaw.io (Recomendado)
+### Download pelo sylastraclaws.io (Recomendado)
 
-Acesse **[picoclaw.io](https://picoclaw.io)** — o site oficial detecta automaticamente sua plataforma e fornece download com um clique. Não é necessário selecionar a arquitetura manualmente.
+Acesse **[sylastraclaws.io](https://sylastraclaws.io)** — o site oficial detecta automaticamente sua plataforma e fornece download com um clique. Não é necessário selecionar a arquitetura manualmente.
 
 ### Download do binário pré-compilado
 
-Alternativamente, baixe o binário para sua plataforma na página de [GitHub Releases](https://github.com/sipeed/picoclaw/releases).
+Alternativamente, baixe o binário para sua plataforma na página de [GitHub Releases](https://github.com/conglinyizhi/SylastraClaws/releases).
 
 ### Compilar a partir do código-fonte (para desenvolvimento)
 
@@ -170,9 +170,9 @@ Pré-requisitos:
 - Node.js 22+ e pnpm 10.33.0+ para builds do Web UI / launcher
 
 ```bash
-git clone https://github.com/sipeed/picoclaw.git
+git clone https://github.com/conglinyizhi/SylastraClaws.git
 
-cd picoclaw
+cd sylastraclaws
 make deps
 
 # Instalar dependências do frontend
@@ -204,19 +204,19 @@ O WebUI Launcher fornece uma interface baseada em navegador para configuração 
 
 **Opção 1: Duplo clique (Desktop)**
 
-Após baixar de [picoclaw.io](https://picoclaw.io), dê duplo clique em `picoclaw-launcher` (ou `picoclaw-launcher.exe` no Windows). Seu navegador abrirá automaticamente em `http://localhost:18800`.
+Após baixar de [sylastraclaws.io](https://sylastraclaws.io), dê duplo clique em `sylastraclaws-launcher` (ou `sylastraclaws-launcher.exe` no Windows). Seu navegador abrirá automaticamente em `http://localhost:18800`.
 
 **Opção 2: Linha de comando**
 
 ```bash
-picoclaw-launcher
+sylastraclaws-launcher
 # Abra http://localhost:18800 no seu navegador
 ```
 
 > [!TIP]
 > **Acesso remoto / Docker / VM:** Adicione a flag `-public` para escutar em todas as interfaces:
 > ```bash
-> picoclaw-launcher -public
+> sylastraclaws-launcher -public
 > ```
 
 <p align="center">
@@ -227,15 +227,15 @@ picoclaw-launcher
 
 Abra o WebUI e então: **1)** Configure um Provider (adicione sua API key de LLM) -> **2)** Configure um Channel (ex.: Telegram) -> **3)** Inicie o Gateway -> **4)** Converse!
 
-Para documentação detalhada do WebUI, veja [docs.picoclaw.io](https://docs.picoclaw.io).
+Para documentação detalhada do WebUI, veja [docs.sylastraclaws.io](https://docs.sylastraclaws.io).
 
 <details>
 <summary><b>Docker (alternativa)</b></summary>
 
 ```bash
 # 1. Clone este repositório
-git clone https://github.com/sipeed/picoclaw.git
-cd picoclaw
+git clone https://github.com/conglinyizhi/SylastraClaws.git
+cd sylastraclaws
 
 # 2. Primeira execução — gera automaticamente docker/data/config.json e encerra
 #    (só é acionado quando config.json e workspace/ estão ausentes)
@@ -250,7 +250,7 @@ docker compose -f docker/docker-compose.yml --profile launcher up -d
 # Abra http://localhost:18800
 ```
 
-> **Usuários de Docker / VM:** O Gateway escuta em `127.0.0.1` por padrão. Defina `PICOCLAW_GATEWAY_HOST=0.0.0.0` ou use a flag `-public` para torná-lo acessível pelo host.
+> **Usuários de Docker / VM:** O Gateway escuta em `127.0.0.1` por padrão. Defina `SYLASTRACLAWS_GATEWAY_HOST=0.0.0.0` ou use a flag `-public` para torná-lo acessível pelo host.
 
 ```bash
 # Verificar logs
@@ -269,15 +269,15 @@ docker compose -f docker/docker-compose.yml --profile launcher up -d
 <details>
 <summary><b>macOS — Aviso de segurança no primeiro lançamento</b></summary>
 
-O macOS pode bloquear o `picoclaw-launcher` no primeiro lançamento porque ele foi baixado da internet e não é notarizado pela Mac App Store.
+O macOS pode bloquear o `sylastraclaws-launcher` no primeiro lançamento porque ele foi baixado da internet e não é notarizado pela Mac App Store.
 
-**Passo 1:** Dê um duplo clique em `picoclaw-launcher`. Você verá um aviso de segurança:
+**Passo 1:** Dê um duplo clique em `sylastraclaws-launcher`. Você verá um aviso de segurança:
 
 <p align="center">
 <img src="../../assets/macos-gatekeeper-warning.jpg" alt="Aviso do macOS Gatekeeper" width="400">
 </p>
 
-> *"picoclaw-launcher" não foi aberto — A Apple não conseguiu verificar se "picoclaw-launcher" está livre de malware que possa prejudicar seu Mac ou comprometer sua privacidade.*
+> *"sylastraclaws-launcher" não foi aberto — A Apple não conseguiu verificar se "sylastraclaws-launcher" está livre de malware que possa prejudicar seu Mac ou comprometer sua privacidade.*
 
 **Passo 2:** Abra **Configurações do Sistema** → **Privacidade e Segurança** → role até a seção **Segurança** → clique em **Abrir Mesmo Assim** → confirme clicando em **Abrir Mesmo Assim** na caixa de diálogo.
 
@@ -285,14 +285,14 @@ O macOS pode bloquear o `picoclaw-launcher` no primeiro lançamento porque ele f
 <img src="../../assets/macos-gatekeeper-allow.jpg" alt="macOS Privacidade e Segurança — Abrir Mesmo Assim" width="600">
 </p>
 
-Após esta etapa única, o `picoclaw-launcher` abrirá normalmente nos lançamentos seguintes.
+Após esta etapa única, o `sylastraclaws-launcher` abrirá normalmente nos lançamentos seguintes.
 
 </details>
 
 <a id="-run-on-old-android-phones"></a>
 ### 📱 Android
 
-Dê uma segunda vida ao seu celular de uma década! Transforme-o em um Assistente de IA inteligente com o PicoClaw.
+Dê uma segunda vida ao seu celular de uma década! Transforme-o em um Assistente de IA inteligente com o SylastraClaws.
 
 **Opção 1: Instalação via APK**
 
@@ -307,7 +307,7 @@ Pré-visualização:
   </tr>
 </table>
 
-Baixe o APK de [picoclaw.io](https://picoclaw.io/download/) e instale diretamente. Sem necessidade de Termux!
+Baixe o APK de [sylastraclaws.io](https://sylastraclaws.io/download/) e instale diretamente. Sem necessidade de Termux!
 
 **Opção 2: Termux**
 
@@ -319,27 +319,27 @@ Baixe o APK de [picoclaw.io](https://picoclaw.io/download/) e instale diretament
 
 ```bash
 # Baixar a versão mais recente
-wget https://github.com/sipeed/picoclaw/releases/latest/download/picoclaw_Linux_arm64.tar.gz
-tar xzf picoclaw_Linux_arm64.tar.gz
+wget https://github.com/conglinyizhi/SylastraClaws/releases/latest/download/sylastraclaws_Linux_arm64.tar.gz
+tar xzf sylastraclaws_Linux_arm64.tar.gz
 pkg install proot
-termux-chroot ./picoclaw onboard   # chroot fornece um layout padrão de sistema de arquivos Linux
+termux-chroot ./sylastraclaws onboard   # chroot fornece um layout padrão de sistema de arquivos Linux
 ```
 
 Em seguida, siga a seção Terminal Launcher abaixo para concluir a configuração.
 
-<img src="../../assets/termux.jpg" alt="PicoClaw on Termux" width="512">
+<img src="../../assets/termux.jpg" alt="SylastraClaws on Termux" width="512">
 
-Para ambientes mínimos onde apenas o binário principal `picoclaw` está disponível (sem Launcher UI), você pode configurar tudo via linha de comando e um arquivo de configuração JSON.
+Para ambientes mínimos onde apenas o binário principal `sylastraclaws` está disponível (sem Launcher UI), você pode configurar tudo via linha de comando e um arquivo de configuração JSON.
 
 **1. Inicializar**
 
 ```bash
-picoclaw onboard
+sylastraclaws onboard
 ```
 
-Isso cria `~/.picoclaw/config.json` e o diretório workspace.
+Isso cria `~/.config/sylastraclaws/config.json` e o diretório workspace.
 
-**2. Configurar** (`~/.picoclaw/config.json`)
+**2. Configurar** (`~/.config/sylastraclaws/config.json`)
 
 ```json
 {
@@ -364,20 +364,20 @@ Isso cria `~/.picoclaw/config.json` e o diretório workspace.
 
 ```bash
 # Pergunta única
-picoclaw agent -m "What is 2+2?"
+sylastraclaws agent -m "What is 2+2?"
 
 # Modo interativo
-picoclaw agent
+sylastraclaws agent
 
 # Iniciar gateway para integração com app de chat
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
 
 ## 🔌 Providers (LLM)
 
-O PicoClaw suporta mais de 30 providers de LLM através da configuração `model_list`. Use o formato `protocolo/modelo`:
+O SylastraClaws suporta mais de 30 providers de LLM através da configuração `model_list`. Use o formato `protocolo/modelo`:
 
 | Provider | Protocolo | API Key | Notas |
 |----------|-----------|---------|-------|
@@ -439,7 +439,7 @@ Para detalhes completos de configuração de providers, veja [Providers & Models
 
 ## 💬 Channels (Apps de Chat)
 
-Converse com seu PicoClaw por meio de mais de 17 plataformas de mensagens:
+Converse com seu SylastraClaws por meio de mais de 17 plataformas de mensagens:
 
 | Channel | Configuração | Protocolo | Docs |
 |---------|--------------|-----------|------|
@@ -462,7 +462,7 @@ Converse com seu PicoClaw por meio de mais de 17 plataformas de mensagens:
 
 > Todos os channels baseados em webhook compartilham um único servidor HTTP do Gateway (`gateway.host`:`gateway.port`, padrão `127.0.0.1:18790`). O Feishu usa modo WebSocket/SDK e não utiliza o servidor HTTP compartilhado.
 
-> A verbosidade dos logs é controlada por `gateway.log_level` (padrão: `warn`). Valores suportados: `debug`, `info`, `warn`, `error`, `fatal`. Também pode ser definido via `PICOCLAW_LOG_LEVEL`. Veja [Configuração](../guides/configuration.pt-br.md#nível-de-log-do-gateway) para detalhes.
+> A verbosidade dos logs é controlada por `gateway.log_level` (padrão: `warn`). Valores suportados: `debug`, `info`, `warn`, `error`, `fatal`. Também pode ser definido via `SYLASTRACLAWS_LOG_LEVEL`. Veja [Configuração](../guides/configuration.pt-br.md#nível-de-log-do-gateway) para detalhes.
 
 Para instruções detalhadas de configuração de channels, veja [Configuração de Apps de Chat](../guides/chat-apps.pt-br.md).
 
@@ -470,7 +470,7 @@ Para instruções detalhadas de configuração de channels, veja [Configuração
 
 ### 🔍 Busca na Web
 
-O PicoClaw pode pesquisar na web para fornecer informações atualizadas. Configure em `tools.web`:
+O SylastraClaws pode pesquisar na web para fornecer informações atualizadas. Configure em `tools.web`:
 
 | Motor de Busca | API Key | Nível Gratuito | Link |
 |----------------|---------|----------------|------|
@@ -484,7 +484,7 @@ O PicoClaw pode pesquisar na web para fornecer informações atualizadas. Config
 
 ### ⚙️ Outras Ferramentas
 
-O PicoClaw inclui ferramentas integradas para operações de arquivo, execução de código, agendamento e mais. Veja [Configuração de Ferramentas](../reference/tools_configuration.pt-br.md) para detalhes.
+O SylastraClaws inclui ferramentas integradas para operações de arquivo, execução de código, agendamento e mais. Veja [Configuração de Ferramentas](../reference/tools_configuration.pt-br.md) para detalhes.
 
 ## 🎯 Skills
 
@@ -493,8 +493,8 @@ Skills são capacidades modulares que estendem seu Agent. Elas são carregadas a
 **Instalar skills do ClawHub:**
 
 ```bash
-picoclaw skills search "web scraping"
-picoclaw skills install <skill-name>
+sylastraclaws skills search "web scraping"
+sylastraclaws skills install <skill-name>
 ```
 
 **Configurar token do ClawHub** (opcional, para limites de taxa mais altos):
@@ -518,7 +518,7 @@ Para mais detalhes, veja [Configuração de Ferramentas - Skills](../reference/t
 
 ## 🔗 MCP (Model Context Protocol)
 
-O PicoClaw suporta nativamente o [MCP](https://modelcontextprotocol.io/) — conecte qualquer servidor MCP para estender as capacidades do seu Agent com ferramentas externas e fontes de dados.
+O SylastraClaws suporta nativamente o [MCP](https://modelcontextprotocol.io/) — conecte qualquer servidor MCP para estender as capacidades do seu Agent com ferramentas externas e fontes de dados.
 
 ```json
 {
@@ -541,7 +541,7 @@ Para configuração completa de MCP (transportes stdio, SSE, HTTP, Tool Discover
 
 ## <img src="../../assets/clawdchat-icon.png" width="24" height="24" alt="ClawdChat"> Junte-se à Rede Social de Agents
 
-Conecte o PicoClaw à Rede Social de Agents simplesmente enviando uma única mensagem via CLI ou qualquer App de Chat integrado.
+Conecte o SylastraClaws à Rede Social de Agents simplesmente enviando uma única mensagem via CLI ou qualquer App de Chat integrado.
 
 **Leia `https://clawdchat.ai/skill.md` e siga as instruções para entrar no [ClawdChat.ai](https://clawdchat.ai)**
 
@@ -549,26 +549,26 @@ Conecte o PicoClaw à Rede Social de Agents simplesmente enviando uma única men
 
 | Comando                   | Descrição                              |
 | ------------------------- | -------------------------------------- |
-| `picoclaw onboard`        | Inicializar config e workspace         |
-| `picoclaw auth weixin` | Conectar conta WeChat via QR |
-| `picoclaw agent -m "..."` | Conversar com o agent                  |
-| `picoclaw agent`          | Modo de chat interativo                |
-| `picoclaw gateway`        | Iniciar o gateway                      |
-| `picoclaw status`         | Exibir status                          |
-| `picoclaw version`        | Exibir informações de versão           |
-| `picoclaw model`          | Ver ou trocar o modelo padrão          |
-| `picoclaw cron list`      | Listar todos os jobs agendados         |
-| `picoclaw cron add ...`   | Adicionar um job agendado              |
-| `picoclaw cron disable`   | Desabilitar um job agendado            |
-| `picoclaw cron remove`    | Remover um job agendado                |
-| `picoclaw skills list`    | Listar skills instaladas               |
-| `picoclaw skills install` | Instalar uma skill                     |
-| `picoclaw migrate`        | Migrar dados de versões anteriores     |
-| `picoclaw auth login`     | Autenticar com providers               |
+| `sylastraclaws onboard`        | Inicializar config e workspace         |
+| `sylastraclaws auth weixin` | Conectar conta WeChat via QR |
+| `sylastraclaws agent -m "..."` | Conversar com o agent                  |
+| `sylastraclaws agent`          | Modo de chat interativo                |
+| `sylastraclaws gateway`        | Iniciar o gateway                      |
+| `sylastraclaws status`         | Exibir status                          |
+| `sylastraclaws version`        | Exibir informações de versão           |
+| `sylastraclaws model`          | Ver ou trocar o modelo padrão          |
+| `sylastraclaws cron list`      | Listar todos os jobs agendados         |
+| `sylastraclaws cron add ...`   | Adicionar um job agendado              |
+| `sylastraclaws cron disable`   | Desabilitar um job agendado            |
+| `sylastraclaws cron remove`    | Remover um job agendado                |
+| `sylastraclaws skills list`    | Listar skills instaladas               |
+| `sylastraclaws skills install` | Instalar uma skill                     |
+| `sylastraclaws migrate`        | Migrar dados de versões anteriores     |
+| `sylastraclaws auth login`     | Autenticar com providers               |
 
 ### ⏰ Tarefas Agendadas / Lembretes
 
-O PicoClaw suporta lembretes agendados e tarefas recorrentes através da ferramenta `cron`:
+O SylastraClaws suporta lembretes agendados e tarefas recorrentes através da ferramenta `cron`:
 
 * **Lembretes únicos**: "Lembre-me em 10 minutos" -> dispara uma vez após 10min
 * **Tarefas recorrentes**: "Lembre-me a cada 2 horas" -> dispara a cada 2 horas
@@ -596,7 +596,7 @@ Para guias detalhados além deste README:
 
 PRs são bem-vindos! O código-fonte é intencionalmente pequeno e legível.
 
-Veja nosso [Roadmap da Comunidade](https://github.com/sipeed/picoclaw/issues/988) e [CONTRIBUTING.md](../../CONTRIBUTING.md) para diretrizes.
+Veja nosso [Roadmap da Comunidade](https://github.com/conglinyizhi/SylastraClaws/issues/988) e [CONTRIBUTING.md](../../CONTRIBUTING.md) para diretrizes.
 
 Grupo de desenvolvedores em formação, entre após seu primeiro PR mesclado!
 

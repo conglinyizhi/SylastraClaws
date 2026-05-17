@@ -1,17 +1,17 @@
 <div align="center">
-<img src="../../assets/logo.webp" alt="PicoClaw" width="512">
+<img src="../../assets/logo.webp" alt="SylastraClaws" width="512">
 
-<h1>PicoClaw: Pembantu AI Ultra-Cekap dalam Go</h1>
+<h1>SylastraClaws: Pembantu AI Ultra-Cekap dalam Go</h1>
 
-<h3>Perkakasan $10 · RAM 10MB · Boot ms · Jom, PicoClaw!</h3>
+<h3>Perkakasan $10 · RAM 10MB · Boot ms · Jom, SylastraClaws!</h3>
   <p>
     <img src="https://img.shields.io/badge/Go-1.25+-00ADD8?style=flat&logo=go&logoColor=white" alt="Go">
     <img src="https://img.shields.io/badge/Arch-x86__64%2C%20ARM64%2C%20MIPS%2C%20RISC--V%2C%20LoongArch-blue" alt="Hardware">
     <img src="https://img.shields.io/badge/license-MIT-green" alt="License">
     <br>
-    <a href="https://picoclaw.io"><img src="https://img.shields.io/badge/Website-picoclaw.io-blue?style=flat&logo=google-chrome&logoColor=white" alt="Website"></a>
-    <a href="https://docs.picoclaw.io/"><img src="https://img.shields.io/badge/Docs-Official-007acc?style=flat&logo=read-the-docs&logoColor=white" alt="Docs"></a>
-    <a href="https://deepwiki.com/sipeed/picoclaw"><img src="https://img.shields.io/badge/Wiki-DeepWiki-FFA500?style=flat&logo=wikipedia&logoColor=white" alt="Wiki"></a>
+    <a href="https://sylastraclaws.io"><img src="https://img.shields.io/badge/Website-sylastraclaws.io-blue?style=flat&logo=google-chrome&logoColor=white" alt="Website"></a>
+    <a href="https://docs.sylastraclaws.io/"><img src="https://img.shields.io/badge/Docs-Official-007acc?style=flat&logo=read-the-docs&logoColor=white" alt="Docs"></a>
+    <a href="https://deepwiki.com/conglinyizhi/SylastraClaws"><img src="https://img.shields.io/badge/Wiki-DeepWiki-FFA500?style=flat&logo=wikipedia&logoColor=white" alt="Wiki"></a>
     <br>
     <a href="https://x.com/SipeedIO"><img src="https://img.shields.io/badge/X_(Twitter)-SipeedIO-black?style=flat&logo=x&logoColor=white" alt="Twitter"></a>
     <a href="../../assets/wechat.png"><img src="https://img.shields.io/badge/WeChat-Group-41d56b?style=flat&logo=wechat&logoColor=white"></a>
@@ -24,9 +24,9 @@
 
 ---
 
-> **PicoClaw** adalah projek sumber terbuka bebas yang dilancarkan oleh [Sipeed](https://sipeed.com), ditulis sepenuhnya dalam **Go** dari awal — bukan cabang OpenClaw, NanoBot, atau projek lain.
+> **SylastraClaws** adalah projek sumber terbuka bebas yang dilancarkan oleh [Sipeed](https://sipeed.com), ditulis sepenuhnya dalam **Go** dari awal — bukan cabang OpenClaw, NanoBot, atau projek lain.
 
-**PicoClaw** adalah pembantu AI peribadi ultra-ringan yang terinspirasi oleh [NanoBot](https://github.com/HKUDS/nanobot). Ia dibina semula dari awal dalam **Go** melalui proses "self-bootstrapping" — AI Agent itu sendiri yang memacu migrasi seni bina dan pengoptimuman kod.
+**SylastraClaws** adalah pembantu AI peribadi ultra-ringan yang terinspirasi oleh [NanoBot](https://github.com/HKUDS/nanobot). Ia dibina semula dari awal dalam **Go** melalui proses "self-bootstrapping" — AI Agent itu sendiri yang memacu migrasi seni bina dan pengoptimuman kod.
 
 **Berjalan pada perkakasan $10 dengan RAM <10MB** — 99% lebih sedikit memori daripada OpenClaw dan 98% lebih murah daripada Mac mini!
 
@@ -34,7 +34,7 @@
 <tr align="center">
 <td align="center" valign="top">
 <p align="center">
-<img src="../../assets/picoclaw_mem.gif" width="360" height="240">
+<img src="../../assets/sylastraclaws_mem.gif" width="360" height="240">
 </p>
 </td>
 <td align="center" valign="top">
@@ -48,19 +48,19 @@
 > [!CAUTION]
 > **Notis Keselamatan**
 >
-> * **TIADA KRIPTO:** PicoClaw **tidak** mengeluarkan sebarang token atau mata wang kripto rasmi. Semua tuntutan di `pump.fun` atau platform dagangan lain adalah **penipuan**.
-> * **DOMAIN RASMI:** Satu-satunya laman web rasmi ialah **[picoclaw.io](https://picoclaw.io)**, dan laman web syarikat ialah **[sipeed.com](https://sipeed.com)**
+> * **TIADA KRIPTO:** SylastraClaws **tidak** mengeluarkan sebarang token atau mata wang kripto rasmi. Semua tuntutan di `pump.fun` atau platform dagangan lain adalah **penipuan**.
+> * **DOMAIN RASMI:** Satu-satunya laman web rasmi ialah **[sylastraclaws.io](https://sylastraclaws.io)**, dan laman web syarikat ialah **[sipeed.com](https://sipeed.com)**
 > * **BERHATI-HATI:** Banyak domain `.ai/.org/.com/.net/...` telah didaftarkan oleh pihak ketiga. Jangan percayai mereka.
-> * **NOTA:** PicoClaw dalam pembangunan pesat awal. Mungkin terdapat isu keselamatan yang belum diselesaikan. Jangan deploy ke pengeluaran sebelum v1.0.
+> * **NOTA:** SylastraClaws dalam pembangunan pesat awal. Mungkin terdapat isu keselamatan yang belum diselesaikan. Jangan deploy ke pengeluaran sebelum v1.0.
 
 
 ## 📢 Berita
 
-2026-03-31 📱 **Sokongan Android!** PicoClaw sekarang berjalan di Android! Muat turun APK di [picoclaw.io](https://picoclaw.io/download)
+2026-03-31 📱 **Sokongan Android!** SylastraClaws sekarang berjalan di Android! Muat turun APK di [sylastraclaws.io](https://sylastraclaws.io/download)
 
-2026-03-25 🚀 **v0.2.4 Dikeluarkan!** Penstrukturan semula seni bina Agent (SubTurn, Hooks, Steering, EventBus), integrasi WeChat/WeCom, penguatan keselamatan (.security.yml, penapisan data sensitif), penyedia baharu (AWS Bedrock, Azure, Xiaomi MiMo), dan 35 pembetulan pepijat. PicoClaw mencapai **26K Stars**!
+2026-03-25 🚀 **v0.2.4 Dikeluarkan!** Penstrukturan semula seni bina Agent (SubTurn, Hooks, Steering, EventBus), integrasi WeChat/WeCom, penguatan keselamatan (.security.yml, penapisan data sensitif), penyedia baharu (AWS Bedrock, Azure, Xiaomi MiMo), dan 35 pembetulan pepijat. SylastraClaws mencapai **26K Stars**!
 
-2026-03-17 🚀 **v0.2.3 Dikeluarkan!** UI dulang sistem (Windows & Linux), pertanyaan status sub-agent (`spawn_status`), muat semula panas Gateway eksperimental, kawalan keselamatan Cron, dan 2 pembetulan keselamatan. PicoClaw mencapai **25K Stars**!
+2026-03-17 🚀 **v0.2.3 Dikeluarkan!** UI dulang sistem (Windows & Linux), pertanyaan status sub-agent (`spawn_status`), muat semula panas Gateway eksperimental, kawalan keselamatan Cron, dan 2 pembetulan keselamatan. SylastraClaws mencapai **25K Stars**!
 
 2026-03-09 🎉 **v0.2.1 — Kemas kini terbesar setakat ini!** Sokongan protokol MCP, 4 saluran baharu (Matrix/IRC/WeCom/Discord Proxy), 3 penyedia baharu (Kimi/Minimax/Avian), saluran paip visi, storan memori JSONL, penghalaan model.
 
@@ -69,13 +69,13 @@
 <details>
 <summary>Berita terdahulu...</summary>
 
-2026-02-26 🎉 PicoClaw mencapai **20K Stars** hanya dalam 17 hari! Orkestrasi saluran automatik dan antara muka keupayaan kini aktif.
+2026-02-26 🎉 SylastraClaws mencapai **20K Stars** hanya dalam 17 hari! Orkestrasi saluran automatik dan antara muka keupayaan kini aktif.
 
-2026-02-16 🎉 PicoClaw melepasi 12K Stars dalam seminggu! Peranan penyelenggara komuniti dan [Peta Jalan](../../ROADMAP.md) dilancarkan secara rasmi.
+2026-02-16 🎉 SylastraClaws melepasi 12K Stars dalam seminggu! Peranan penyelenggara komuniti dan [Peta Jalan](../../ROADMAP.md) dilancarkan secara rasmi.
 
-2026-02-13 🎉 PicoClaw melepasi 5000 Stars dalam 4 hari! Peta jalan projek dan kumpulan pembangun sedang dalam proses.
+2026-02-13 🎉 SylastraClaws melepasi 5000 Stars dalam 4 hari! Peta jalan projek dan kumpulan pembangun sedang dalam proses.
 
-2026-02-09 🎉 **PicoClaw Dikeluarkan!** Dibina dalam 1 hari untuk membawa AI Agent ke perkakasan $10 dengan RAM <10MB. Jom, PicoClaw!
+2026-02-09 🎉 **SylastraClaws Dikeluarkan!** Dibina dalam 1 hari untuk membawa AI Agent ke perkakasan $10 dengan RAM <10MB. Jom, SylastraClaws!
 
 </details>
 
@@ -101,21 +101,21 @@ _*Binaan terkini mungkin menggunakan 10-20MB disebabkan penggabungan PR yang pes
 
 <div align="center">
 
-|                                | OpenClaw      | NanoBot                  | **PicoClaw**                           |
+|                                | OpenClaw      | NanoBot                  | **SylastraClaws**                           |
 | ------------------------------ | ------------- | ------------------------ | -------------------------------------- |
 | **Bahasa**                     | TypeScript    | Python                   | **Go**                                 |
 | **RAM**                        | >1GB          | >100MB                   | **< 10MB***                            |
 | **Masa Boot** (teras 0.8GHz)   | >500s         | >30s                     | **<1s**                                |
 | **Kos**                        | Mac Mini $599 | Kebanyakan papan Linux ~$50 | **Mana-mana papan Linux dari $10**  |
 
-<img src="../../assets/compare.jpg" alt="PicoClaw" width="512">
+<img src="../../assets/compare.jpg" alt="SylastraClaws" width="512">
 
 </div>
 
 > **[Senarai Keserasian Perkakasan](../guides/hardware-compatibility.md)** — Lihat semua papan yang diuji, dari RISC-V $5 hingga Raspberry Pi hingga telefon Android.
 
 <p align="center">
-<img src="../../assets/hardware-banner.jpg" alt="Keserasian Perkakasan PicoClaw" width="100%">
+<img src="../../assets/hardware-banner.jpg" alt="Keserasian Perkakasan SylastraClaws" width="100%">
 </p>
 
 ## 🦾 Demonstrasi
@@ -129,9 +129,9 @@ _*Binaan terkini mungkin menggunakan 10-20MB disebabkan penggabungan PR yang pes
 <th><p align="center">Carian Web & Pembelajaran</p></th>
 </tr>
 <tr>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_code.gif" width="240" height="180"></p></td>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_memory.gif" width="240" height="180"></p></td>
-<td align="center"><p align="center"><img src="../../assets/picoclaw_search.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_code.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_memory.gif" width="240" height="180"></p></td>
+<td align="center"><p align="center"><img src="../../assets/sylastraclaws_search.gif" width="240" height="180"></p></td>
 </tr>
 <tr>
 <td align="center">Bangun · Deploy · Skala</td>
@@ -142,7 +142,7 @@ _*Binaan terkini mungkin menggunakan 10-20MB disebabkan penggabungan PR yang pes
 
 ### 🐜 Deployment Jejak Rendah yang Inovatif
 
-PicoClaw boleh digunakan pada hampir mana-mana peranti Linux!
+SylastraClaws boleh digunakan pada hampir mana-mana peranti Linux!
 
 - $9.9 [LicheeRV-Nano](https://www.aliexpress.com/item/1005006519668532.html) untuk pembantu rumah minimal
 - $30~50 [NanoKVM](https://www.aliexpress.com/item/1005007369816019.html) untuk operasi pelayan automatik
@@ -155,13 +155,13 @@ PicoClaw boleh digunakan pada hampir mana-mana peranti Linux!
 
 ## 📦 Pemasangan
 
-### Muat turun dari picoclaw.io (Disyorkan)
+### Muat turun dari sylastraclaws.io (Disyorkan)
 
-Lawati **[picoclaw.io](https://picoclaw.io)** — laman web rasmi mengesan platform anda secara automatik dan menyediakan muat turun satu klik.
+Lawati **[sylastraclaws.io](https://sylastraclaws.io)** — laman web rasmi mengesan platform anda secara automatik dan menyediakan muat turun satu klik.
 
 ### Muat turun binari pra-kompil
 
-Muat turun binari untuk platform anda dari halaman [GitHub Releases](https://github.com/sipeed/picoclaw/releases).
+Muat turun binari untuk platform anda dari halaman [GitHub Releases](https://github.com/conglinyizhi/SylastraClaws/releases).
 
 ### Bina dari sumber (untuk pembangunan)
 
@@ -171,8 +171,8 @@ Prasyarat:
 - Node.js 22+ dan pnpm 10.33.0+ untuk binaan Web UI / launcher
 
 ```bash
-git clone https://github.com/sipeed/picoclaw.git
-cd picoclaw
+git clone https://github.com/conglinyizhi/SylastraClaws.git
+cd sylastraclaws
 make deps
 
 # Pasang dependensi frontend
@@ -204,19 +204,19 @@ Pelancar WebUI menyediakan antara muka berasaskan pelayar untuk konfigurasi dan 
 
 **Pilihan 1: Klik dua kali (Desktop)**
 
-Selepas memuat turun dari [picoclaw.io](https://picoclaw.io), klik dua kali `picoclaw-launcher` (atau `picoclaw-launcher.exe` pada Windows). Pelayar anda akan dibuka secara automatik di `http://localhost:18800`.
+Selepas memuat turun dari [sylastraclaws.io](https://sylastraclaws.io), klik dua kali `sylastraclaws-launcher` (atau `sylastraclaws-launcher.exe` pada Windows). Pelayar anda akan dibuka secara automatik di `http://localhost:18800`.
 
 **Pilihan 2: Baris arahan**
 
 ```bash
-picoclaw-launcher
+sylastraclaws-launcher
 # Buka http://localhost:18800 dalam pelayar anda
 ```
 
 > [!TIP]
 > **Akses jauh / Docker / VM:** Tambah bendera `-public` untuk mendengar pada semua antara muka:
 > ```bash
-> picoclaw-launcher -public
+> sylastraclaws-launcher -public
 > ```
 
 <p align="center">
@@ -225,15 +225,15 @@ picoclaw-launcher
 
 **Memulakan:** Buka WebUI, kemudian: **1)** Konfigurasikan Penyedia (tambah kunci API LLM) -> **2)** Konfigurasikan Saluran (cth. Telegram) -> **3)** Mulakan Gateway -> **4)** Sembang!
 
-Untuk dokumentasi WebUI terperinci, lihat [docs.picoclaw.io](https://docs.picoclaw.io).
+Untuk dokumentasi WebUI terperinci, lihat [docs.sylastraclaws.io](https://docs.sylastraclaws.io).
 
 <details>
 <summary><b>Docker (alternatif)</b></summary>
 
 ```bash
 # 1. Klon repo ini
-git clone https://github.com/sipeed/picoclaw.git
-cd picoclaw
+git clone https://github.com/conglinyizhi/SylastraClaws.git
+cd sylastraclaws
 
 # 2. Jalankan pertama kali — jana docker/data/config.json secara automatik kemudian keluar
 docker compose -f docker/docker-compose.yml --profile launcher up
@@ -246,7 +246,7 @@ docker compose -f docker/docker-compose.yml --profile launcher up -d
 # Buka http://localhost:18800
 ```
 
-> **Pengguna Docker / VM:** Gateway mendengar pada `127.0.0.1` secara lalai. Tetapkan `PICOCLAW_GATEWAY_HOST=0.0.0.0` atau gunakan bendera `-public` untuk membolehkan akses dari hos.
+> **Pengguna Docker / VM:** Gateway mendengar pada `127.0.0.1` secara lalai. Tetapkan `SYLASTRACLAWS_GATEWAY_HOST=0.0.0.0` atau gunakan bendera `-public` untuk membolehkan akses dari hos.
 
 ```bash
 # Semak log
@@ -266,15 +266,15 @@ docker compose -f docker/docker-compose.yml --profile launcher up -d
 <details>
 <summary><b>macOS — Amaran Keselamatan Pelancaran Pertama</b></summary>
 
-macOS mungkin menyekat `picoclaw-launcher` pada pelancaran pertama kerana ia dimuat turun dari internet dan tidak disahkan melalui Mac App Store.
+macOS mungkin menyekat `sylastraclaws-launcher` pada pelancaran pertama kerana ia dimuat turun dari internet dan tidak disahkan melalui Mac App Store.
 
-**Langkah 1:** Klik dua kali `picoclaw-launcher`. Anda akan melihat amaran keselamatan:
+**Langkah 1:** Klik dua kali `sylastraclaws-launcher`. Anda akan melihat amaran keselamatan:
 
 <p align="center">
 <img src="../../assets/macos-gatekeeper-warning.jpg" alt="Amaran macOS Gatekeeper" width="400">
 </p>
 
-> *"picoclaw-launcher" Tidak Dibuka — Apple tidak dapat mengesahkan "picoclaw-launcher" bebas daripada perisian hasad yang mungkin membahayakan Mac anda atau menjejaskan privasi anda.*
+> *"sylastraclaws-launcher" Tidak Dibuka — Apple tidak dapat mengesahkan "sylastraclaws-launcher" bebas daripada perisian hasad yang mungkin membahayakan Mac anda atau menjejaskan privasi anda.*
 
 **Langkah 2:** Buka **Tetapan Sistem** → **Privasi & Keselamatan** → tatal ke bawah ke bahagian **Keselamatan** → klik **Buka Juga** → sahkan dengan mengklik **Buka Juga** dalam dialog.
 
@@ -282,13 +282,13 @@ macOS mungkin menyekat `picoclaw-launcher` pada pelancaran pertama kerana ia dim
 <img src="../../assets/macos-gatekeeper-allow.jpg" alt="macOS Privasi & Keselamatan — Buka Juga" width="600">
 </p>
 
-Selepas langkah sekali ini, `picoclaw-launcher` akan dibuka secara normal pada pelancaran seterusnya.
+Selepas langkah sekali ini, `sylastraclaws-launcher` akan dibuka secara normal pada pelancaran seterusnya.
 
 </details>
 
 ### 📱 Android
 
-Berikan telefon lama anda kehidupan baru! Jadikannya Pembantu AI pintar dengan PicoClaw.
+Berikan telefon lama anda kehidupan baru! Jadikannya Pembantu AI pintar dengan SylastraClaws.
 
 **Pilihan 1: Pasang APK**
 
@@ -303,7 +303,7 @@ Pratonton:
   </tr>
 </table>
 
-Muat turun APK dari [picoclaw.io](https://picoclaw.io/download/) dan pasang secara langsung. Tiada Termux diperlukan!
+Muat turun APK dari [sylastraclaws.io](https://sylastraclaws.io/download/) dan pasang secara langsung. Tiada Termux diperlukan!
 
 **Pilihan 2: Termux**
 
@@ -315,27 +315,27 @@ Muat turun APK dari [picoclaw.io](https://picoclaw.io/download/) dan pasang seca
 
 ```bash
 # Muat turun keluaran terkini
-wget https://github.com/sipeed/picoclaw/releases/latest/download/picoclaw_Linux_arm64.tar.gz
-tar xzf picoclaw_Linux_arm64.tar.gz
+wget https://github.com/conglinyizhi/SylastraClaws/releases/latest/download/sylastraclaws_Linux_arm64.tar.gz
+tar xzf sylastraclaws_Linux_arm64.tar.gz
 pkg install proot
-termux-chroot ./picoclaw onboard   # chroot menyediakan susun atur sistem fail Linux standard
+termux-chroot ./sylastraclaws onboard   # chroot menyediakan susun atur sistem fail Linux standard
 ```
 
 Kemudian ikuti bahagian Pelancar Terminal di bawah untuk melengkapkan konfigurasi.
 
-<img src="../../assets/termux.jpg" alt="PicoClaw pada Termux" width="512">
+<img src="../../assets/termux.jpg" alt="SylastraClaws pada Termux" width="512">
 
-Untuk persekitaran minimal di mana hanya binari teras `picoclaw` tersedia (tiada UI Pelancar), anda boleh mengkonfigurasi semua melalui baris arahan dan fail konfigurasi JSON.
+Untuk persekitaran minimal di mana hanya binari teras `sylastraclaws` tersedia (tiada UI Pelancar), anda boleh mengkonfigurasi semua melalui baris arahan dan fail konfigurasi JSON.
 
 **1. Mulakan**
 
 ```bash
-picoclaw onboard
+sylastraclaws onboard
 ```
 
-Ini mencipta `~/.picoclaw/config.json` dan direktori ruang kerja.
+Ini mencipta `~/.config/sylastraclaws/config.json` dan direktori ruang kerja.
 
-**2. Konfigurasikan** (`~/.picoclaw/config.json`)
+**2. Konfigurasikan** (`~/.config/sylastraclaws/config.json`)
 
 ```json
 {
@@ -358,13 +358,13 @@ Ini mencipta `~/.picoclaw/config.json` dan direktori ruang kerja.
 **3. Sembang**
 
 ```bash
-picoclaw agent -m "Apa itu 2+2?"
+sylastraclaws agent -m "Apa itu 2+2?"
 
 # Mod interaktif
-picoclaw agent
+sylastraclaws agent
 
 # Mulakan gateway untuk integrasi aplikasi sembang
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
@@ -372,7 +372,7 @@ picoclaw gateway
 
 ## 🔌 Penyedia (LLM)
 
-PicoClaw menyokong 30+ penyedia LLM melalui konfigurasi `model_list`. Gunakan format `protokol/model`:
+SylastraClaws menyokong 30+ penyedia LLM melalui konfigurasi `model_list`. Gunakan format `protokol/model`:
 
 | Penyedia | Protokol | Kunci API | Nota |
 |----------|----------|-----------|------|
@@ -438,7 +438,7 @@ Untuk butiran konfigurasi penyedia penuh, lihat [Penyedia & Model](../guides/pro
 
 ## 💬 Saluran (Aplikasi Sembang)
 
-Bercakap dengan PicoClaw anda melalui 17+ platform pemesejan:
+Bercakap dengan SylastraClaws anda melalui 17+ platform pemesejan:
 
 | Saluran | Persediaan | Protokol | Dok |
 |---------|-----------|----------|-----|
@@ -461,7 +461,7 @@ Bercakap dengan PicoClaw anda melalui 17+ platform pemesejan:
 
 > Semua saluran berasaskan webhook berkongsi satu pelayan HTTP Gateway (`gateway.host`:`gateway.port`, lalai `127.0.0.1:18790`). Feishu menggunakan mod WebSocket/SDK dan tidak menggunakan pelayan HTTP yang dikongsi.
 
-> Tahap perincian log dikawal oleh `gateway.log_level` (lalai: `warn`). Nilai yang disokong: `debug`, `info`, `warn`, `error`, `fatal`. Boleh juga ditetapkan melalui `PICOCLAW_LOG_LEVEL`. Lihat [Konfigurasi](../guides/configuration.ms.md#gateway-log-level) untuk butiran.
+> Tahap perincian log dikawal oleh `gateway.log_level` (lalai: `warn`). Nilai yang disokong: `debug`, `info`, `warn`, `error`, `fatal`. Boleh juga ditetapkan melalui `SYLASTRACLAWS_LOG_LEVEL`. Lihat [Konfigurasi](../guides/configuration.ms.md#gateway-log-level) untuk butiran.
 
 Untuk arahan persediaan saluran terperinci, lihat [Konfigurasi Aplikasi Sembang](../guides/chat-apps.ms.md).
 
@@ -469,7 +469,7 @@ Untuk arahan persediaan saluran terperinci, lihat [Konfigurasi Aplikasi Sembang]
 
 ### 🔍 Carian Web
 
-PicoClaw boleh mencari web untuk menyediakan maklumat terkini. Konfigurasikan dalam `tools.web`:
+SylastraClaws boleh mencari web untuk menyediakan maklumat terkini. Konfigurasikan dalam `tools.web`:
 
 | Enjin Carian | Kunci API | Peringkat Percuma | Pautan |
 |-------------|-----------|-------------------|--------|
@@ -483,7 +483,7 @@ PicoClaw boleh mencari web untuk menyediakan maklumat terkini. Konfigurasikan da
 
 ### ⚙️ Alat Lain
 
-PicoClaw menyertakan alat terbina dalam untuk operasi fail, pelaksanaan kod, penjadualan, dan banyak lagi. Lihat [Konfigurasi Alat](../reference/tools_configuration.md) untuk butiran.
+SylastraClaws menyertakan alat terbina dalam untuk operasi fail, pelaksanaan kod, penjadualan, dan banyak lagi. Lihat [Konfigurasi Alat](../reference/tools_configuration.md) untuk butiran.
 
 ## 🎯 Kemahiran
 
@@ -492,8 +492,8 @@ Kemahiran adalah keupayaan modular yang melanjutkan Agent anda. Ia dimuatkan dar
 **Pasang kemahiran dari ClawHub:**
 
 ```bash
-picoclaw skills search "web scraping"
-picoclaw skills install <nama-kemahiran>
+sylastraclaws skills search "web scraping"
+sylastraclaws skills install <nama-kemahiran>
 ```
 
 **Konfigurasikan token ClawHub** (pilihan, untuk had kadar lebih tinggi):
@@ -517,7 +517,7 @@ Untuk butiran lanjut, lihat [Konfigurasi Alat - Kemahiran](../reference/tools_co
 
 ## 🔗 MCP (Protokol Konteks Model)
 
-PicoClaw menyokong [MCP](https://modelcontextprotocol.io/) secara natif — sambungkan mana-mana pelayan MCP untuk melanjutkan keupayaan Agent anda dengan alat dan sumber data luaran.
+SylastraClaws menyokong [MCP](https://modelcontextprotocol.io/) secara natif — sambungkan mana-mana pelayan MCP untuk melanjutkan keupayaan Agent anda dengan alat dan sumber data luaran.
 
 ```json
 {
@@ -540,7 +540,7 @@ Untuk konfigurasi MCP penuh (pengangkutan stdio, SSE, HTTP, Penemuan Alat), liha
 
 ## <img src="../../assets/clawdchat-icon.png" width="24" height="24" alt="ClawdChat"> Sertai Rangkaian Sosial Agent
 
-Sambungkan PicoClaw ke Rangkaian Sosial Agent dengan menghantar satu mesej melalui CLI atau mana-mana Aplikasi Sembang yang disepadukan.
+Sambungkan SylastraClaws ke Rangkaian Sosial Agent dengan menghantar satu mesej melalui CLI atau mana-mana Aplikasi Sembang yang disepadukan.
 
 **Baca `https://clawdchat.ai/skill.md` dan ikuti arahan untuk menyertai [ClawdChat.ai](https://clawdchat.ai)**
 
@@ -548,26 +548,26 @@ Sambungkan PicoClaw ke Rangkaian Sosial Agent dengan menghantar satu mesej melal
 
 | Arahan | Penerangan |
 | ------ | ---------- |
-| `picoclaw onboard` | Mulakan konfigurasi & ruang kerja |
-| `picoclaw auth weixin` | Sambungkan akaun WeChat melalui QR |
-| `picoclaw agent -m "..."` | Sembang dengan agent |
-| `picoclaw agent` | Mod sembang interaktif |
-| `picoclaw gateway` | Mulakan gateway |
-| `picoclaw status` | Tunjukkan status |
-| `picoclaw version` | Tunjukkan maklumat versi |
-| `picoclaw model` | Lihat atau tukar model lalai |
-| `picoclaw cron list` | Senaraikan semua kerja berjadual |
-| `picoclaw cron add ...` | Tambah kerja berjadual |
-| `picoclaw cron disable` | Lumpuhkan kerja berjadual |
-| `picoclaw cron remove` | Buang kerja berjadual |
-| `picoclaw skills list` | Senaraikan kemahiran yang dipasang |
-| `picoclaw skills install` | Pasang kemahiran |
-| `picoclaw migrate` | Migrasi data dari versi lama |
-| `picoclaw auth login` | Sahkan dengan penyedia |
+| `sylastraclaws onboard` | Mulakan konfigurasi & ruang kerja |
+| `sylastraclaws auth weixin` | Sambungkan akaun WeChat melalui QR |
+| `sylastraclaws agent -m "..."` | Sembang dengan agent |
+| `sylastraclaws agent` | Mod sembang interaktif |
+| `sylastraclaws gateway` | Mulakan gateway |
+| `sylastraclaws status` | Tunjukkan status |
+| `sylastraclaws version` | Tunjukkan maklumat versi |
+| `sylastraclaws model` | Lihat atau tukar model lalai |
+| `sylastraclaws cron list` | Senaraikan semua kerja berjadual |
+| `sylastraclaws cron add ...` | Tambah kerja berjadual |
+| `sylastraclaws cron disable` | Lumpuhkan kerja berjadual |
+| `sylastraclaws cron remove` | Buang kerja berjadual |
+| `sylastraclaws skills list` | Senaraikan kemahiran yang dipasang |
+| `sylastraclaws skills install` | Pasang kemahiran |
+| `sylastraclaws migrate` | Migrasi data dari versi lama |
+| `sylastraclaws auth login` | Sahkan dengan penyedia |
 
 ### ⏰ Tugasan Berjadual / Peringatan
 
-PicoClaw menyokong peringatan berjadual dan tugasan berulang melalui alat `cron`:
+SylastraClaws menyokong peringatan berjadual dan tugasan berulang melalui alat `cron`:
 
 * **Peringatan sekali**: "Ingatkan saya dalam 10 minit" -> pencetus sekali selepas 10 minit
 * **Tugasan berulang**: "Ingatkan saya setiap 2 jam" -> pencetus setiap 2 jam
@@ -592,7 +592,7 @@ Untuk panduan terperinci melebihi README ini:
 
 PR dialu-alukan! Kod sumber sengaja dibuat kecil dan mudah dibaca.
 
-Lihat [Peta Jalan Komuniti](https://github.com/sipeed/picoclaw/issues/988) dan [CONTRIBUTING.md](../../CONTRIBUTING.md) untuk panduan.
+Lihat [Peta Jalan Komuniti](https://github.com/conglinyizhi/SylastraClaws/issues/988) dan [CONTRIBUTING.md](../../CONTRIBUTING.md) untuk panduan.
 
 Kumpulan pembangun sedang dibina, sertai selepas PR pertama anda digabungkan!
 

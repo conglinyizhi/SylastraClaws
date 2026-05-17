@@ -4,7 +4,7 @@
 
 ## 💬 Applications de Chat
 
-Communiquez avec votre PicoClaw via Telegram, Discord, WhatsApp, Matrix, QQ, DingTalk, LINE, WeCom, Feishu, Slack, IRC, OneBot ou MaixCam.
+Communiquez avec votre SylastraClaws via Telegram, Discord, WhatsApp, Matrix, QQ, DingTalk, LINE, WeCom, Feishu, Slack, IRC, OneBot ou MaixCam.
 
 > **Note** : Tous les canaux basés sur les webhooks (LINE, WeCom, etc.) sont servis sur un seul serveur HTTP Gateway partagé (`gateway.host`:`gateway.port`, par défaut `127.0.0.1:18790`). Il n'y a pas de ports par canal à configurer. Note : Feishu utilise le mode WebSocket/SDK et n'utilise pas le serveur HTTP webhook partagé.
 
@@ -24,7 +24,7 @@ Communiquez avec votre PicoClaw via Telegram, Discord, WhatsApp, Matrix, QQ, Din
 | **IRC**              | ⭐⭐ Moyen         | Serveur + configuration TLS                           | [Documentation](#irc) |
 | **OneBot**           | ⭐⭐ Moyen         | Compatible NapCat/Go-CQHTTP, écosystème communautaire | [Documentation](../channels/onebot/README.fr.md)                                                                |
 | **MaixCam**          | ⭐ Facile          | Canal d'intégration matérielle pour caméras AI Sipeed | [Documentation](../channels/maixcam/README.fr.md)                                                               |
-| **Pico**             | ⭐ Facile          | Canal protocole natif PicoClaw                        |                                                                                                                  |
+| **Pico**             | ⭐ Facile          | Canal protocole natif SylastraClaws                        |                                                                                                                  |
 
 <a id="telegram"></a>
 <details>
@@ -56,15 +56,15 @@ Communiquez avec votre PicoClaw via Telegram, Discord, WhatsApp, Matrix, QQ, Din
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 **4. Menu de commandes Telegram (enregistré automatiquement au démarrage)**
 
-PicoClaw conserve les définitions de commandes dans un registre partagé unique. Au démarrage, Telegram enregistre automatiquement les commandes bot prises en charge (par exemple `/start`, `/help`, `/show`, `/list`, `/use`, `/btw`) afin que le menu de commandes et le comportement à l'exécution restent synchronisés.
+SylastraClaws conserve les définitions de commandes dans un registre partagé unique. Au démarrage, Telegram enregistre automatiquement les commandes bot prises en charge (par exemple `/start`, `/help`, `/show`, `/list`, `/use`, `/btw`) afin que le menu de commandes et le comportement à l'exécution restent synchronisés.
 L'enregistrement du menu de commandes Telegram reste une découverte UX locale au canal ; l'exécution générique des commandes est gérée de manière centralisée dans la boucle agent via l'exécuteur de commandes.
 
-Si l'enregistrement des commandes échoue (erreurs transitoires réseau/API), le canal démarre quand même et PicoClaw réessaie l'enregistrement en arrière-plan.
+Si l'enregistrement des commandes échoue (erreurs transitoires réseau/API), le canal démarre quand même et SylastraClaws réessaie l'enregistrement en arrière-plan.
 
 Vous pouvez aussi gerer les competences installees directement depuis Telegram :
 
@@ -146,7 +146,7 @@ Vous pouvez également déclencher par préfixes de mots-clés (par ex. `!bot`) 
 **6. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
@@ -155,7 +155,7 @@ picoclaw gateway
 <details>
 <summary><b>WhatsApp</b> (natif via whatsmeow)</summary>
 
-PicoClaw peut se connecter à WhatsApp de deux manières :
+SylastraClaws peut se connecter à WhatsApp de deux manières :
 
 - **Natif (recommandé) :** En processus via [whatsmeow](https://github.com/tulir/whatsmeow). Pas de bridge séparé. Définissez `"use_native": true` et laissez `bridge_url` vide. Au premier lancement, scannez le code QR avec WhatsApp (Appareils liés). La session est stockée dans votre workspace (par ex. `workspace/whatsapp/`). Le canal natif est **optionnel** pour garder le binaire par défaut léger ; compilez avec `-tags whatsapp_native` (par ex. `make build-whatsapp-native` ou `go build -tags whatsapp_native ./cmd/...`).
 - **Bridge :** Connectez-vous à un bridge WebSocket externe. Définissez `bridge_url` (par ex. `ws://localhost:3001`) et gardez `use_native` à false.
@@ -176,7 +176,7 @@ PicoClaw peut se connecter à WhatsApp de deux manières :
 }
 ```
 
-Si `session_store_path` est vide, la session est stockée dans `<workspace>/whatsapp/`. Lancez `picoclaw gateway` ; au premier lancement, scannez le code QR affiché dans le terminal avec WhatsApp → Appareils liés.
+Si `session_store_path` est vide, la session est stockée dans `<workspace>/whatsapp/`. Lancez `sylastraclaws gateway` ; au premier lancement, scannez le code QR affiché dans le terminal avec WhatsApp → Appareils liés.
 
 </details>
 
@@ -184,13 +184,13 @@ Si `session_store_path` est vide, la session est stockée dans `<workspace>/what
 <details>
 <summary><b>Weixin</b> (WeChat Personnel)</summary>
 
-PicoClaw prend en charge la connexion à votre compte WeChat personnel via l'API officielle Tencent iLink.
+SylastraClaws prend en charge la connexion à votre compte WeChat personnel via l'API officielle Tencent iLink.
 
 **1. Connexion**
 
 Lancez le flux de connexion interactif par QR code :
 ```bash
-picoclaw auth weixin
+sylastraclaws auth weixin
 ```
 Scannez le QR code affiché avec votre application WeChat mobile. Une fois connecté, le token est sauvegardé dans votre configuration.
 
@@ -212,7 +212,7 @@ Scannez le QR code affiché avec votre application WeChat mobile. Une fois conne
 
 **3. Lancer**
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
@@ -227,7 +227,7 @@ QQ Open Platform propose une page de configuration en un clic pour les bots comp
 
 1. Ouvrez [QQ Bot Quick Start](https://q.qq.com/qqbot/openclaw/index.html) et scannez le QR code pour vous connecter
 2. Un bot est créé automatiquement — copiez l'**App ID** et l'**App Secret**
-3. Configurez PicoClaw :
+3. Configurez SylastraClaws :
 
 ```json
 {
@@ -243,7 +243,7 @@ QQ Open Platform propose une page de configuration en un clic pour les bots comp
 }
 ```
 
-4. Lancez `picoclaw gateway` et ouvrez QQ pour discuter avec votre bot
+4. Lancez `sylastraclaws gateway` et ouvrez QQ pour discuter avec votre bot
 
 > L'App Secret n'est affiché qu'une seule fois. Enregistrez-le immédiatement — le consulter à nouveau forcera une réinitialisation.
 >
@@ -256,7 +256,7 @@ Si vous préférez créer le bot manuellement :
 * Connectez-vous sur [QQ Open Platform](https://q.qq.com/) pour vous inscrire en tant que développeur
 * Créez un bot QQ — personnalisez son avatar et son nom
 * Copiez l'**App ID** et l'**App Secret** depuis les paramètres du bot
-* Configurez comme indiqué ci-dessus et lancez `picoclaw gateway`
+* Configurez comme indiqué ci-dessus et lancez `sylastraclaws gateway`
 
 </details>
 
@@ -291,7 +291,7 @@ Si vous préférez créer le bot manuellement :
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 </details>
 
@@ -324,7 +324,7 @@ picoclaw gateway
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 Pour toutes les options (`device_id`, `join_on_invite`, `group_trigger`, `placeholder`, `reasoning_channel_id`), voir le [Guide de Configuration du Canal Matrix](../channels/matrix/README.md).
@@ -374,7 +374,7 @@ Puis définissez l'URL du Webhook dans la console LINE Developers à `https://yo
 **4. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 > Dans les discussions de groupe, le bot ne répond que lorsqu'il est @mentionné. Les réponses citent le message original.
@@ -385,7 +385,7 @@ picoclaw gateway
 <details>
 <summary><b>WeCom (企业微信)</b></summary>
 
-PicoClaw prend en charge trois types d'intégration WeCom :
+SylastraClaws prend en charge trois types d'intégration WeCom :
 
 **Option 1 : WeCom Bot (Bot)** - Configuration plus facile, prend en charge les discussions de groupe
 **Option 2 : WeCom App (Application personnalisée)** - Plus de fonctionnalités, messagerie proactive, chat privé uniquement
@@ -456,7 +456,7 @@ Voir le [Guide de Configuration WeCom](../channels/wecom/README.fr.md) pour les 
 **4. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 > **Note** : Les callbacks webhook WeCom sont servis sur le port Gateway (par défaut 18790). Utilisez un reverse proxy pour HTTPS.
@@ -490,7 +490,7 @@ picoclaw gateway
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 > **Note** : WeCom AI Bot utilise le protocole streaming pull — pas de problème de timeout de réponse. Les tâches longues (>30 secondes) basculent automatiquement vers la livraison push via `response_url`.
@@ -501,7 +501,7 @@ picoclaw gateway
 <details>
 <summary><b>Feishu (飞书)</b></summary>
 
-PicoClaw se connecte à Feishu via le mode WebSocket/SDK — aucune URL webhook publique ni serveur de callback nécessaire.
+SylastraClaws se connecte à Feishu via le mode WebSocket/SDK — aucune URL webhook publique ni serveur de callback nécessaire.
 
 **1. Créer une application**
 
@@ -531,7 +531,7 @@ Optionnel : `encrypt_key` et `verification_token` pour le chiffrement des évén
 **3. Lancer et discuter**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 Ouvrez Feishu, recherchez le nom de votre bot et commencez à discuter. Vous pouvez aussi ajouter le bot à un groupe — utilisez `group_trigger.mention_only: true` pour ne répondre que lorsqu'il est @mentionné.
@@ -570,7 +570,7 @@ Pour toutes les options, voir le [Guide de Configuration du Canal Feishu](../cha
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
@@ -589,7 +589,7 @@ picoclaw gateway
       "type": "irc",
       "server": "irc.libera.chat:6697",
       "tls": true,
-      "nick": "picoclaw-bot",
+      "nick": "sylastraclaws-bot",
       "channels": ["#your-channel"],
       "password": "",
       "allow_from": []
@@ -603,7 +603,7 @@ Optionnel : `nickserv_password` pour l'authentification NickServ, `sasl_user`/`s
 **2. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 Le bot se connectera au serveur IRC et rejoindra les canaux spécifiés.
@@ -614,7 +614,7 @@ Le bot se connectera au serveur IRC et rejoindra les canaux spécifiés.
 <details>
 <summary><b>OneBot (QQ via protocole OneBot)</b></summary>
 
-OneBot est un protocole ouvert pour les bots QQ. PicoClaw se connecte à toute implémentation compatible OneBot v11 (par ex. [Lagrange](https://github.com/LagrangeDev/Lagrange.Core), [NapCat](https://github.com/NapNeko/NapCatQQ)) via WebSocket.
+OneBot est un protocole ouvert pour les bots QQ. SylastraClaws se connecte à toute implémentation compatible OneBot v11 (par ex. [Lagrange](https://github.com/LagrangeDev/Lagrange.Core), [NapCat](https://github.com/NapNeko/NapCatQQ)) via WebSocket.
 
 **1. Configurer une implémentation OneBot**
 
@@ -645,7 +645,7 @@ Installez et exécutez un framework de bot QQ compatible OneBot v11. Activez son
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>
@@ -677,7 +677,7 @@ picoclaw gateway
 **3. Lancer**
 
 ```bash
-picoclaw gateway
+sylastraclaws gateway
 ```
 
 </details>

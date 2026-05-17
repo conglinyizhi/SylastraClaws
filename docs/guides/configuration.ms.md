@@ -4,39 +4,39 @@
 
 ## ⚙️ Konfigurasi
 
-Fail konfigurasi: `~/.picoclaw/config.json`
+Fail konfigurasi: `~/.config/sylastraclaws/config.json`
 
 ### Pemboleh Ubah Persekitaran
 
-Anda boleh menggantikan laluan lalai menggunakan pemboleh ubah persekitaran. Ini berguna untuk pemasangan mudah alih, deployment dalam container, atau menjalankan picoclaw sebagai system service. Pemboleh ubah ini saling bebas dan mengawal laluan yang berbeza.
+Anda boleh menggantikan laluan lalai menggunakan pemboleh ubah persekitaran. Ini berguna untuk pemasangan mudah alih, deployment dalam container, atau menjalankan sylastraclaws sebagai system service. Pemboleh ubah ini saling bebas dan mengawal laluan yang berbeza.
 
 | Pemboleh Ubah     | Penerangan                                                                                                                                          | Laluan Lalai              |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
-| `PICOCLAW_CONFIG` | Menindih laluan ke fail konfigurasi. Ini memberitahu picoclaw secara terus fail `config.json` yang perlu dimuatkan, dengan mengabaikan lokasi lain. | `~/.picoclaw/config.json` |
-| `PICOCLAW_HOME`   | Menindih direktori root untuk data picoclaw. Ini mengubah lokasi lalai bagi `workspace` dan direktori data lain.                                    | `~/.picoclaw`             |
+| `SYLASTRACLAWS_CONFIG` | Menindih laluan ke fail konfigurasi. Ini memberitahu sylastraclaws secara terus fail `config.json` yang perlu dimuatkan, dengan mengabaikan lokasi lain. | `~/.config/sylastraclaws/config.json` |
+| `SYLASTRACLAWS_HOME`   | Menindih direktori root untuk data sylastraclaws. Ini mengubah lokasi lalai bagi `workspace` dan direktori data lain.                                    | `~/.config/sylastraclaws`             |
 
 **Contoh:**
 
 ```bash
-# Jalankan picoclaw menggunakan fail config tertentu
+# Jalankan sylastraclaws menggunakan fail config tertentu
 # Laluan workspace akan dibaca daripada fail config tersebut
-PICOCLAW_CONFIG=/etc/picoclaw/production.json picoclaw gateway
+SYLASTRACLAWS_CONFIG=/etc/sylastraclaws/production.json sylastraclaws gateway
 
-# Jalankan picoclaw dengan semua data disimpan di /opt/picoclaw
-# Config akan dimuatkan dari lalai ~/.picoclaw/config.json
-# Workspace akan dicipta di /opt/picoclaw/workspace
-PICOCLAW_HOME=/opt/picoclaw picoclaw agent
+# Jalankan sylastraclaws dengan semua data disimpan di /opt/sylastraclaws
+# Config akan dimuatkan dari lalai ~/.config/sylastraclaws/config.json
+# Workspace akan dicipta di /opt/sylastraclaws/workspace
+SYLASTRACLAWS_HOME=/opt/sylastraclaws sylastraclaws agent
 
 # Gunakan kedua-duanya untuk setup yang disesuaikan sepenuhnya
-PICOCLAW_HOME=/srv/picoclaw PICOCLAW_CONFIG=/srv/picoclaw/main.json picoclaw gateway
+SYLASTRACLAWS_HOME=/srv/sylastraclaws SYLASTRACLAWS_CONFIG=/srv/sylastraclaws/main.json sylastraclaws gateway
 ```
 
 ### Susun Atur Workspace
 
-PicoClaw menyimpan data dalam workspace yang dikonfigurasikan (lalai: `~/.picoclaw/workspace`):
+SylastraClaws menyimpan data dalam workspace yang dikonfigurasikan (lalai: `~/.config/sylastraclaws/workspace`):
 
 ```
-~/.picoclaw/workspace/
+~/.config/sylastraclaws/workspace/
 ├── sessions/          # Sesi perbualan dan sejarah
 ├── memory/            # Memori jangka panjang (MEMORY.md)
 ├── state/             # Keadaan persisten (saluran terakhir, dll.)
@@ -53,14 +53,14 @@ PicoClaw menyimpan data dalam workspace yang dikonfigurasikan (lalai: `~/.picocl
 
 Secara lalai, skill dimuatkan daripada:
 
-1. `~/.picoclaw/workspace/skills` (workspace)
-2. `~/.picoclaw/skills` (global)
+1. `~/.config/sylastraclaws/workspace/skills` (workspace)
+2. `~/.config/sylastraclaws/skills` (global)
 3. `<current-working-directory>/skills` (builtin)
 
 Untuk setup lanjutan/ujian, anda boleh menindih root builtin skills dengan:
 
 ```bash
-export PICOCLAW_BUILTIN_SKILLS=/path/to/skills
+export SYLASTRACLAWS_BUILTIN_SKILLS=/path/to/skills
 ```
 
 ### Menggunakan Skill dan Arahan Dari Saluran Chat
@@ -92,7 +92,7 @@ dammi le ultime news
 
 ### 🔒 Security Sandbox
 
-PicoClaw berjalan dalam persekitaran bersandbox secara lalai. Agen hanya boleh mengakses fail dan melaksanakan arahan dalam workspace yang dikonfigurasikan.
+SylastraClaws berjalan dalam persekitaran bersandbox secara lalai. Agen hanya boleh mengakses fail dan melaksanakan arahan dalam workspace yang dikonfigurasikan.
 
 #### Konfigurasi Lalai
 
@@ -100,7 +100,7 @@ PicoClaw berjalan dalam persekitaran bersandbox secara lalai. Agen hanya boleh m
 {
   "agents": {
     "defaults": {
-      "workspace": "~/.picoclaw/workspace",
+      "workspace": "~/.config/sylastraclaws/workspace",
       "restrict_to_workspace": true
     }
   }
@@ -109,7 +109,7 @@ PicoClaw berjalan dalam persekitaran bersandbox secara lalai. Agen hanya boleh m
 
 | Option                  | Default                 | Description                               |
 | ----------------------- | ----------------------- | ----------------------------------------- |
-| `workspace`             | `~/.picoclaw/workspace` | Direktori kerja untuk agen                |
+| `workspace`             | `~/.config/sylastraclaws/workspace` | Direktori kerja untuk agen                |
 | `restrict_to_workspace` | `true`                  | Hadkan akses fail/arahan kepada workspace |
 
 #### Tools yang Dilindungi
@@ -156,7 +156,7 @@ Walaupun dengan `restrict_to_workspace: false`, tool `exec` menyekat arahan berb
 
 #### Had yang Diketahui: Proses Anak Daripada Build Tools
 
-Pengawal keselamatan exec hanya memeriksa baris arahan yang PicoClaw lancarkan secara terus. Ia tidak memeriksa secara rekursif proses anak yang dilancarkan oleh tools pembangun yang dibenarkan seperti `make`, `go run`, `cargo`, `npm run`, atau skrip build tersuai.
+Pengawal keselamatan exec hanya memeriksa baris arahan yang SylastraClaws lancarkan secara terus. Ia tidak memeriksa secara rekursif proses anak yang dilancarkan oleh tools pembangun yang dibenarkan seperti `make`, `go run`, `cargo`, `npm run`, atau skrip build tersuai.
 
 Ini bermakna arahan peringkat atas masih boleh mengkompil atau melancarkan binari lain selepas ia melepasi semakan awal pengawal. Dalam amalan, anggap build script, Makefile, package script, dan binari terjana sebagai kod boleh laksana yang memerlukan tahap semakan yang sama seperti arahan shell terus.
 
@@ -164,7 +164,7 @@ Untuk persekitaran yang lebih berisiko:
 
 * Semak build script sebelum pelaksanaan.
 * Utamakan kelulusan/semakan manual untuk aliran kerja compile-and-run.
-* Jalankan PicoClaw dalam container atau VM jika anda memerlukan pengasingan yang lebih kuat daripada pengawal terbina dalam.
+* Jalankan SylastraClaws dalam container atau VM jika anda memerlukan pengasingan yang lebih kuat daripada pengawal terbina dalam.
 
 #### Contoh Ralat
 
@@ -197,7 +197,7 @@ Jika anda perlu membenarkan agen mengakses laluan di luar workspace:
 **Kaedah 2: Pemboleh ubah persekitaran**
 
 ```bash
-export PICOCLAW_AGENTS_DEFAULTS_RESTRICT_TO_WORKSPACE=false
+export SYLASTRACLAWS_AGENTS_DEFAULTS_RESTRICT_TO_WORKSPACE=false
 ```
 
 > ⚠️ **Amaran**: Menyahaktifkan sekatan ini membenarkan agen mengakses mana-mana laluan pada sistem anda. Gunakan dengan berhati-hati hanya dalam persekitaran terkawal.
@@ -216,7 +216,7 @@ Semua laluan berkongsi sekatan workspace yang sama — tiada cara untuk memintas
 
 ### Heartbeat (Tugasan Berkala)
 
-PicoClaw boleh melaksanakan tugasan berkala secara automatik. Cipta fail `HEARTBEAT.md` dalam workspace anda:
+SylastraClaws boleh melaksanakan tugasan berkala secara automatik. Cipta fail `HEARTBEAT.md` dalam workspace anda:
 
 ```markdown
 # Periodic Tasks

@@ -12,7 +12,7 @@
 | `gemini`     | LLM (Gemini direct)                     | [aistudio.google.com](https://aistudio.google.com)           |
 | `zhipu`      | LLM (Zhipu direct)                      | [bigmodel.cn](https://bigmodel.cn)                           |
 | `zai-coding` | LLM (Z.AI Coding Plan)                | [z.ai](https://z.ai/manage-apikey/apikey-list)           |
-| `volcengine` | LLM(Volcengine direct)                  | [volcengine.com](https://www.volcengine.com/activity/codingplan?utm_campaign=PicoClaw&utm_content=PicoClaw&utm_medium=devrel&utm_source=OWO&utm_term=PicoClaw)                 |
+| `volcengine` | LLM(Volcengine direct)                  | [volcengine.com](https://www.volcengine.com/activity/codingplan?utm_campaign=SylastraClaws&utm_content=SylastraClaws&utm_medium=devrel&utm_source=OWO&utm_term=SylastraClaws)                 |
 | `openrouter` | LLM (recommended, access to all models) | [openrouter.ai](https://openrouter.ai)                       |
 | `anthropic`  | LLM (Claude direct)                     | [console.anthropic.com](https://console.anthropic.com)       |
 | `openai`     | LLM (GPT direct)                        | [platform.openai.com](https://platform.openai.com)           |
@@ -33,7 +33,7 @@
 
 ### Model Configuration (model_list)
 
-> **What's New?** PicoClaw now prefers explicit `provider` + native `model` configuration (for example `"provider": "zhipu", "model": "glm-4.7"`). The legacy single-field `provider/model` form remains supported for compatibility when `provider` is omitted.
+> **What's New?** SylastraClaws now prefers explicit `provider` + native `model` configuration (for example `"provider": "zhipu", "model": "glm-4.7"`). The legacy single-field `provider/model` form remains supported for compatibility when `provider` is omitted.
 
 For agent dispatch and light-model routing examples, see the [Routing Guide](routing-guide.md).
 
@@ -65,7 +65,7 @@ This design also enables **multi-agent support** with flexible provider selectio
 | **LiteLLM Proxy**   | `litellm`         | `http://localhost:4000/v1`                          | OpenAI    | Your LiteLLM proxy key                                           |
 | **VLLM**            | `vllm`            | `http://localhost:8000/v1`                          | OpenAI    | Local                                                            |
 | **Cerebras**        | `cerebras`        | `https://api.cerebras.ai/v1`                        | OpenAI    | [Get Key](https://cerebras.ai)                                   |
-| **VolcEngine (Doubao)** | `volcengine`  | `https://ark.cn-beijing.volces.com/api/v3`          | OpenAI    | [Get Key](https://www.volcengine.com/activity/codingplan?utm_campaign=PicoClaw&utm_content=PicoClaw&utm_medium=devrel&utm_source=OWO&utm_term=PicoClaw) |
+| **VolcEngine (Doubao)** | `volcengine`  | `https://ark.cn-beijing.volces.com/api/v3`          | OpenAI    | [Get Key](https://www.volcengine.com/activity/codingplan?utm_campaign=SylastraClaws&utm_content=SylastraClaws&utm_medium=devrel&utm_source=OWO&utm_term=SylastraClaws) |
 | **神算云**          | `shengsuanyun`    | `https://router.shengsuanyun.com/api/v1`            | OpenAI    | -                                                                |
 | **BytePlus**        | `byteplus`        | `https://ark.ap-southeast.bytepluses.com/api/v3`    | OpenAI    | [Get Key](https://www.byteplus.com)                              |
 | **Vivgrid**         | `vivgrid`         | `https://api.vivgrid.com/v1`                        | OpenAI    | [Get Key](https://vivgrid.com)                                   |
@@ -119,7 +119,7 @@ This design also enables **multi-agent support** with flexible provider selectio
 | Field | Type | Required | Description |
 |-------|------|----------|-------------|
 | `model_name` | string | Yes | Unique name used to reference this model in agent config |
-| `provider` | string | No | Preferred provider identifier. When present, PicoClaw sends `model` unchanged to that provider |
+| `provider` | string | No | Preferred provider identifier. When present, SylastraClaws sends `model` unchanged to that provider |
 | `model` | string | Yes | Native model ID when `provider` is set. If `provider` is omitted, the legacy `provider/model` form is still supported |
 | `api_keys` | string[] | Yes* | API key(s) for authentication. Multiple keys enable per-request rotation. Not required for local providers (Ollama, LM Studio, VLLM) |
 | `api_base` | string | No | Override the default API endpoint URL |
@@ -136,10 +136,10 @@ This design also enables **multi-agent support** with flexible provider selectio
 
 #### Provider / Model Resolution
 
-PicoClaw resolves `provider` and the runtime model ID using these rules:
+SylastraClaws resolves `provider` and the runtime model ID using these rules:
 
 - If `provider` is set, `model` is used as-is.
-- If `provider` is omitted, PicoClaw treats the first `/` segment in `model` as the provider and everything after that first `/` as the runtime model ID.
+- If `provider` is omitted, SylastraClaws treats the first `/` segment in `model` as the provider and everything after that first `/` as the runtime model ID.
 
 Examples:
 
@@ -154,7 +154,7 @@ Examples:
 
 You can configure a dedicated model for audio transcription with `voice.model_name`. This lets you reuse existing multimodal providers that support audio input instead of relying only on Groq.
 
-If `voice.model_name` is not configured, PicoClaw will continue to fall back to Groq transcription when a Groq API key is available.
+If `voice.model_name` is not configured, SylastraClaws will continue to fall back to Groq transcription when a Groq API key is available.
 
 ```json
 {
@@ -247,7 +247,7 @@ If `voice.model_name` is not configured, PicoClaw will continue to fall back to 
 }
 ```
 
-> Run `picoclaw auth login --provider anthropic` to paste your API token.
+> Run `sylastraclaws auth login --provider anthropic` to paste your API token.
 
 **Anthropic Messages API (native format)**
 
@@ -291,7 +291,7 @@ For direct Anthropic API access or custom endpoints that only support Anthropic'
 ```
 
 `api_base` defaults to `http://localhost:1234/v1`. API key is optional unless your LM Studio server enables authentication.<br/>
-With explicit `provider`, PicoClaw sends `openai/gpt-oss-20b` unchanged to the LM Studio server. The legacy compatibility form `"model": "lmstudio/openai/gpt-oss-20b"` still resolves to the same upstream model ID when `provider` is omitted.
+With explicit `provider`, SylastraClaws sends `openai/gpt-oss-20b` unchanged to the LM Studio server. The legacy compatibility form `"model": "lmstudio/openai/gpt-oss-20b"` still resolves to the same upstream model ID when `provider` is omitted.
 
 **Custom Proxy/API**
 
@@ -319,7 +319,7 @@ With explicit `provider`, PicoClaw sends `openai/gpt-oss-20b` unchanged to the L
 }
 ```
 
-With explicit `provider`, PicoClaw sends `model` unchanged. That means `"provider": "litellm", "model": "lite-gpt4"` sends `lite-gpt4`, while `"provider": "litellm", "model": "openai/gpt-4o"` sends `openai/gpt-4o`. The legacy compatibility forms `litellm/lite-gpt4` and `litellm/openai/gpt-4o` still resolve the same way when `provider` is omitted.
+With explicit `provider`, SylastraClaws sends `model` unchanged. That means `"provider": "litellm", "model": "lite-gpt4"` sends `lite-gpt4`, while `"provider": "litellm", "model": "openai/gpt-4o"` sends `openai/gpt-4o`. The legacy compatibility forms `litellm/lite-gpt4` and `litellm/openai/gpt-4o` still resolve the same way when `provider` is omitted.
 
 **Z.AI Coding Plan**
 
@@ -339,7 +339,7 @@ If the standard Zhipu endpoint (`https://open.bigmodel.cn/api/paas/v4`) returns 
 
 #### Load Balancing
 
-Configure multiple endpoints for the same model name—PicoClaw will automatically round-robin between them:
+Configure multiple endpoints for the same model name—SylastraClaws will automatically round-robin between them:
 
 ```json
 {
@@ -364,7 +364,7 @@ Configure multiple endpoints for the same model name—PicoClaw will automatical
 
 #### Automatic Model Failover (Cascade)
 
-PicoClaw already supports automatic failover when you configure `primary` + `fallbacks` in the agent model settings.
+SylastraClaws already supports automatic failover when you configure `primary` + `fallbacks` in the agent model settings.
 The runtime fallback chain retries the next candidate for retriable failures such as HTTP `429`, quota/rate-limit errors, and timeout errors.
 It also applies cooldown tracking per candidate to avoid immediately retrying a recently failed target.
 
@@ -402,7 +402,7 @@ It also applies cooldown tracking per candidate to avoid immediately retrying a 
 }
 ```
 
-If you use key-level failover for the same model, PicoClaw can chain through additional key-backed candidates before moving to cross-model backups.
+If you use key-level failover for the same model, SylastraClaws can chain through additional key-backed candidates before moving to cross-model backups.
 
 #### Migration from Legacy `providers` Config
 
@@ -452,7 +452,7 @@ For detailed migration guide, see [migration/model-list-migration.md](../migrati
 
 ### Provider Architecture
 
-PicoClaw routes providers by protocol family:
+SylastraClaws routes providers by protocol family:
 
 - OpenAI-compatible protocol: OpenRouter, OpenAI-compatible gateways, Groq, Zhipu, and vLLM-style endpoints.
 - Gemini native protocol: Google Gemini via the native `models/*:generateContent` and `models/*:streamGenerateContent` endpoints.
@@ -474,7 +474,7 @@ This keeps the runtime lightweight while making new OpenAI-compatible backends m
 {
   "agents": {
     "defaults": {
-      "workspace": "~/.picoclaw/workspace",
+      "workspace": "~/.config/sylastraclaws/workspace",
       "model_name": "glm-4.7",
       "max_tokens": 8192,
       "temperature": 0.7,
@@ -493,7 +493,7 @@ This keeps the runtime lightweight while making new OpenAI-compatible backends m
 **3. Run**
 
 ```bash
-picoclaw agent -m "Hello"
+sylastraclaws agent -m "Hello"
 ```
 
 </details>
@@ -615,5 +615,5 @@ picoclaw agent -m "Hello"
 ---
 
 <div align="center">
-  <img src="../../assets/logo.jpg" alt="PicoClaw Meme" width="512">
+  <img src="../../assets/logo.jpg" alt="SylastraClaws Meme" width="512">
 </div>

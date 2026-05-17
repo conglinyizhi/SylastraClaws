@@ -2,7 +2,7 @@
 
 ## Overview
 
-PicoClaw supports separating sensitive data (API keys, tokens, secrets, passwords) from the main configuration by storing them in a `.security.yml` file. This improves security by:
+SylastraClaws supports separating sensitive data (API keys, tokens, secrets, passwords) from the main configuration by storing them in a `.security.yml` file. This improves security by:
 
 1. **Separation of concerns**: Configuration settings and secrets are in separate files
 2. **Easier sharing**: The main config can be shared without exposing sensitive data
@@ -12,7 +12,7 @@ PicoClaw supports separating sensitive data (API keys, tokens, secrets, password
 ## File Structure
 
 ```
-~/.picoclaw/
+~/.config/sylastraclaws/
 ├── config.json          # Main configuration (safe to share)
 └── .security.yml         # Security data (never share)
 ```
@@ -120,17 +120,17 @@ skills:
 
 Create or copy the security file:
 ```bash
-cp security.example.yml ~/.picoclaw/.security.yml
+cp security.example.yml ~/.config/sylastraclaws/.security.yml
 ```
 
 ### Step 2: Fill in your actual values
 
-Edit `~/.picoclaw/.security.yml` and replace placeholder values with your actual API keys and tokens.
+Edit `~/.config/sylastraclaws/.security.yml` and replace placeholder values with your actual API keys and tokens.
 
 ### Step 3: Set proper permissions
 
 ```bash
-chmod 600 ~/.picoclaw/.security.yml
+chmod 600 ~/.config/sylastraclaws/.security.yml
 ```
 
 ### Step 4: Simplify config.json (Recommended)
@@ -181,9 +181,9 @@ You can now remove sensitive fields from `config.json` since they're loaded from
 
 ### Step 5: Verify
 
-Restart PicoClaw and verify it loads correctly:
+Restart SylastraClaws and verify it loads correctly:
 ```bash
-picoclaw --version
+sylastraclaws --version
 ```
 
 ## Field Mapping Rules
@@ -377,30 +377,30 @@ You can override any security value using environment variables:
 
 **For models:**
 ```bash
-export PICOCLAW_CHANNELS_TELEGRAM_TOKEN="token-from-env"
+export SYLASTRACLAWS_CHANNELS_TELEGRAM_TOKEN="token-from-env"
 ```
 
 **For channels:**
 ```bash
-export PICOCLAW_CHANNELS_TELEGRAM_TOKEN="token-from-env"
-export PICOCLAW_CHANNELS_FEISHU_APP_SECRET="secret-from-env"
+export SYLASTRACLAWS_CHANNELS_TELEGRAM_TOKEN="token-from-env"
+export SYLASTRACLAWS_CHANNELS_FEISHU_APP_SECRET="secret-from-env"
 ```
 
 **For web tools:**
 ```bash
-export PICOCLAW_TOOLS_WEB_BRAVE_API_KEY="key-from-env"
-export PICOCLAW_TOOLS_WEB_BAIDU_API_KEY="baidu-key-from-env"
+export SYLASTRACLAWS_TOOLS_WEB_BRAVE_API_KEY="key-from-env"
+export SYLASTRACLAWS_TOOLS_WEB_BAIDU_API_KEY="baidu-key-from-env"
 ```
 
 Environment variables have the highest priority and will override both `config.json` and `.security.yml` values.
 
-The pattern is: `PICOCLAW_<SECTION>_<KEY>_<FIELD>` with underscores separating path segments and converted to uppercase.
+The pattern is: `SYLASTRACLAWS_<SECTION>_<KEY>_<FIELD>` with underscores separating path segments and converted to uppercase.
 
 ## Security Best Practices
 
 1. **Never commit `.security.yml`** to version control
 2. **Add to .gitignore**: Ensure `.security.yml` is in your `.gitignore` file
-3. **Set file permissions**: `chmod 600 ~/.picoclaw/.security.yml`
+3. **Set file permissions**: `chmod 600 ~/.config/sylastraclaws/.security.yml`
 4. **Use different keys** for different environments (dev, staging, production)
 5. **Rotate keys regularly** and update `.security.yml`
 6. **Backup securely**: Encrypt backups containing `.security.yml`. Note that config migrations automatically create date-stamped backups (e.g., `config.json.20260330.bak` and `.security.yml.20260330.bak`)
@@ -449,7 +449,7 @@ Returns the path to `.security.yml` relative to the config file.
   "version": 3,
   "agents": {
     "defaults": {
-      "workspace": "~/picoclaw-workspace",
+      "workspace": "~/sylastraclaws-workspace",
       "model_name": "gpt-5.4"
     }
   },
@@ -551,7 +551,7 @@ go test ./pkg/config -run TestSecurityConfig
 ### Keys Not Being Applied
 
 - Check that `.security.yml` is in the same directory as `config.json`
-- Verify the file permissions allow reading (`chmod 600 ~/.picoclaw/.security.yml`)
+- Verify the file permissions allow reading (`chmod 600 ~/.config/sylastraclaws/.security.yml`)
 - Ensure the YAML structure matches the expected format
 - Check for typos in field names (case-sensitive)
 - Verify the model/channel names match exactly (case-sensitive)
@@ -563,18 +563,18 @@ go test ./pkg/config -run TestSecurityConfig
 The system automatically creates a date-stamped backup before saving a migrated config (e.g., `config.json.20260330.bak` and `.security.yml.20260330.bak`). If you prefer a manual backup:
 
 ```bash
-cp ~/.picoclaw/config.json ~/.picoclaw/config.json.backup
+cp ~/.config/sylastraclaws/config.json ~/.config/sylastraclaws/config.json.backup
 ```
 
 ### Step 2: Create .security.yml
 
 ```bash
-cp security.example.yml ~/.picoclaw/.security.yml
+cp security.example.yml ~/.config/sylastraclaws/.security.yml
 ```
 
 ### Step 3: Fill in your API keys
 
-Edit `~/.picoclaw/.security.yml` and replace placeholder values with your actual keys.
+Edit `~/.config/sylastraclaws/.security.yml` and replace placeholder values with your actual keys.
 
 ### Step 4: Remove sensitive fields from config.json
 
@@ -587,13 +587,13 @@ Remove or comment out sensitive fields from `config.json`:
 ### Step 5: Set proper permissions
 
 ```bash
-chmod 600 ~/.picoclaw/.security.yml
+chmod 600 ~/.config/sylastraclaws/.security.yml
 ```
 
 ### Step 6: Test
 
 ```bash
-picoclaw --version
+sylastraclaws --version
 ```
 
 ### Step 7: Verify functionality
@@ -604,20 +604,20 @@ Test your models and channels to ensure everything works correctly.
 
 If everything works, you can delete the backups:
 ```bash
-rm ~/.picoclaw/config.json.backup
+rm ~/.config/sylastraclaws/config.json.backup
 # Also remove auto-generated date-stamped backups if desired:
-rm ~/.picoclaw/config.json.20*.bak ~/.picoclaw/.security.yml.20*.bak
+rm ~/.config/sylastraclaws/config.json.20*.bak ~/.config/sylastraclaws/.security.yml.20*.bak
 ```
 
 ## Advanced: Encrypted API Keys
 
-PicoClaw supports encrypting API keys in the security file for additional protection.
+SylastraClaws supports encrypting API keys in the security file for additional protection.
 
 ### Setup
 
 1. Set a passphrase via environment variable:
 ```bash
-export PICOCLAW_CREDENTIAL_PASSPHRASE="your-secure-passphrase"
+export SYLASTRACLAWS_CREDENTIAL_PASSPHRASE="your-secure-passphrase"
 ```
 
 2. When saving config, API keys will be encrypted automatically:

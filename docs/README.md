@@ -1,7 +1,7 @@
 # SylastraClaws Documentation
 
-This project is forked from PicoClaw and rebranded as SylastraClaws.  
-The documentation structure below follows the original layout — many guides still reference "picoclaw" but remain functionally accurate.
+This project is forked from [PicoClaw](https://github.com/sipeed/picoclaw) and rebranded as SylastraClaws.  
+The documentation structure below follows the original layout — documentation files that still reference "picoclaw" describe the upstream project structure and are retained for historical accuracy.
 
 This file describes the recommended documentation layout, how translated files should be named, and what `make lint-docs` currently checks locally.
 

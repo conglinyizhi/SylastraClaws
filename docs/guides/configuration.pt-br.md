@@ -4,31 +4,31 @@
 
 ## ⚙️ Configuração
 
-Arquivo de configuração: `~/.picoclaw/config.json`
+Arquivo de configuração: `~/.config/sylastraclaws/config.json`
 
 ### Variáveis de Ambiente
 
-Você pode substituir os caminhos padrão usando variáveis de ambiente. Isso é útil para instalações portáteis, implantações em contêineres ou execução do picoclaw como serviço do sistema. Essas variáveis são independentes e controlam caminhos diferentes.
+Você pode substituir os caminhos padrão usando variáveis de ambiente. Isso é útil para instalações portáteis, implantações em contêineres ou execução do sylastraclaws como serviço do sistema. Essas variáveis são independentes e controlam caminhos diferentes.
 
 | Variável          | Descrição                                                                                                                             | Caminho Padrão              |
 |-------------------|-----------------------------------------------------------------------------------------------------------------------------------------|---------------------------|
-| `PICOCLAW_CONFIG` | Substitui o caminho para o arquivo de configuração. Isso indica diretamente ao picoclaw qual `config.json` carregar, ignorando todos os outros locais. | `~/.picoclaw/config.json` |
-| `PICOCLAW_HOME`   | Substitui o diretório raiz para dados do picoclaw. Isso altera o local padrão do `workspace` e outros diretórios de dados.          | `~/.picoclaw`             |
+| `SYLASTRACLAWS_CONFIG` | Substitui o caminho para o arquivo de configuração. Isso indica diretamente ao sylastraclaws qual `config.json` carregar, ignorando todos os outros locais. | `~/.config/sylastraclaws/config.json` |
+| `SYLASTRACLAWS_HOME`   | Substitui o diretório raiz para dados do sylastraclaws. Isso altera o local padrão do `workspace` e outros diretórios de dados.          | `~/.config/sylastraclaws`             |
 
 **Exemplos:**
 
 ```bash
-# Executar picoclaw usando um arquivo de configuração específico
+# Executar sylastraclaws usando um arquivo de configuração específico
 # O caminho do workspace será lido de dentro desse arquivo de configuração
-PICOCLAW_CONFIG=/etc/picoclaw/production.json picoclaw gateway
+SYLASTRACLAWS_CONFIG=/etc/sylastraclaws/production.json sylastraclaws gateway
 
-# Executar picoclaw com todos os dados armazenados em /opt/picoclaw
-# A configuração será carregada do padrão ~/.picoclaw/config.json
-# O workspace será criado em /opt/picoclaw/workspace
-PICOCLAW_HOME=/opt/picoclaw picoclaw agent
+# Executar sylastraclaws com todos os dados armazenados em /opt/sylastraclaws
+# A configuração será carregada do padrão ~/.config/sylastraclaws/config.json
+# O workspace será criado em /opt/sylastraclaws/workspace
+SYLASTRACLAWS_HOME=/opt/sylastraclaws sylastraclaws agent
 
 # Usar ambos para uma configuração totalmente personalizada
-PICOCLAW_HOME=/srv/picoclaw PICOCLAW_CONFIG=/srv/picoclaw/main.json picoclaw gateway
+SYLASTRACLAWS_HOME=/srv/sylastraclaws SYLASTRACLAWS_CONFIG=/srv/sylastraclaws/main.json sylastraclaws gateway
 ```
 
 ### Nível de Log do Gateway
@@ -45,14 +45,14 @@ PICOCLAW_HOME=/srv/picoclaw PICOCLAW_CONFIG=/srv/picoclaw/main.json picoclaw gat
 
 O valor padrão é `warn`. Valores suportados: `debug`, `info`, `warn`, `error`, `fatal`.
 
-Também pode ser substituído pela variável de ambiente: `PICOCLAW_LOG_LEVEL=info`
+Também pode ser substituído pela variável de ambiente: `SYLASTRACLAWS_LOG_LEVEL=info`
 
 ### Layout do Workspace
 
-O PicoClaw armazena dados no seu workspace configurado (padrão: `~/.picoclaw/workspace`):
+O SylastraClaws armazena dados no seu workspace configurado (padrão: `~/.config/sylastraclaws/workspace`):
 
 ```
-~/.picoclaw/workspace/
+~/.config/sylastraclaws/workspace/
 ├── sessions/          # Sessões de conversa e histórico
 ├── memory/           # Memória de longo prazo (MEMORY.md)
 ├── state/            # Estado persistente (último canal, etc.)
@@ -71,14 +71,14 @@ O PicoClaw armazena dados no seu workspace configurado (padrão: `~/.picoclaw/wo
 
 Por padrão, as skills são carregadas de:
 
-1. `~/.picoclaw/workspace/skills` (workspace)
-2. `~/.picoclaw/skills` (global)
+1. `~/.config/sylastraclaws/workspace/skills` (workspace)
+2. `~/.config/sylastraclaws/skills` (global)
 3. `<caminho-embutido-na-compilação>/skills` (embutido)
 
 Para configurações avançadas/de teste, você pode substituir o diretório raiz de skills builtin com:
 
 ```bash
-export PICOCLAW_BUILTIN_SKILLS=/path/to/skills
+export SYLASTRACLAWS_BUILTIN_SKILLS=/path/to/skills
 ```
 
 ### Usando Skills e Comandos em Canais de Chat
@@ -110,7 +110,7 @@ dammi le ultime news
 
 ### 🔒 Sandbox de Segurança
 
-O PicoClaw é executado em um ambiente sandbox por padrão. O agente só pode acessar arquivos e executar comandos dentro do workspace configurado.
+O SylastraClaws é executado em um ambiente sandbox por padrão. O agente só pode acessar arquivos e executar comandos dentro do workspace configurado.
 
 #### Configuração Padrão
 
@@ -118,7 +118,7 @@ O PicoClaw é executado em um ambiente sandbox por padrão. O agente só pode ac
 {
   "agents": {
     "defaults": {
-      "workspace": "~/.picoclaw/workspace",
+      "workspace": "~/.config/sylastraclaws/workspace",
       "restrict_to_workspace": true
     }
   }
@@ -127,7 +127,7 @@ O PicoClaw é executado em um ambiente sandbox por padrão. O agente só pode ac
 
 | Opção                   | Padrão                  | Descrição                                 |
 | ----------------------- | ----------------------- | ----------------------------------------- |
-| `workspace`             | `~/.picoclaw/workspace` | Diretório de trabalho do agente           |
+| `workspace`             | `~/.config/sylastraclaws/workspace` | Diretório de trabalho do agente           |
 | `restrict_to_workspace` | `true`                  | Restringir acesso a arquivos/comandos ao workspace |
 
 #### Ferramentas Protegidas
@@ -174,7 +174,7 @@ Mesmo com `restrict_to_workspace: false`, a ferramenta `exec` bloqueia estes com
 
 #### Limitação Conhecida: Processos Filhos de Ferramentas de Build
 
-O guard de segurança do exec inspeciona apenas a linha de comando que o PicoClaw executa diretamente. Ele não inspeciona recursivamente processos filhos gerados por ferramentas de desenvolvimento permitidas como `make`, `go run`, `cargo`, `npm run` ou scripts de build personalizados.
+O guard de segurança do exec inspeciona apenas a linha de comando que o SylastraClaws executa diretamente. Ele não inspeciona recursivamente processos filhos gerados por ferramentas de desenvolvimento permitidas como `make`, `go run`, `cargo`, `npm run` ou scripts de build personalizados.
 
 Isso significa que um comando de nível superior ainda pode compilar ou executar outros binários após passar pela verificação inicial do guard. Na prática, trate scripts de build, Makefiles, scripts de pacotes e binários gerados como código executável que precisa do mesmo nível de revisão que um comando shell direto.
 
@@ -182,7 +182,7 @@ Para ambientes de maior risco:
 
 * Revise scripts de build antes da execução.
 * Prefira aprovação/revisão manual para fluxos de trabalho de compilação e execução.
-* Execute o PicoClaw dentro de um contêiner ou VM se precisar de isolamento mais forte do que o guard integrado oferece.
+* Execute o SylastraClaws dentro de um contêiner ou VM se precisar de isolamento mais forte do que o guard integrado oferece.
 
 #### Exemplos de Erro
 
@@ -215,7 +215,7 @@ Se você precisar que o agente acesse caminhos fora do workspace:
 **Método 2: Variável de ambiente**
 
 ```bash
-export PICOCLAW_AGENTS_DEFAULTS_RESTRICT_TO_WORKSPACE=false
+export SYLASTRACLAWS_AGENTS_DEFAULTS_RESTRICT_TO_WORKSPACE=false
 ```
 
 > ⚠️ **Aviso**: Desabilitar esta restrição permite que o agente acesse qualquer caminho no seu sistema. Use com cautela apenas em ambientes controlados.
@@ -234,7 +234,7 @@ Todos os caminhos compartilham a mesma restrição de workspace — não há com
 
 ### Heartbeat (Tarefas Periódicas)
 
-O PicoClaw pode executar tarefas periódicas automaticamente. Crie um arquivo `HEARTBEAT.md` no seu workspace:
+O SylastraClaws pode executar tarefas periódicas automaticamente. Crie um arquivo `HEARTBEAT.md` no seu workspace:
 
 ```markdown
 # Tarefas Periódicas
@@ -306,8 +306,8 @@ Responde HEARTBEAT_OK      Usuário recebe resultado diretamente
 
 **Variáveis de ambiente:**
 
-* `PICOCLAW_HEARTBEAT_ENABLED=false` para desativar
-* `PICOCLAW_HEARTBEAT_INTERVAL=60` para alterar o intervalo
+* `SYLASTRACLAWS_HEARTBEAT_ENABLED=false` para desativar
+* `SYLASTRACLAWS_HEARTBEAT_INTERVAL=60` para alterar o intervalo
 
 ### Providers
 
@@ -318,7 +318,7 @@ Responde HEARTBEAT_OK      Usuário recebe resultado diretamente
 | ------------ | --------------------------------------- | ------------------------------------------------------------ |
 | `gemini`     | LLM (Gemini direto)                     | [aistudio.google.com](https://aistudio.google.com)           |
 | `zhipu`      | LLM (Zhipu direto)                      | [bigmodel.cn](https://bigmodel.cn)                           |
-| `volcengine` | LLM (Volcengine direto)                 | [volcengine.com](https://www.volcengine.com/activity/codingplan?utm_campaign=PicoClaw&utm_content=PicoClaw&utm_medium=devrel&utm_source=OWO&utm_term=PicoClaw) |
+| `volcengine` | LLM (Volcengine direto)                 | [volcengine.com](https://www.volcengine.com/activity/codingplan?utm_campaign=SylastraClaws&utm_content=SylastraClaws&utm_medium=devrel&utm_source=OWO&utm_term=SylastraClaws) |
 | `openrouter` | LLM (recomendado, acesso a todos modelos) | [openrouter.ai](https://openrouter.ai)                     |
 | `anthropic`  | LLM (Claude direto)                     | [console.anthropic.com](https://console.anthropic.com)       |
 | `openai`     | LLM (GPT direto)                        | [platform.openai.com](https://platform.openai.com)           |
@@ -330,7 +330,7 @@ Responde HEARTBEAT_OK      Usuário recebe resultado diretamente
 
 ### Configuração de Modelos (model_list)
 
-> **Novidade:** PicoClaw agora usa uma abordagem **centrada no modelo**. Basta especificar o formato `vendor/model` (ex.: `zhipu/glm-4.7`) para adicionar novos providers — **sem alterações de código!**
+> **Novidade:** SylastraClaws agora usa uma abordagem **centrada no modelo**. Basta especificar o formato `vendor/model` (ex.: `zhipu/glm-4.7`) para adicionar novos providers — **sem alterações de código!**
 
 #### Todos os Vendors Suportados
 
@@ -345,12 +345,12 @@ Responde HEARTBEAT_OK      Usuário recebe resultado diretamente
 | **通义千问 (Qwen)**     | `qwen/`         | `https://dashscope.aliyuncs.com/compatible-mode/v1` | OpenAI    | [Obter](https://dashscope.console.aliyun.com)                    |
 | **Ollama**              | `ollama/`       | `http://localhost:11434/v1`                         | OpenAI    | Local (sem chave)                                                |
 | **OpenRouter**          | `openrouter/`   | `https://openrouter.ai/api/v1`                      | OpenAI    | [Obter](https://openrouter.ai/keys)                              |
-| **VolcEngine (Doubao)** | `volcengine/`   | `https://ark.cn-beijing.volces.com/api/v3`          | OpenAI    | [Obter](https://www.volcengine.com/activity/codingplan?utm_campaign=PicoClaw&utm_content=PicoClaw&utm_medium=devrel&utm_source=OWO&utm_term=PicoClaw) |
+| **VolcEngine (Doubao)** | `volcengine/`   | `https://ark.cn-beijing.volces.com/api/v3`          | OpenAI    | [Obter](https://www.volcengine.com/activity/codingplan?utm_campaign=SylastraClaws&utm_content=SylastraClaws&utm_medium=devrel&utm_source=OWO&utm_term=SylastraClaws) |
 | **Antigravity**         | `antigravity/`  | Google Cloud                                        | Custom    | Somente OAuth                                                    |
 
 #### Balanceamento de Carga
 
-Configure múltiplos endpoints para o mesmo nome de modelo — PicoClaw fará round-robin automaticamente:
+Configure múltiplos endpoints para o mesmo nome de modelo — SylastraClaws fará round-robin automaticamente:
 
 ```json
 {
@@ -367,7 +367,7 @@ A configuração antiga `providers` está **depreciada** e foi removida no V2. C
 
 ### Arquitetura de Providers
 
-PicoClaw roteia providers por família de protocolo:
+SylastraClaws roteia providers por família de protocolo:
 
 - **Compatível com OpenAI**: OpenRouter, Groq, Zhipu, endpoints vLLM e a maioria dos outros.
 - **Gemini nativo**: Google Gemini via endpoints nativos `models/*:generateContent` e `models/*:streamGenerateContent`.
@@ -378,7 +378,7 @@ Isso mantém o runtime leve enquanto torna novos backends compatíveis com OpenA
 
 ### Tarefas Agendadas / Lembretes
 
-PicoClaw suporta tarefas agendadas via ferramenta `cron`.
+SylastraClaws suporta tarefas agendadas via ferramenta `cron`.
 
 ```json
 {
@@ -391,7 +391,7 @@ PicoClaw suporta tarefas agendadas via ferramenta `cron`.
 }
 ```
 
-As tarefas agendadas persistem após reinicializações em `~/.picoclaw/workspace/cron/`.
+As tarefas agendadas persistem após reinicializações em `~/.config/sylastraclaws/workspace/cron/`.
 
 ### Tópicos Avançados
 
