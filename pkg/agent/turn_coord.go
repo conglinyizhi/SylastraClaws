@@ -1,4 +1,4 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 
 package agent
 
@@ -661,6 +661,7 @@ func (p *Pipeline) Finalize(
 			finalContent: finalContent,
 			status:       turnStatus,
 			followUps:    append([]bus.InboundMessage(nil), ts.followUps...),
+			usedStreaming: exec.usedStreaming,
 		}, nil
 	}
 
@@ -701,8 +702,9 @@ func (p *Pipeline) Finalize(
 
 	ts.setPhase(TurnPhaseCompleted)
 	return turnResult{
-		finalContent: finalContent,
-		status:       turnStatus,
-		followUps:    append([]bus.InboundMessage(nil), ts.followUps...),
+		finalContent:  finalContent,
+		status:        turnStatus,
+		followUps:     append([]bus.InboundMessage(nil), ts.followUps...),
+		usedStreaming: exec.usedStreaming,
 	}, nil
 }

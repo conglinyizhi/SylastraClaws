@@ -1,4 +1,4 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 
 package agent
 

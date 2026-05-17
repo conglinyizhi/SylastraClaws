@@ -1,4 +1,4 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 
 package agent
 
@@ -189,6 +189,69 @@ func (p *Pipeline) CallLLM(
 		return exec.activeProvider.Chat(providerCtx, messagesForCall, toolDefsForCall, exec.llmModel, exec.llmOpts)
 	}
 
+	// Determine if real-time token flow should be shown
+	var tracker *tokenFlowTracker
+	var tokenFlowTrackerStarted bool
+	if !constants.IsInternalChannel(ts.channel) {
+		showTokenFlow := func() bool {
+			behavior := al.getChannelBehavior(ts.channel)
+			globalDefault := true
+			if al.cfg != nil && al.cfg.Agents.Defaults.BehaviorDefaults != nil && al.cfg.Agents.Defaults.BehaviorDefaults.ShowTokenFlow != nil {
+				globalDefault = *al.cfg.Agents.Defaults.BehaviorDefaults.ShowTokenFlow
+			}
+			return behavior.EffectiveShowTokenFlow(globalDefault)
+		}()
+		if showTokenFlow {
+			if _, ok := exec.activeProvider.(providers.StreamingProvider); ok {
+				intervalSec := 3
+				if behavior := al.getChannelBehavior(ts.channel); behavior != nil && behavior.TokenFlowIntervalSec != nil {
+					intervalSec = *behavior.TokenFlowIntervalSec
+				} else if al.cfg != nil && al.cfg.Agents.Defaults.BehaviorDefaults != nil && al.cfg.Agents.Defaults.BehaviorDefaults.TokenFlowIntervalSec != nil {
+					intervalSec = *al.cfg.Agents.Defaults.BehaviorDefaults.TokenFlowIntervalSec
+				}
+				tracker = newTokenFlowTracker(al, ts.channel, ts.chatID, intervalSec)
+				if tracker.start(turnCtx) {
+					tokenFlowTrackerStarted = true
+				}
+			}
+		}
+	}
+
+	// Wrap callLLM to inject streaming: on retries the tracker is reused,
+	// accumulating chars across attempts for the live display.
+	if tokenFlowTrackerStarted {
+		originalCallLLM := callLLM
+		callLLM = func(messagesForCall []providers.Message, toolDefsForCall []providers.ToolDefinition) (*providers.LLMResponse, error) {
+			streamProvider, ok := exec.activeProvider.(providers.StreamingProvider)
+			if !ok || len(exec.activeCandidates) > 1 {
+				// Fallback path or non-streaming provider: fall through to original.
+				return originalCallLLM(messagesForCall, toolDefsForCall)
+			}
+			providerCtx, providerCancel := context.WithCancel(turnCtx)
+			ts.setProviderCancel(providerCancel)
+			defer func() {
+				providerCancel()
+				ts.clearProviderCancel(providerCancel)
+			}()
+
+			al.activeRequests.Add(1)
+			defer al.activeRequests.Done()
+
+			exec.usedStreaming = true
+
+			return streamProvider.ChatStream(
+				providerCtx,
+				messagesForCall,
+				toolDefsForCall,
+				exec.llmModel,
+				exec.llmOpts,
+				func(accumulated string) {
+					tracker.onChunk(accumulated)
+				},
+			)
+		}
+	}
+
 	// Retry loop
 	var err error
 	maxRetries := 2
@@ -336,6 +399,16 @@ func (p *Pipeline) CallLLM(
 			continue
 		}
 		break
+	}
+
+	// Finalize token flow tracker: stop the background edit loop and
+	// replace the streaming message with final content + token statistics.
+	if tokenFlowTrackerStarted && tracker != nil && exec.response != nil {
+		content := exec.response.Content
+		if content == "" && exec.response.ReasoningContent != "" && ts.channel != "pico" {
+			content = exec.response.ReasoningContent
+		}
+		tracker.done(turnCtx, content, exec.response.Usage)
 	}
 
 	if err != nil {

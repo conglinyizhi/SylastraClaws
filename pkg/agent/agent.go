@@ -1,8 +1,8 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 // Inspired by and based on nanobot: https://github.com/HKUDS/nanobot
 // License: MIT
 //
-// Copyright (c) 2026 PicoClaw contributors
+// Copyright (c) 2026 SylastraClaws contributors
 
 package agent
 
@@ -518,7 +518,7 @@ func (al *AgentLoop) runAgentLoop(
 
 		// Append token flow statistics to the final message when available.
 		content := result.finalContent
-		if !constants.IsInternalChannel(opts.Dispatch.Channel()) {
+		if !constants.IsInternalChannel(opts.Dispatch.Channel()) && !result.usedStreaming {
 			behavior := al.getChannelBehavior(opts.Dispatch.Channel())
 			globalDefault := true
 			if al.cfg != nil && al.cfg.Agents.Defaults.BehaviorDefaults != nil && al.cfg.Agents.Defaults.BehaviorDefaults.ShowTokenFlow != nil {

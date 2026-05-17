@@ -1,4 +1,4 @@
-// PicoClaw - Ultra-lightweight personal AI agent
+// SylastraClaws - Ultra-lightweight personal AI agent
 
 package agent
 
@@ -85,6 +85,7 @@ type turnResult struct {
 	finalContent string
 	status       TurnEndStatus
 	followUps    []bus.InboundMessage
+	usedStreaming bool
 }
 
 // =============================================================================
@@ -132,13 +133,14 @@ type turnExecution struct {
 	// LLM call per-iteration state
 	response            *providers.LLMResponse
 	normalizedToolCalls []providers.ToolCall
-	allResponsesHandled bool
-	callMessages        []providers.Message
-	providerToolDefs    []providers.ToolDefinition
-	llmModel            string
-	llmOpts             map[string]any
-	gracefulTerminal    bool
-	useNativeSearch     bool
+	allResponsesHandled   bool
+	callMessages          []providers.Message
+	providerToolDefs      []providers.ToolDefinition
+	llmModel              string
+	llmOpts               map[string]any
+	gracefulTerminal      bool
+	useNativeSearch       bool
+	usedStreaming         bool // set by Pipeline.CallLLM when ChatStream is used
 
 	// Phase tracking
 	phase LLMPhase
